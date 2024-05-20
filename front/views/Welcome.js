@@ -17,28 +17,10 @@ export class Welcome extends Abstract {
     async getHtml() {
         return `
             <div class="container">
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
-                <h1>hello from welcome</h1>
+                <h1>hiiii</h1>
+                <h1>hiiii</h1>
+                <h1>hiiii</h1>
+                <h1>hiiii</h1>
             </div>
         `;
     }

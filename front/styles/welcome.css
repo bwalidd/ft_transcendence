@@ -1,3 +1,10 @@
 h1{
     color: green;
 }
+
+
+.container{
+    height: 100vh;
+    background-image: url("../images/bg.jpg");
+    background-position: center;
+}
