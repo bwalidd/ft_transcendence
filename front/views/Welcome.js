@@ -11,16 +11,23 @@ export class Welcome extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Welcome");
-        loadCSS('../styles/welcome.css');  // Adjust the path as necessary
+        loadCSS('../styles/welcome.css');
     }
 
     async getHtml() {
         return `
             <div class="container">
-                <h1>hiiii</h1>
-                <h1>hiiii</h1>
-                <h1>hiiii</h1>
-                <h1>hiiii</h1>
+                <div class="box">
+                    <div class="right-div">
+                        <img src="../images/ponglogo.png" alt="bg-logo">
+                        </div>
+                        <div class="left-div">
+                        <div class="container-horizontal">
+                            <h1 class="title">JOIN THE BATTLE</h1>
+                            <button class="signup-btn">Sign Up with your Intra 42</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     }

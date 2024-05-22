@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    import(`../views/Welcome.js`).then(module => {
-        const Welcome = module.Welcome;
-        const viewInstance = new Welcome();
+    import(`../views/Home.js`).then(module => {
+        const Home = module.Home;
+        const viewInstance = new Home();
         viewInstance.getHtml().then(html => {
             document.querySelector('#app').innerHTML = html;
             if (typeof viewInstance.initialize === 'function') {

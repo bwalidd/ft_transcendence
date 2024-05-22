@@ -1,10 +1,73 @@
-h1{
-    color: green;
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+h1{
+    color: white;
+}
 
 .container{
     height: 100vh;
     background-image: url("../images/bg.jpg");
     background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.box{
+    height: 400px;
+    width: 650px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    display: flex;
+}
+
+.right-div{
+   
+    flex: 1;
+}
+
+.right-div img{
+    height: 200px;
+    width: 200px;
+    margin-top: 100px;
+    margin-left: 15px;
+}
+
+.left-div{
+    
+    flex: 2;
+}
+
+.container-horizontal{
+    height: 350px;
+    width: 400px;
+    margin: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+
+.logo{
+    width: 300px;
+    height: 300px;
+}
+
+
+.title{
+    color: rgba(255, 217, 0, 0.8);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Montserrat';
+}
+
+.signup-btn{
+    width: 300px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: black;
+    border: none;
+    color: white;
+    font-size: larger;
+    cursor: pointer;
 }
