@@ -10,8 +10,6 @@
     justify-content:start;
 }
 
-
-
 .mini-container{
     flex: 1;
     height: 600px;
@@ -84,7 +82,7 @@ a:hover {
 .lower a{
     font-family: 'Montserrat';
     color: white;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bolder;
     position: absolute;
     top: 10px;
