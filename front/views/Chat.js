@@ -24,7 +24,8 @@ export class Chat extends Abstract {
                         </div>
                         <div class="left">
                             <h3><a href="/">wbouwach</a></h3>
-                            <img class="profile-photo "src="../images/ponglogo.png">
+                            <div class="profile-pic">
+                            </div>
                         </div>
                     </div>
                 <div>
@@ -36,17 +37,6 @@ export class Chat extends Abstract {
                                 <input type="text" placeholder="Search a friend...">
                                 <div></div>
                             </div>
-                            <div class="channels">
-                                <h1>Channels</h1>
-                                <button class="btn-channel">+</button>
-                            </div>
-                            <div class="channel">
-                                <ul class="list">
-                                   <li><a href="/">#General</a></li>
-                                   <li><a href="/">#Random</a></li>
-                                   <li><a href="/">#Tournaments</a></li>
-                                </ul>
-                            </div>
                             <div class="chats">
                                 <h1>Direct messages</h1>
                                 <div></div>
@@ -56,7 +46,8 @@ export class Chat extends Abstract {
                                    <li>
                                         <div class="left-div">
                                             <div class="img-div">
-                                                <img src="../images/ponglogo.png">
+                                                <div class="photo-msg">
+                                                </div>
                                             </div>
                                             <div class="friend-name">
                                                 <h4>username</h4>
@@ -70,7 +61,8 @@ export class Chat extends Abstract {
                                    <li>
                                         <div class="left-div">
                                             <div class="img-div">
-                                                <img src="../images/ponglogo.png">
+                                                <div class="photo-msg">
+                                                </div>
                                             </div>
                                             <div class="friend-name">
                                                 <h4>username</h4>
@@ -84,7 +76,8 @@ export class Chat extends Abstract {
                                    <li>
                                         <div class="left-div">
                                             <div class="img-div">
-                                                <img src="../images/ponglogo.png">
+                                                <div class="photo-msg">
+                                                </div>
                                             </div>
                                             <div class="friend-name">
                                                 <h4>username</h4>

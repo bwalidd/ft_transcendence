@@ -16,13 +16,15 @@
 nav {
     height: 90px;
     padding: 30px;
+    
 }
 
 .navbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 30px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(185, 185, 185, 0.1);
 }
 
 .left {
@@ -32,6 +34,7 @@ nav {
 
 h3 a{
     text-decoration: none;
+    margin-right: 10px;
 }
 
 .profile-photo {
@@ -62,6 +65,25 @@ h3 a{
     height: 100%;
     padding: 40px;
 }
+
+.profile-pic{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-image: url('../images/bhazzout.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+.photo-msg{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-image: url('../images/bhazzout.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
 
 .input{
     width: 100%;

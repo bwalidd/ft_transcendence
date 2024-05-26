@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    import(`../views/Profile.js`).then(module => {
-        const Profile = module.Profile;
-        const viewInstance = new Profile();
+    import(`../views/Chat.js`).then(module => {
+        const Chat = module.Chat;
+        const viewInstance = new Chat();
         viewInstance.getHtml().then(html => {
             document.querySelector('#app').innerHTML = html;
             if (typeof viewInstance.initialize === 'function') {
