@@ -81,35 +81,35 @@ export class Profile extends Abstract {
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3>Bhazzout</h3>
+                                <h3><a>Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3>Bhazzout</h3>
+                                <h3><a>Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3>Bhazzout</h3>
+                                <h3><a>Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3>Bhazzout</h3>
+                                <h3><a>Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3>Bhazzout</h3>
+                                <h3><a>Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
