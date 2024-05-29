@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
-    font-family: 'Montserrat';
+    font-family: 'Montserrat', sans-serif;
     color: white;
-    margin: 0; /* Ensure all elements have zero margin */
-    padding: 0; /* Ensure all elements have zero padding */
-    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .container {
@@ -34,6 +34,7 @@ nav {
 h3 a {
     text-decoration: none;
     margin-right: 10px;
+    color: white;
 }
 
 .profile-photo {
@@ -125,6 +126,7 @@ li:hover {
 
 li a {
     text-decoration: none;
+    color: white;
 }
 
 .channels {
@@ -150,7 +152,6 @@ li a {
     background-color: #525252;
 }
 
-
 .list-channels {
     display: flex;
     align-items: center;
@@ -158,13 +159,16 @@ li a {
     margin-top: 20px;
 }
 
-
-.channel{
-
-    overflow-y: scroll;
+.channel {
+    max-height: calc(100vh - 250px); /* Adjust based on your layout */
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 10px;
 }
-.list-friend{
-    overflow-y: scroll;
+
+.list-friend {
+    max-height: 95%; /* Set a max-height to enable scrolling if content exceeds this height */
+    overflow-y: auto;
 }
 
 .list-friend li {
@@ -273,25 +277,23 @@ h4 {
     height: 100%;
 }
 
-.chat-content ul{
+.chat-content ul {
     list-style: none;
-
 }
 
-.chat-content li{
+.chat-content li {
     margin-bottom: 10px;
     display: flex;
-    align-items: flex-start; /* Align items to the start to allow text to grow vertically */
-    height: auto;    
+    align-items: flex-start;
+    height: auto;
 }
 
-
 .other-msg .photo-msg, .my-msg .photo-msg {
-    flex-shrink: 0; /* Prevent the photo from shrinking */
+    flex-shrink: 0;
     margin-right: 10px;
 }
 
-.other-msg{
+.other-msg {
     display: flex;
     align-items: center;
     padding-left: 10px;
@@ -299,18 +301,17 @@ h4 {
     width: 100%;
 }
 
-
-.other-msg .photo-msg{
+.other-msg .photo-msg {
     margin-right: 10px;
 }
 
-.other-msg .msg{
+.other-msg .msg {
     background-color: #3888a5;
     padding: 5px 10px;
     border-radius: 20px;
 }
 
-li .my-msg{
+li .my-msg {
     display: flex;
     align-items: center;
     flex-direction: row-reverse;
@@ -319,7 +320,7 @@ li .my-msg{
     width: 100%;
 }
 
-li .my-msg .msg{
+li .my-msg .msg {
     background-color: #183c4e;
     padding: 5px 10px;
     border-radius: 20px;
@@ -350,23 +351,20 @@ li .my-msg .msg{
     border: none;
     border-radius: 25px;
     background-color: #4c8baf;
-   
 }
 
-
-.chat-header .first-div{
+.chat-header .first-div {
     display: flex;
     align-items: center;
-
 }
 
-.threepoints-img{
+.threepoints-img {
     width: 30px;
     height: 30px;
     cursor: pointer;
 }
 
-.threepoints-img:hover{
+.threepoints-img:hover {
     background-color: #525252;
     border-radius: 50%;
 }

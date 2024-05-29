@@ -56,7 +56,104 @@ export class Chat extends Abstract {
                                     <p>18:30</p>
                                 </div>
                             </li>
-                            
+                            <li>
+                                <div class="left-div">
+                                    <div class="img-div">
+                                        <div class="photo-msg"></div>
+                                    </div>
+                                    <div class="friend-name">
+                                        <h4>username</h4>
+                                        <p class="last-msg">msg</p>
+                                    </div>
+                                </div>
+                                <div class="right-div">
+                                    <p>18:30</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="left-div">
+                                    <div class="img-div">
+                                        <div class="photo-msg"></div>
+                                    </div>
+                                    <div class="friend-name">
+                                        <h4>username</h4>
+                                        <p class="last-msg">msg</p>
+                                    </div>
+                                </div>
+                                <div class="right-div">
+                                    <p>18:30</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="left-div">
+                                    <div class="img-div">
+                                        <div class="photo-msg"></div>
+                                    </div>
+                                    <div class="friend-name">
+                                        <h4>username</h4>
+                                        <p class="last-msg">msg</p>
+                                    </div>
+                                </div>
+                                <div class="right-div">
+                                    <p>18:30</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="left-div">
+                                    <div class="img-div">
+                                        <div class="photo-msg"></div>
+                                    </div>
+                                    <div class="friend-name">
+                                        <h4>username</h4>
+                                        <p class="last-msg">msg</p>
+                                    </div>
+                                </div>
+                                <div class="right-div">
+                                    <p>18:30</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="left-div">
+                                    <div class="img-div">
+                                        <div class="photo-msg"></div>
+                                    </div>
+                                    <div class="friend-name">
+                                        <h4>username</h4>
+                                        <p class="last-msg">msg</p>
+                                    </div>
+                                </div>
+                                <div class="right-div">
+                                    <p>18:30</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="left-div">
+                                    <div class="img-div">
+                                        <div class="photo-msg"></div>
+                                    </div>
+                                    <div class="friend-name">
+                                        <h4>username</h4>
+                                        <p class="last-msg">msg</p>
+                                    </div>
+                                </div>
+                                <div class="right-div">
+                                    <p>18:30</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="left-div">
+                                    <div class="img-div">
+                                        <div class="photo-msg"></div>
+                                    </div>
+                                    <div class="friend-name">
+                                        <h4>username</h4>
+                                        <p class="last-msg">msg</p>
+                                    </div>
+                                </div>
+                                <div class="right-div">
+                                    <p>18:30</p>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -71,12 +168,12 @@ export class Chat extends Abstract {
                             <div class="chat-person-details">
                                 <h3>username</h3>
                                 <p>Online</p>
-                            </div>      
+                            </div>
                         </div>
                         <div>
-                        <div>
-                            <img class="threepoints-img" src="../images/threepoints.png" alt="menu">
-                        </div>
+                            <div>
+                                <img class="threepoints-img" src="../images/threepoints.png" alt="menu">
+                            </div>
                         </div>
                     </div>
                     <div class="chat-content">
@@ -89,6 +186,70 @@ export class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
                             <li>
                                 <div class="my-msg">
                                     <div class="photo-msg"></div>
@@ -97,22 +258,7 @@ export class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
+                            
                             <li>
                                 <div class="my-msg">
                                     <div class="photo-msg"></div>
@@ -121,22 +267,7 @@ export class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
+                            
                             <li>
                                 <div class="my-msg">
                                     <div class="photo-msg"></div>
@@ -145,6 +276,7 @@ export class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
+                            
                             <li>
                                 <div class="other-msg">
                                     <div class="photo-msg"></div>
@@ -153,44 +285,33 @@ export class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
+                            
                             <li>
                                 <div class="other-msg">
                                     <div class="photo-msg"></div>
                                     <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    <p>msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    msg msg msg msg msg msg msg msg msg
+                                    </p>
                                     </div>
                                 </div>
                             </li>
+                            
                             <li>
                                 <div class="my-msg">
                                     <div class="photo-msg"></div>
                                     <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="my-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>
-                                        <p>msg msg msg msg msg msg msg msg msg 
+                                        <p>msg msg msg msg msg msg msg msg msg
+                                        msg msg msg msg msg msg msg msg msg
                                         msg msg msg msg msg msg msg msg msg
                                         msg msg msg msg msg msg msg msg msg
                                         msg msg msg msg msg msg msg msg msg
@@ -201,28 +322,10 @@ export class Chat extends Abstract {
                                         msg msg msg msg msg msg msg msg msg
                                         msg msg msg msg msg msg msg msg msg
                                         </p>
-                                        </p>
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg 
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        </p>
-                                    </div>
-                                </div>
-                            </li>
+                            
                             <li>
                                 <div class="other-msg">
                                     <div class="photo-msg"></div>
@@ -231,14 +334,7 @@ export class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <div class="my-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
+                            
                             <li>
                                 <div class="other-msg">
                                     <div class="photo-msg"></div>
@@ -247,6 +343,61 @@ export class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <div class="other-msg">
+                                    <div class="photo-msg"></div>
+                                    <div class="msg">
+                                        <p>msg msg msg msg msg msg msg msg msg</p>
+                                    </div>
+                                </div>
+                            </li>
+                            
                         </ul>
                     </div>
                     <div class="chat-input">
@@ -257,8 +408,7 @@ export class Chat extends Abstract {
             </div>
         </div>
     </div>
-
-        `;
+      `;
     }
 
     initialize() {
