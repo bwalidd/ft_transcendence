@@ -1,5 +1,5 @@
 const routes = [
-    { path: "/", view: "Welcome" },
+    { path: "/", view: "Home" },
     { path: "/home", view: "Home" },
     { path: "/profile", view: "Profile" },
     { path: "/chat", view: "Chat" },
