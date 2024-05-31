@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    import(`../views/Profile.js`).then(module => {
+    import(`./views/Profile.js`).then(module => {
         const Profile = module.Profile;
         const viewInstance = new Profile();
         viewInstance.getHtml().then(html => {
