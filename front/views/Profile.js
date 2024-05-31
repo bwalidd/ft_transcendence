@@ -7,7 +7,7 @@ function loadCSS(url) {
     document.head.appendChild(link);
 }
 
-export class Profile extends Abstract {
+export default class Profile extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Profile");

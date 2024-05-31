@@ -7,7 +7,7 @@ function loadCSS(url) {
     document.head.appendChild(link);
 }
 
-export class Chat extends Abstract {
+export default class Chat extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Chat");

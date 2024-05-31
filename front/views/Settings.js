@@ -7,7 +7,7 @@ function loadCSS(url) {
     document.head.appendChild(link);
 }
 
-export class Settings extends Abstract {
+export default class Settings extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Settings");

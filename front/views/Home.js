@@ -7,7 +7,7 @@ function loadCSS(url) {
     document.head.appendChild(link);
 }
 
-export class Home extends Abstract {
+export default class Home extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Home");

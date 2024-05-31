@@ -7,7 +7,7 @@ function loadCSS(url) {
     document.head.appendChild(link);
 }
 
-export class NotFound extends Abstract {
+export default class NotFound extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("NotFound");

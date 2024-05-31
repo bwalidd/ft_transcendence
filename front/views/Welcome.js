@@ -7,7 +7,7 @@ function loadCSS(url) {
     document.head.appendChild(link);
 }
 
-export class Welcome extends Abstract {
+export default class Welcome extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Welcome");
