@@ -16,25 +16,17 @@ export default class Home extends Abstract {
 
     async getHtml() {
         return `
-            <div class="container">
-                <div class="overlay">
-                </div>
-                <div class="mini-container">
-                    <ul class="list">
-                        <li class="big-li" id="active"><a href="">PLAY With Bot</a></li>
-                        <li class="big-li"><a href="">Search</a></li>
-                        <li class="big-li"><a href="/chat">CHAT</a></li>
-                        <li class="big-li"><a href="">SETTINGS</a></li>
-                        <li class="big-li"><a href="/">LOGOUT</a></li>
-                    </ul>
-                </div>
-                <div class="mini-container-2">
-                        <div class="upper"></div>
-                        <div class="lower">
-                            <a href="/profile">WBOUWACH</a>
-                        </div>
-                </div>
+        <header>
+            <h1>PONG-X</h1>
+        </header>
+
+        <div class="container container-fluid d-flex justify-content-center align-items-center">
+            <div class="welcome-message">
+                Welcome to PONG-X
             </div>
+        </div>
+
+        <a href="#about" class="about-link">About</a>
         `;
     }
 
