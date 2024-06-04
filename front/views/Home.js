@@ -36,8 +36,7 @@ export default class Home extends Abstract {
                 </button>
                 <h3>ivii Networks</h3>
             </div>
-            <div class=""hero-image>
-                <img src="../images/hero.png">
+            <div class="hero-image">
             </div>
         </div>
         `;

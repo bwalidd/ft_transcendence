@@ -12,7 +12,12 @@
 
 body {
     overflow: hidden;
-    background-color: #000000;
+    background-image: url(../images/background.jpeg);
+    background-size: cover;
+    /* background-position: center; */
+    overflow: hidden;
+    position: relative;
+    /* background-color: #1a1818; */
 }
 
 .nav-bar {
@@ -64,12 +69,18 @@ body {
 .hero-content {
     width: 50%;
     height: 100vh;
-    /* background-color: rgba(119, 117, 117, 0.493); */
     margin-top: 50px;
-    /* padding-top: 5%; */
     padding-left: 3%;
     display: flex;
     flex-direction: column;
+}
+
+.hero-content h1,
+.hero-content h3,
+.hero-content p,
+.hero-content button,
+.hero-content h3:last-child { /* exclude last h3 for bottom spacing */
+  margin-bottom: 50px; /* Adjust spacing as needed */
 }
 
 .hero-content h1 {
@@ -101,3 +112,19 @@ body {
     overflow: hidden;
     position: relative;
 }
+
+.hero-image {
+    margin-right: 200px;
+    /* background-color: red; */
+    width: 100vw;
+    height: 90vh;
+    background-image: url("../images/hero3.png");
+    background-size: cover;
+    background-position: center center;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    position: relative;
+
+    /* background-color: red; */
+}
+
