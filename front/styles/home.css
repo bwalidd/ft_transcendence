@@ -1,36 +1,103 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.cdnfonts.com/css/diablo');
 
 /* Reset some default styles */
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Diablo';
 }
 
 body {
-    background: url("../images/KMzvb7R28rAE0kmrydqopWDZ-image-maker.jpg");
-    background-size: cover;
-    /* opacity: 0.9; */
+    overflow: hidden;
+    background-color: #000000;
 }
 
-html body {
-    backdrop-filter: blur(5px);
-}
-
-header h1 {
-    padding: 10px;
-    /* padding-left: 50%; */
+.nav-bar {
+    width: 100%;
+    height: 80px;
+    padding-left: 3%;
+    padding-right: 2%;
     font-family: 'Montserrat';
-    font-weight: 300;
-    font-size: xx-large;
-    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.466);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 9999;
 }
 
-.container {
-    width: 100vw;
+.nav-icon {
+    margin: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-icon .fa-bars {
+    font-size: x-large;
+    align-items: center;
+    padding: 5px;
+}
+
+.nav-icon .glass {
+    font-size: x-large;
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.logo {
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.hero {
+    /* background-color: red; */
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+}
+
+.hero-content {
+    width: 50%;
     height: 100vh;
-    /* background-color: black; */
+    /* background-color: rgba(119, 117, 117, 0.493); */
+    margin-top: 50px;
+    /* padding-top: 5%; */
+    padding-left: 3%;
+    display: flex;
+    flex-direction: column;
 }
 
-.container .welcome-message {
-    font-size: large;
+.hero-content h1 {
+    color: rgb(230, 223, 223);
+    font-size: 200px;
+    /* font-weight: 100; */
+}
+
+.hero-content h3 {
+    color:bisque;
+    font-size: 70px;
+    font-weight: 100;
+}
+
+.hero-content p {
+    color:antiquewhite
+}
+
+.hero-content button {
+    width: 400px;
+    height: 100px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    background-image: url("../images/pongbutton.png");
+    background-size: cover; /* Stretch image to fit button exactly */
+    background-position: center center; /* Center the image */
+    background-repeat: no-repeat;
+    overflow: hidden;
+    position: relative;
 }

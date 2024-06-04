@@ -16,17 +16,30 @@ export default class Home extends Abstract {
 
     async getHtml() {
         return `
-        <header>
-            <h1>PONG-X</h1>
-        </header>
-
-        <div class="container container-fluid d-flex justify-content-center align-items-center">
-            <div class="welcome-message">
-                Welcome to PONG-X
+        <div class="nav-bar">
+        <div class="logo">
+            <img src="../images/pongx.png" alt="logoooooo" width="300px" height="200px">
+        </div>
+            <div class="nav-icon">
+                <i class="fa-solid fa-magnifying-glass glass" style="color:#ffffff;"></i>
+                <i class="fa-solid fa-bars" style="color:#ffffff;"></i>
             </div>
         </div>
-
-        <a href="#about" class="about-link">About</a>
+        <div class="hero">
+            <div class="hero-content">
+                <h1>PONG-X</h1>
+                <h3>About PONG-X</h3>
+                <p>
+                    FT_Transcendence is a project from the 42 programming school curriculum that involves building a sophisticated web application. This project is designed to help students deepen their understanding of full-stack web development, combining front-end and back-end technologies to create a complete, functional web application.
+                </p>
+                <button>
+                </button>
+                <h3>ivii Networks</h3>
+            </div>
+            <div class=""hero-image>
+                <img src="../images/hero.png">
+            </div>
+        </div>
         `;
     }
 
