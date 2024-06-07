@@ -16,7 +16,7 @@ export default class Chat extends Abstract {
 
     async getHtml() {
         return `
-        <div class="container">
+        <div class="containerr">
         <div>
             <div class="navbar">
                 <div class="right">
