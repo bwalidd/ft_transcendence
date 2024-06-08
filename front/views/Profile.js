@@ -11,7 +11,7 @@ export default class Profile extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Profile");
-        loadCSS('../styles/profile.css');
+        loadCSS('../styles/Profile.css');
     }
 
     async getHtml() {
