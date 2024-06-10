@@ -17,12 +17,16 @@ export default class Welcome extends Abstract {
     async getHtml() {
         return `
         <div class="containerr">
-
         <div class="overlay"></div>
-
         <div class="content">
-            <h1>Pong-X</h1>
-            <a href="#">Sign in with Intra 42</a>
+            <div class="our-logo">
+            </div>
+            <div>
+                <p class="quoate-p">
+                Life is like a game of ping pong. The more you play, the better you get. Enjoy every rally and embrace the challenge!
+                </p>
+            </div>
+            <button class="login-btn">Sign in With Intra 42</button>
         </div>
         </div>
         `;
