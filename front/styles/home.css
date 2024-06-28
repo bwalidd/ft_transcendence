@@ -1,18 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.cdnfonts.com/css/diablo');
 
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Diablo';
+    font-family: 'Montserrat';
 }
 
-.first-container{
+.first-container {
+    z-index: 1;
     background-image: url(../images/background.jpeg);
     background-size: cover;
     overflow: auto;
+    height: 100vh;
+}
+
+.overlay {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.content{
+    z-index: 3;
+    position: relative;
+
 }
 
 .nav-bar {
@@ -23,6 +40,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.3); /* Black opacity background */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
 }
 
 .navbar-toggler {
@@ -31,34 +53,27 @@
     border-color: white;
 }
 
-.navbar-toggler-icon {
-    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath stroke="white" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/%3E%3C/svg%3E');
-}
 
-.nav-icon .fa-bars {
-    font-size: x-large;
-    align-items: center;
-    padding: 5px;
+.font-of-logo{
+    font-family: 'diablo';
+
 }
 
 
-.nav-item{
-    font-size:larger;
+.nav-item {
+    font-size: larger;
     font-weight: bold;
+    padding-left: 40px;
 }
 
+#hero{
+    height: 100vh;
+}
 
-.nav-item:hover{
-    font-size:larger;
+.nav-item:hover {
+    font-size: larger;
     font-weight: bold;
-    color:brown;
-}
-
-
-.nav-icon .glass {
-    font-size: x-large;
-    margin-right: 10px;
-    padding: 5px;
+    color: brown;
 }
 
 .logo {
@@ -72,18 +87,12 @@
 }
 
 .hero-content {
-    /* width: 50%; */
     height: 100vh;
-    margin-top: 50px;
+    margin-top: 130px; /* Adjusted for fixed navbar */
     padding-left: 3%;
     gap: 3rem;
     display: flex;
     flex-direction: column;
-}
-
-.hero-content > * {
-    /* flex: 1; */
-    flex-shrink: 1;
 }
 
 .hero-content h1 {
@@ -92,13 +101,13 @@
 }
 
 .hero-content h3 {
-    color:bisque;
+    color: bisque;
     font-size: 70px;
     font-weight: 100;
 }
 
 .hero-content p {
-    color:antiquewhite
+    color: antiquewhite;
 }
 
 .btn {
@@ -112,16 +121,13 @@
     transition: transform 1000ms;
 }
 
-
 .btn:hover,
 .btn:focus-visible {
     transform: translateY(-0.5rem);
     transition: transform 400ms;
 }
 
-
-
-.profile-img{
+.profile-img {
     background: url('../images/bhazzout.jpeg');
     width: 50px;
     height: 50px;
@@ -130,9 +136,6 @@
     border-radius: 50%;
 }
 
-
-
-/* Add this CSS code */
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }

@@ -1,12 +1,13 @@
 const routes = [
+    { path: "/login", view: "Welcome" },
     { path: "/", view: "Welcome" },
     { path: "/home", view: "Home" },
     { path: "/profile", view: "Profile" },
     { path: "/chat", view: "Chat" },
-    { path: "/landing", view: "Landing"},
 ];
 
 const shouldAuthPages = ["home", "profile", "chat", "landing"];
+const viewsNotRequiringAuthentication = ['', 'Login', ];
 
 const loadView = async (path) => {
     const route = routes.find(route => route.path === path);

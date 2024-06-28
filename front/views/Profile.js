@@ -22,7 +22,7 @@ export default class Profile extends Abstract {
     <div class="content">
         <div class="navbar">
             <div class="right">
-                <h2>Pong-X</h2>
+                <h2 id="logo">Pong-X</h2>
             </div>
             <div class="left">
                 <h3><a href="/">bhazzout</a></h3>
