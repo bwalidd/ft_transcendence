@@ -7,15 +7,15 @@ const routes = [
 ];
 
 const shouldAuthPages = ["home", "profile", "chat", "landing"];
-const viewsNotRequiringAuthentication = ['', 'Login', ];
+const viewsNotRequiringAuthentication = ['', 'Login' ];
 
 const loadView = async (path) => {
     const route = routes.find(route => route.path === path);
     const viewName = route ? route.view : "NotFound";
 
     try {
-        console.log(`Attempting to import ./views/${viewName}.js`);
-        const module = await import(`./views/${viewName}.js`);
+        console.log(`Attempting to import ../views/${viewName}.js`);
+        const module = await import(`../views/${viewName}.js`);
         console.log('Imported module:', module);
         const View = module.default;
 
