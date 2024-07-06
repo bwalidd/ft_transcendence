@@ -1,15 +1,20 @@
-# front/Dockerfile
+# Use an official node image as a parent image
+FROM node:14
 
-FROM node:14-alpine
-
+# Set the working directory
 WORKDIR /usr/src/app
 
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-RUN npm install --save-dev webpack webpack-cli
+# Install dependencies
+RUN npm install
 
+# Copy the rest of the application
 COPY . .
 
-EXPOSE 8000
+# Expose the port
+EXPOSE 8080
 
+# Start the application
 CMD ["npm", "start"]

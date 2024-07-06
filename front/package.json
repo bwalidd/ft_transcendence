@@ -8,9 +8,12 @@
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "html-webpack-plugin": "^5.3.2"
+  },
   "devDependencies": {
-    "webpack": "^5.92.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.0.0"
+    "webpack": "^5.44.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.3"
   }
 }
