@@ -37,7 +37,7 @@ export default class Chat extends Abstract {
                         <div></div>
                     </div>
                     <div class="chats">
-                        <h1>Direct messages</h1>
+                        <h1>Direct meseeeeeeeeesages</h1>
                         <div></div>
                     </div>
                     <div class="channel">

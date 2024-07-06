@@ -32,7 +32,7 @@ export default class Home extends Abstract {
                             <a class="nav-link" aria-current="page" href="#">Tournament</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Chat</a>
+                            <a class="nav-link" href="#">Chaaattt</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Search</a>

@@ -39,17 +39,17 @@ export default class Profile extends Abstract {
                         </div>
                         <div class="stats">
                             <h1>67%</h1>
-                            <h3>Win Rate</h3>
+                            <h3>Winnnnnnnnnnnnn Rate</h3>
                         </div>
                     </div>
                     <div class="container lower-container">
                         <div class="total-matches">
                             <h4>Total Matches</h4>
-                            <p>100</p>
+                            <p>10000000</p>
                         </div>
                         <div class="wins">
                             <h4>Wins</h4>
-                            <p>67</p>
+                            <p>69</p>
                         </div>
                         <div class="loss">
                             <h4>Loss</h4>

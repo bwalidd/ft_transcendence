@@ -40,7 +40,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.3); /* Black opacity background */
+    background-color: transparent; /* Black opacity background */
     position: fixed;
     top: 0;
     left: 0;
