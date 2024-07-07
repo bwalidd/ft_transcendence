@@ -11,7 +11,7 @@ export default class Landing extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Landing");
-        loadCSS('../styles/Landing.css');
+        this.cssUrl = '../styles/Landing.css';
     }
 
     async getHtml() {

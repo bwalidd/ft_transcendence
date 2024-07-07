@@ -8,7 +8,7 @@
     font-family: 'Montserrat';
 }
 
-.first-container {
+.home-container {
     z-index: 1;
     background-image: url(../images/background.jpeg);
     background-size: cover;
@@ -31,6 +31,19 @@
     position: relative;
 
 }
+
+.nav-item:hover {
+    font-size: larger;
+    font-weight: bold;
+    color: green;
+}
+
+.nav-item:hover {
+    font-size: larger;
+    font-weight: bold;
+    color: green;
+}
+
 
 .nav-bar {
     width: 100%;

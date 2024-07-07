@@ -11,7 +11,7 @@ export default class Welcome extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Welcome");
-        loadCSS('../styles/welcome.css');
+        this.cssUrl = '../styles/welcome.css';
     }
 
     async getHtml() {

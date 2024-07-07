@@ -11,7 +11,7 @@ export default class Profile extends Abstract {
     constructor(params) {
         super(params);
         this.setTitle("Profile");
-        loadCSS('../styles/Profile.css');
+        this.cssUrl = '../styles/Profile.css';
     }
 
     async getHtml() {
@@ -39,13 +39,13 @@ export default class Profile extends Abstract {
                         </div>
                         <div class="stats">
                             <h1>67%</h1>
-                            <h3>Winnnnnnnnnnnnn Rate</h3>
+                            <h3>Win Rate</h3>
                         </div>
                     </div>
                     <div class="container lower-container">
                         <div class="total-matches">
                             <h4>Total Matches</h4>
-                            <p>10000000</p>
+                            <p>100</p>
                         </div>
                         <div class="wins">
                             <h4>Wins</h4>
