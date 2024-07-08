@@ -1,9 +1,11 @@
 const routes = [
-    { path: "/login", view: "Welcome" },
-    { path: "/", view: "Welcome" },
-    { path: "/home", view: "Home" },
+    { path: "/", view: "Home"},
+    { path: "/login", view: "Welcome"},
+    { path: "/home", view: "Welcome" },
+    { path: "/notif", view: "Notif" },
     { path: "/profile", view: "Profile" },
     { path: "/chat", view: "Chat" },
+    { path: "/signup", view: "Signup" },
 ];
 
 const shouldAuthPages = ["home", "profile", "chat", "landing"];
