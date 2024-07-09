@@ -58,7 +58,7 @@ export default class Home extends Abstract {
                 <h3 class="font-of-logo">ivii Networks</h3>
             </div>
             <div class="hero-image h-100 col-lg-5 d-flex justify-content-center ">
-                <img id="hero" src="../images/hero3.png" alt="Hero Image">
+                
             </div>
         </div>
     </div>

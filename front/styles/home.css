@@ -10,7 +10,7 @@
 
 .first-container {
     z-index: 1;
-    background-image: url(../images/background.jpeg);
+    background-image: url(../images/newbg.png);
     background-size: cover;
     overflow: auto;
     height: 100vh;
@@ -104,6 +104,7 @@
     color: bisque;
     font-size: 70px;
     font-weight: 100;
+    font-family: 'diablo';
 }
 
 .hero-content p {
