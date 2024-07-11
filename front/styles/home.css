@@ -8,9 +8,14 @@
     font-family: 'Montserrat';
 }
 
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
 .first-container {
     z-index: 1;
-    background-image: url(../images/newbg.png);
+    /* background-image: url(../images/newbg.png); */
     background-size: cover;
     overflow: auto;
     height: 100vh;
@@ -29,7 +34,6 @@
 .content{
     z-index: 3;
     position: relative;
-
 }
 
 .nav-bar {
@@ -40,11 +44,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.3); /* Black opacity background */
+    /* background-color: rgba(0, 0, 0, 0.3); Black opacity background */
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 10;
+    /* z-index: 10; */
 }
 
 .navbar-toggler {
@@ -66,9 +70,6 @@
     padding-left: 40px;
 }
 
-#hero{
-    height: 100vh;
-}
 
 .nav-item:hover {
     font-size: larger;
@@ -86,39 +87,14 @@
     background-size: cover;
 }
 
-.hero-content {
-    height: 100vh;
-    margin-top: 130px; /* Adjusted for fixed navbar */
-    padding-left: 3%;
-    gap: 3rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.hero-content h1 {
-    color: rgb(230, 223, 223);
-    font-size: 200px;
-}
-
-.hero-content h3 {
-    color: bisque;
-    font-size: 70px;
-    font-weight: 100;
-    font-family: 'diablo';
-}
-
-.hero-content p {
-    color: antiquewhite;
-}
-
 .btn {
-    width: 400px;
+    /* width: 400px;
     height: 100px;
     background-color: transparent;
     background-image: url("../images/pongbutton.png");
     background-size: cover;
     background-position: center center;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
     transition: transform 1000ms;
 }
 
@@ -137,11 +113,11 @@
     border-radius: 50%;
 }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-.hero-image img {
-    animation: bounce 4s infinite;
+@media (max-width:750px) {
+    .hero {
+        margin-top: 100px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }    
 }
