@@ -13,6 +13,38 @@
     background-color: #171717;
 }
 
+
+.notification {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.notification .bell {
+    width: 30px;
+    height: 30px;
+    background: url('../images/belll2.png') no-repeat center center / cover;
+}
+
+.notification .counter {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+.notification:hover{
+    cursor: pointer;
+
+}
+
+
 nav {
     height: 90px;
     padding: 30px;
@@ -160,21 +192,25 @@ li a {
 }
 
 .channel {
-    max-height: calc(100vh - 250px); /* Adjust based on your layout */
+    max-height: calc(100vh - 300px); /* Adjust based on your layout */
     overflow-y: auto;
     border-radius: 10px;
-    padding: 10px;
+    background-color: #525252;
 }
 
 .list-friend {
-    max-height: 95%; /* Set a max-height to enable scrolling if content exceeds this height */
     overflow-y: auto;
+    background-color: #3888a5;
+
 }
 
 .list-friend li {
-    width: 100%;
+    background-color: aquamarine;
     height: 90px;
+    width: 100%;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 li .left-div {

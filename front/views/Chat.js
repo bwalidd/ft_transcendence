@@ -23,7 +23,10 @@ export default class Chat extends Abstract {
                     <h2>Pong-X</h2>
                 </div>
                 <div class="left">
-                    <h3><a href="/">wbouwach</a></h3>
+                    <div class="notification">
+                        <div class="bell"></div>
+                        <div class="counter">8</div>
+                    </div>
                     <div class="profile-pic"></div>
                 </div>
             </div>
@@ -186,7 +189,6 @@ export default class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
-                            
                             <li>
                                 <div class="other-msg">
                                     <div class="photo-msg"></div>
@@ -195,7 +197,6 @@ export default class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
-                            
                             <li>
                                 <div class="other-msg">
                                     <div class="photo-msg"></div>
@@ -204,7 +205,6 @@ export default class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
-                            
                             <li>
                                 <div class="other-msg">
                                     <div class="photo-msg"></div>
@@ -213,34 +213,6 @@ export default class Chat extends Abstract {
                                     </div>
                                 </div>
                             </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
                             <li>
                                 <div class="other-msg">
                                     <div class="photo-msg"></div>
@@ -259,144 +231,9 @@ export default class Chat extends Abstract {
                                 </div>
                             </li>
                             
-                            <li>
-                                <div class="my-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
                             
-                            <li>
-                                <div class="my-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
                             
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
                             
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                    <p>msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    msg msg msg msg msg msg msg msg msg
-                                    </p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="my-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        msg msg msg msg msg msg msg msg msg
-                                        </p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            <li>
-                                <div class="other-msg">
-                                    <div class="photo-msg"></div>
-                                    <div class="msg">
-                                        <p>msg msg msg msg msg msg msg msg msg</p>
-                                    </div>
-                                </div>
-                            </li>
                             
                         </ul>
                     </div>

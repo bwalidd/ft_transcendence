@@ -25,8 +25,13 @@ export default class Profile extends Abstract {
                 <h2 id="logo">Pong-X</h2>
             </div>
             <div class="left">
-                <h3><a href="/">bhazzout</a></h3>
-                <div class="img"></div>
+                <div class="notification">
+                    <div class="bell"></div>
+                    <div class="counter">8</div>
+                </div>
+                <a href="/chat">
+                    <div class="img"></div>
+                </a>
             </div>
         </div>
         <div class="body-div">
@@ -61,15 +66,15 @@ export default class Profile extends Abstract {
                     <div class="lower-container">
                         <button>
                             <div class="mini-icon"></div>
-                            Add to friend list
+                            <a href="/chat">Add to friend list</a>
                         </button>
                         <button>
                             <div class="mini-icon2"></div>
-                            Invite to a game
+                            <a href="/chat">Invite to a game</a>
                         </button>
                         <button>
                             <div class="mini-icon3"></div>
-                            Send a message
+                            <a href="/chat">Send a Message</a>
                         </button>
                     </div>
                 </div>
@@ -81,35 +86,35 @@ export default class Profile extends Abstract {
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3><a>Bhazzout</a></h3>
+                                <h3><a href="/">Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3><a>Bhazzout</a></h3>
+                                <h3><a href="/">Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3><a>Bhazzout</a></h3>
+                                <h3><a href="/">Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3><a>Bhazzout</a></h3>
+                                <h3><a href="/">Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>
                         <li class="win-or-loss">
                             <div>
                                 <div class="img"></div>
-                                <h3><a>Bhazzout</a></h3>
+                                <h3><a href="/">Bhazzout</a></h3>
                             </div>
                             <p>2-0</p>
                         </li>

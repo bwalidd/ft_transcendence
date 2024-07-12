@@ -4,3 +4,8 @@
     box-sizing: border-box;
     font-size: 'Montserrat';
 }
+
+a{
+    color: white;
+    text-decoration: none;
+}

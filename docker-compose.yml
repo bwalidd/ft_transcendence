@@ -1,16 +1,32 @@
 version: '3.8'
 
 services:
-  nginx:
-    build:
-      context: .
-      dockerfile: ./nginx/Dockerfile
+  postgres:
+    image: postgres:13
     volumes:
-      - ./front:/usr/share/nginx/html
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/app
     ports:
-      - "8002:80"
+      - "8000:8000"
     depends_on:
-      - frontend
+      - postgres
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_EMAIL=admin@example.com
+      - DJANGO_SUPERUSER_PASSWORD=adminpassword
 
   frontend:
     build: ./front
@@ -22,3 +38,17 @@ services:
     tty: true
     environment:
       - NODE_ENV=development
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    volumes:
+      - ./front:/usr/share/nginx/html
+    ports:
+      - "8005:80"
+    depends_on:
+      - frontend
+
+volumes:
+  postgres_data:

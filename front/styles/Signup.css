@@ -1,6 +1,44 @@
-h1{
-    font-size: 50px;
-    font-weight: 100;
-    color: rgb(224, 0, 0);
-    margin-top: 10px;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.cdnfonts.com/css/diablo');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'diablo';
+}
+
+.container-f {
+    background-image: url("../images/signupbgg.png");
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.signbg h1 {
+    color: rgba(255, 255, 255, 0.904);
+}
+
+a.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+}
+
+form a{
+    width: 100%;
+    background:linear-gradient(90deg, #1a1919 0%, #ff0000b6 50%, #1a1919 100%);
+}
+
+a.btn-secondary {
+    background-color: #6c757d;
+}
+
+a.btn-outline-light {
+    background-color: transparent;
+    border: 1px solid #f8f9fa;
+    color: #f8f9fa;
 }
