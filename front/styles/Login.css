@@ -19,15 +19,6 @@
     color: rgba(255, 255, 255, 0.904);
 }
 
-#login{
-    margin-top: 20px;
-    font-family: 'Montserrat';
-}
-
-#login a:hover {
-    color: #ff0000;
-}
-
 a.btn {
     display: inline-block;
     padding: 10px 20px;
@@ -51,3 +42,23 @@ a.btn-outline-light {
     border: 1px solid #f8f9fa;
     color: #f8f9fa;
 }
+
+.parag{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.parag p{
+    font-family: 'Montserrat';
+}
+
+
+
+.parag a:hover{
+    color: rgb(88, 0, 0);
+}
+
+

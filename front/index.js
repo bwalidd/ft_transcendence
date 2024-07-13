@@ -1,6 +1,7 @@
 // Your existing routes and loadView function
 const routes = [
     { path: "/", view: "Home"},
+    { path: "/login", view: "Login"},
     { path: "/signup", view: "Signup"},
     { path: "/home", view: "Welcome" },
     { path: "/notif", view: "Notif" },
