@@ -37,7 +37,7 @@ a.btn {
     text-align: center;
 }
 
-form a{
+#btn-submit{
     width: 100%;
     background:linear-gradient(90deg, #1a1919 0%, #ff0000b6 50%, #1a1919 100%);
 }
