@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from .serializers import SignUpSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated
-
+from django.contrib.auth import authenticate
 
 
 
@@ -26,6 +26,24 @@ def register(request):
         else:
             return Response({'message':'username already exits'}, status=status.HTTP_400_BAD_REQUEST)
     return Response(user.errors)
+
+@api_view(['POST'])
+def login(request):
+    data = request.data
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return Response({'message': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = authenticate(request, username=username, password=password)
+    
+    if user is not None:
+        # If you want to include more information like tokens, you can include that here
+        return Response({'message': 'You are logged in successfully'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
