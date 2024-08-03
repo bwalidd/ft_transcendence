@@ -6,3 +6,4 @@ typing_extensions==4.12.2
 djangorestframework-simplejwt
 django-cors-headers
 Pillow
+PyJWT
