@@ -3,10 +3,11 @@ const routes = [
     { path: "/", view: "Home"},
     { path: "/login", view: "Login"},
     { path: "/signup", view: "Signup"},
-    { path: "/home", view: "Welcome" },
+    { path: "/home", view: "Home" },
     { path: "/notif", view: "Notif" },
     { path: "/profile", view: "Profile" },
     { path: "/chat", view: "Chat"},
+    { path: "/leaderboard", view: "Leaderboard"},
     
 ];
 

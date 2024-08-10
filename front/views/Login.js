@@ -71,7 +71,7 @@ export default class Login extends Abstract {
                     localStorage.setItem('refresh_token', data.refresh_token);
 
                     alert('Login successful!');
-                    window.location.href = '/profile';
+                    window.location.href = '/home';
                 } else {
                     const errorData = await response.json();
                     document.getElementById('error-message').innerText = errorData.detail || 'Login failed. Please try again.';
