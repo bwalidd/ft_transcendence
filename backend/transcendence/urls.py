@@ -8,8 +8,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('profiles.urls')),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('api/', include('profiles.urls')),
+    path('api/auth/', include('account.urls',namespace='account')),
+    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

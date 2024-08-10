@@ -22,10 +22,10 @@ export default class Login extends Abstract {
                 <div class="form-container d-flex flex-column justify-content-center">
                     <form class="container" id="login-form">
                         <div class="form-group mb-4">
-                            <input type="text" class="form-control" id="username" placeholder="Username">
+                            <input type="email" class="form-control" id="email" placeholder="Email" required>
                         </div>
                         <div class="form-group mb-4">
-                            <input type="password" class="form-control" id="password" placeholder="Password">
+                            <input type="password" class="form-control" id="password" placeholder="Password" required>
                         </div>
                         <button type="submit" class="btn btn-secondary text-center">Submit</button>
                     </form>
@@ -40,7 +40,56 @@ export default class Login extends Abstract {
     }
 
     initialize() {
-        document.getElementById("login-form").addEventListener("submit", async (event) => {
+        const form = document.getElementById('login-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://localhost:8000/api/auth/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('-----------------------------');
+                    console.log(data);
+                    console.log('-----------------------------');
+                    // Store username and tokens in localStorage or sessionStorage
+                    localStorage.setItem('username', data.username);
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('refresh_token', data.refresh_token);
+
+                    alert('Login successful!');
+                    window.location.href = '/profile';
+                } else {
+                    const errorData = await response.json();
+                    document.getElementById('error-message').innerText = errorData.detail || 'Login failed. Please try again.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('error-message').innerText = 'Login failed. Please try again.';
+            }
+        });
+    }
+}
+
+
+
+
+/*
+
+ document.getElementById("login-form").addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const username = document.getElementById("username").value;
@@ -66,5 +115,4 @@ export default class Login extends Abstract {
                 document.getElementById("error-message").innerText = 'An error occurred. Please try again.';
             }
         });
-    }
-}
+*/

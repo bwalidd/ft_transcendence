@@ -33,9 +33,6 @@ export default class Signup extends Abstract {
                         <div class="form-group mb-4">
                             <input type="password" class="form-control" id="confirm-password" placeholder="Confirm Password" required>
                         </div>
-                        <div class="form-group mb-4">
-                            <input type="file" class="form-control" id="avatar" accept="image/*">
-                        </div>
                         <button id="btn-submit" type="submit" class="btn btn-secondary text-center">Submit</button>
                     </form>
                     <a href="/profile" class="btn btn-outline-light text-center" style="margin-top: 100px">Sign in with Intra 42</a>
@@ -49,7 +46,55 @@ export default class Signup extends Abstract {
     }
 
     initialize() {
-        document.getElementById("signup-form").addEventListener("submit", async (event) => {
+        const form = document.getElementById('signup-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8000/api/auth/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password,
+                        password2:confirmPassword
+                    }),
+                    credentials: 'include',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Registration failed');
+                }
+
+                const data = await response.json();
+                alert('Registration successful!');
+                // Optionally redirect to another page
+                window.location.href = '/login';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Registration failed. Please try again.');
+            }
+        });
+    }
+}
+
+
+
+/**
+ document.getElementById("signup-form").addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const username = document.getElementById("username").value;
@@ -91,4 +136,4 @@ export default class Signup extends Abstract {
             }
         });
     }
-}
+ */
