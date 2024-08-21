@@ -11,9 +11,9 @@ urlpatterns = [
     # path('api/', include('profiles.urls')),
     path('api/auth/', include('account.urls',namespace='account')),
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

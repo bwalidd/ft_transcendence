@@ -62,14 +62,8 @@ export default class Login extends Abstract {
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('-----------------------------');
-                    console.log(data);
-                    console.log('-----------------------------');
-                    // Store username and tokens in localStorage or sessionStorage
-                    localStorage.setItem('username', data.username);
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('refresh_token', data.refresh_token);
-
                     alert('Login successful!');
                     window.location.href = '/home';
                 } else {

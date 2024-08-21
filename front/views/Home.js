@@ -15,8 +15,10 @@ export default class Home extends Abstract {
     }
 
     async getHtml() {
+        const user = await this.fetchUserData();
+        const avatarUrl = `http://localhost:8000${user.avatar}`; // Adjust based on media URL settings
+        console.log('Avatar URL:', avatarUrl); // Debugging line to check the avatar URL
         return `
-
         <div class="first-container">
             <div class="content">
                 <nav class="navbar navbar-expand-lg " style="height:100px;">
@@ -27,8 +29,8 @@ export default class Home extends Abstract {
                         <a class="nav-link" href="#">
                             <div class="search"></div>
                         </a>
-                        <a class="nav-link" href="#">
-                            <div class="profile-img"></div>
+                        <a class="nav-link" href="/profile">
+                            <div class="profile-img" style="background-image: url('${avatarUrl}');"></div>
                         </a>
                     </div>
                 </nav>
@@ -67,7 +69,6 @@ export default class Home extends Abstract {
                                     <p>Setting</p>
                                 </a>
                             </li>
-
                         </ul>
                         <div class="sep"></div>
                         <ul>
@@ -76,24 +77,38 @@ export default class Home extends Abstract {
                                 <p>Logout</p>
                             </li>
                         </ul>
-                        <div class="sep"></div>
-                        <ul>
-                            <li>
-                                <img src="../images/sidenav-img/logout.png">
-                                <p>Logout</p>
-                            </li>
-                        </ul>
+                        
                     </div>   
                 </div>
-
             </div>
             <div class="fixed-bottom text-right p-4">
-                <button type="button" class="btn btn-outline-light">Play</button>
+                <button type="button" class="btn btn-outline-light">PLAY</button>
             </div>
         </div>
-            
-
         `;
+    }
+
+    async fetchUserData() {
+        const token = localStorage.getItem('access_token');
+        console.log('Access Token:', token); // Log the token for debugging
+        try {
+            const response = await fetch('http://localhost:8000/api/auth/user/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                return await response.json();
+            } else {
+                throw new Error('Failed to fetch user data');
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            return { avatar: '/path/to/default/avatar.jpg', username: 'Guest' }; // Provide fallback values
+        }
     }
 
     initialize() {

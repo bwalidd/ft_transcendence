@@ -46,10 +46,11 @@ def loginView(request):
             samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
         )
 
-        # Add user data to the response
+        # Add user data to the response, including avatar
         user_data = {
             "username": user.username,
             "email": user.email,
+            "avatar": request.build_absolute_uri(user.avatar.url) if user.avatar else None,
         }
         res.data = {**tokens, **user_data}
         res["X-CSRFToken"] = csrf.get_token(request)
@@ -130,7 +131,7 @@ def user(request):
     try:
         user = models.Account.objects.get(id=request.user.id)
     except models.Account.DoesNotExist:
-        return response.Response(status_code=404)
+        return response.Response(status=404)
 
     serializer = serializers.AccountSerializer(user)
     return response.Response(serializer.data)
