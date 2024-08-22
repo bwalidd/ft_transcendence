@@ -1,4 +1,5 @@
 import Abstract from './Abstract.js';
+import { fetchUserData } from './authutils.js';
 
 function loadCSS(url) {
     const link = document.createElement('link');
@@ -15,9 +16,9 @@ export default class Profile extends Abstract {
     }
 
     async getHtml() {
-        const user = await this.fetchUserProfileData();
-        console.log('User:', user); // Debugging line to check the user data
-        const avatarUrl = `http://localhost:8000${user.avatar}`; // Adjust based on media URL settings
+        const user = await fetchUserData('http://localhost:8000/api/auth/user/');
+        const avatarUrl = `http://localhost:8000${user.avatar}`;
+        console.log('Avatar URL:', avatarUrl);
         return `
         <div class="first-container">
                 <nav class="navbar navbar-expand-lg " style="height:100px;">
@@ -72,8 +73,10 @@ export default class Profile extends Abstract {
                         
                         <ul>
                             <li>
-                                <img src="../images/sidenav-img/logout.png">
-                                <p>Logout</p>
+                                <a href="#" id="logout-link">
+                                    <img src="../images/sidenav-img/logout.png">
+                                    <p>Logout</p>
+                                </a>
                             </li>
                         </ul>
                         
@@ -213,31 +216,18 @@ export default class Profile extends Abstract {
     }
     
 
-    async fetchUserProfileData() {
-        const token = localStorage.getItem('access_token');
-        console.log('Access Token:', token); // Log the token for debugging
-        try {
-            const response = await fetch('http://localhost:8000/api/auth/user/', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                return await response.json();
-            } else {
-                throw new Error('Failed to fetch user data');
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            return { avatar: '/path/to/default/avatar.jpg', username: 'Guest' }; // Provide fallback values
-        }
-    }
 
 
     initialize() {
+
+        document.getElementById('logout-link').addEventListener('click', async (event) => {
+            event.preventDefault();
+            await this.logoutUser();
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = '/login';
+        });
+
         document.addEventListener("DOMContentLoaded", () => {
             const carousel = document.querySelector('.carousel');
             const nxtBtn = document.querySelector('.nxt-btn');
@@ -255,5 +245,40 @@ export default class Profile extends Abstract {
                 });
             }
         });
+    }
+
+
+    async  getCsrfToken() {
+        const name = 'csrftoken=';
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length);
+            }
+        }
+        return null;
+    }
+
+    async logoutUser() {
+        try {
+            const csrfToken = getCsrfToken();
+            const response = await fetch('http://localhost:8000/api/auth/logout/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // Include CSRF token
+                },
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text(); // or response.json() if the response is JSON
+                throw new Error(`Logout failed: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
     }
 }

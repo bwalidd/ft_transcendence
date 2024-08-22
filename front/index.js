@@ -11,7 +11,7 @@ const routes = [
     
 ];
 
-
+const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard"];
 
 const loadCSS = (url) => {
     return new Promise((resolve, reject) => {
@@ -47,6 +47,10 @@ const loadView = async (path) => {
     try {
         console.log(`Attempting to import ../views/${viewName}.js`);
         const module = await import(`../views/${viewName}.js`);
+        if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
+            alert('You need to login first');
+            return navigate('/login');
+        }
         console.log('Imported module:', module);
         const View = module.default;
 

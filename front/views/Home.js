@@ -1,4 +1,7 @@
 import Abstract from './Abstract.js';
+import { fetchUserData } from './authutils.js';
+
+
 
 function loadCSS(url) {
     const link = document.createElement('link');
@@ -15,9 +18,10 @@ export default class Home extends Abstract {
     }
 
     async getHtml() {
-        const user = await this.fetchUserData();
-        const avatarUrl = `http://localhost:8000${user.avatar}`; // Adjust based on media URL settings
-        console.log('Avatar URL:', avatarUrl); // Debugging line to check the avatar URL
+        const user = await fetchUserData('http://localhost:8000/api/auth/user/');
+        const avatarUrl = `http://localhost:8000${user.avatar}`;
+        console.log('Avatar URL:', avatarUrl);
+
         return `
         <div class="first-container">
             <div class="content">
@@ -73,11 +77,12 @@ export default class Home extends Abstract {
                         <div class="sep"></div>
                         <ul>
                             <li>
-                                <img src="../images/sidenav-img/logout.png">
-                                <p>Logout</p>
+                                <a href="#" id="logout-link">
+                                    <img src="../images/sidenav-img/logout.png">
+                                    <p>Logout</p>
+                                </a>
                             </li>
                         </ul>
-                        
                     </div>   
                 </div>
             </div>
@@ -88,30 +93,53 @@ export default class Home extends Abstract {
         `;
     }
 
-    async fetchUserData() {
-        const token = localStorage.getItem('access_token');
-        console.log('Access Token:', token); // Log the token for debugging
+    
+
+    initialize() {
+        document.getElementById('logout-link').addEventListener('click', async (event) => {
+            event.preventDefault();
+            await this.logoutUser();
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = '/login';
+        });
+    }
+
+    // Function to get CSRF token from cookies
+    async  getCsrfToken() {
+        const name = 'csrftoken=';
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length);
+            }
+        }
+        return null;
+    }
+
+    async logoutUser() {
         try {
-            const response = await fetch('http://localhost:8000/api/auth/user/', {
-                method: 'GET',
+            const csrfToken = getCsrfToken();
+            const response = await fetch('http://localhost:8000/api/auth/logout/', {
+                method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // Include CSRF token
                 },
                 credentials: 'include'
             });
 
-            if (response.ok) {
-                return await response.json();
-            } else {
-                throw new Error('Failed to fetch user data');
+            if (!response.ok) {
+                const errorText = await response.text(); // or response.json() if the response is JSON
+                throw new Error(`Logout failed: ${errorText}`);
             }
         } catch (error) {
-            console.error('Error fetching user data:', error);
-            return { avatar: '/path/to/default/avatar.jpg', username: 'Guest' }; // Provide fallback values
+            console.error('Error during logout:', error);
         }
     }
 
-    initialize() {
-        // Any additional initialization code
-    }
+        
+
 }
