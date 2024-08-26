@@ -28,6 +28,57 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-right: 80px;
+}
+
+::placeholder {
+	color: rgb(255, 255, 255); /* Placeholder color */
+	font-weight: 400; /* Optional: adjust font weight of placeholder */
+}
+
+
+.nav-link:hover .search-input {
+	width: 200px; /* Expand the width on hover */
+	opacity: 1;
+	pointer-events: auto; 
+}
+
+.nav-link:hover .search {
+  width: 60px; /* Adjust size if you want a smaller icon when input expands */
+}
+
+.search-input {
+	width: 0;
+	opacity: 0;
+	transition: width 0.3s ease, opacity 0.3s ease;
+	height: 30px; /* Adjust as needed */
+	border: none; /* Remove border */
+	border-bottom: 1px solid rgba(255, 255, 255, 0.8); /* Add small underline */
+	outline: none; /* Remove outline */
+	padding: 5px;
+	margin-left: 5px; /* Space between icon and input */
+	background-color: transparent; /* Make input background transparent */
+	color: #fff; /* Input text color */
+	border-radius: 0; /* Remove rounded corners */
+	position: absolute; /* Position it next to the search icon */
+	right: 60px; /* Starts right after the search icon */
+	pointer-events: none; /* Prevent interaction when not visible */
+}
+
+.nav-link {
+	display: flex;
+	align-items: center;
+	position: relative; /* Ensure the input expands within the nav-link */
+  }
+  
+.nav-link:hover .search-input {
+	width: 200px; /* Expand the width on hover */
+	opacity: 1;
+	pointer-events: auto; 
+}
+
+.nav-link:hover .search {
+width: 60px; /* Adjust size if you want a smaller icon when input expands */
 }
 
 .profile-img {

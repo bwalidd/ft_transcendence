@@ -2,203 +2,233 @@
 @import url('https://fonts.cdnfonts.com/css/diablo');
 
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	font-family: 'Montserrat';
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat';
 }
 
 .first-container {
-	/* position: absolute; */
-	/* top: 0; */
-	/* left: 0; */
-	width: 100%;
-	height: 100vh;
-	background-image: url(../images/dark\ horror\ fantasy\,\ ping\ pong\ paddles\,\ replace\ the\ character\ with\ ping\ pong\ player.jpeg);
-	background-size: cover;
-	background-position: center;
-	overflow: hidden;
+  width: 100%;
+  height: 100vh;
+  background-image: url(../images/dark\ horror\ fantasy\,\ ping\ pong\ paddles\,\ replace\ the\ character\ with\ ping\ pong\ player.jpeg);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
 }
 
 .content {
-	position: relative;
-	z-index: 10;
+  position: relative;
+  z-index: 10;
 }
 
-
-li{
-	display: flex;
+li {
+  display: flex;
 }
 
-li:hover{
-	background-color: rgba(255, 255, 255, 0.1);
+li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-li a{
-	display: flex;
+li a {
+  display: flex;
 }
-
 
 .bodypage {
-	width: 100%;
-	height: 100vh;
+  width: 100%;
+  height: 100vh;
 }
 
 .navbar {
-	/* background-color: red; */
-	justify-content: flex-end;
+  justify-content: flex-end;
 }
 
 .navbar-nav {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-right: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 80px;
 }
 
 .profile-img {
-	width: 50px;
-    height: 50px;
-    background-position: center;
-    background-size: cover;
-    border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-position: center;
+  background-size: cover;
+  border-radius: 50%;
 }
 
 .search {
-	background: url('../images/search.svg');
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 40px;
-	height: 40px;
+  background: url('../images/search.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: width 0.3s; /* Smooth transition for the hover effect */
+}
+
+.search-input {
+	width: 0;
+	opacity: 0;
+	transition: width 0.3s ease, opacity 0.3s ease;
+	height: 30px; /* Adjust as needed */
+	border: none; /* Remove border */
+	border-bottom: 1px solid rgba(255, 255, 255, 0.8); /* Add small underline */
+	outline: none; /* Remove outline */
+	padding: 5px;
+	margin-left: 5px; /* Space between icon and input */
+	background-color: transparent; /* Make input background transparent */
+	color: #fff; /* Input text color */
+	border-radius: 0; /* Remove rounded corners */
+	position: absolute; /* Position it next to the search icon */
+	right: 60px; /* Starts right after the search icon */
+	pointer-events: none; /* Prevent interaction when not visible */
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  position: relative; /* Ensure the input expands within the nav-link */
+}
+
+.nav-link:hover .search-input {
+	width: 200px; /* Expand the width on hover */
+	opacity: 1;
+	pointer-events: auto; 
+}
+
+.nav-link:hover .search {
+  width: 60px; /* Adjust size if you want a smaller icon when input expands */
 }
 
 .notif {
-	/* background-color: red; */
-	margin-bottom: 20px;
-	background-image: url("../images/notif.svg");
-	background-size: contain;
-	background-position: center;
-	/* background-repeat: no-repeat; */
-	width: 40px;
-	height: 40px;
+  margin-bottom: 20px;
+  background-image: url("../images/notif.svg");
+  background-size: contain;
+  background-position: center;
+  width: 40px;
+  height: 40px;
 }
 
 .side-nav {
-	/* flex: 0 0 25%; */
-	overflow-y: auto;
-	width: 110px;
-	overflow-x: hidden;
-	height: 100vh;
-	left: 0;
-	top: 0;
-	position: fixed;
-	padding: 30px 15px;
-	background: rgba(255, 255, 255, 0.034);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-	/* border: solid white 2px; */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	transition: width 0.4s;
-	border-right: solid rgba(255, 255, 255, 0.39) 1px;
-	/* background-color: red; */
+  overflow-y: auto;
+  width: 110px;
+  overflow-x: hidden;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  position: fixed;
+  padding: 30px 15px;
+  background: rgba(255, 255, 255, 0.034);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: width 0.4s;
+  border-right: solid rgba(255, 255, 255, 0.39) 1px;
 }
 
 .side-nav:hover {
-	width: 250px;
+  width: 250px;
 }
 
 .sep {
-	border: solid rgba(255, 255, 255, 0.219) 1px;
-	width: 400px;
-	margin-left: -100px;
+  border: solid rgba(255, 255, 255, 0.219) 1px;
+  width: 400px;
+  margin-left: -100px;
 }
 
 .logo {
-	width: 100px;
-	height: 90px;
-	margin-top: -20px;
-	background: url('../images/mini\ pongx.png');
-	/* background-color: red; */
-	background-position: center;
-	background-size: cover;
-	padding-left: 50px;
-	transition: width 0.3s, max-height 0.3s;
+  width: 100px;
+  height: 90px;
+  margin-top: -20px;
+  background: url('../images/mini\ pongx.png');
+  background-position: center;
+  background-size: cover;
+  padding-left: 50px;
+  transition: width 0.3s, max-height 0.3s;
 }
 
 .side-nav:hover .logo {
-    width: 100%; /* Width of the logo on hover (relative to the side nav) */
-    height: 100px;
-	max-height: 100px; /* Maximum height of the logo on hover */
-    background: url('../images/pongx.png') no-repeat center center;
-    background-size: cover;
+  width: 100%;
+  height: 100px;
+  max-height: 100px;
+  background: url('../images/pongx.png') no-repeat center center;
+  background-size: cover;
 }
 
 .side-nav li p {
-	white-space: nowrap;
-	display: none;
+  white-space: nowrap;
+  display: none;
 }
 
+::placeholder {
+	color: rgb(255, 255, 255); /* Placeholder color */
+	font-weight: 400; /* Optional: adjust font weight of placeholder */
+}
+
+
 .side-nav:hover li p {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px 0;
 }
 
 .side-nav:hover ul li img {
-	margin-right: 10px;
-	width: 40px;
+  margin-right: 10px;
+  width: 40px;
 }
 
 ul {
-	list-style: none;
-	padding: 0 15px;
+  list-style: none;
+  padding: 0 15px;
 }
 
 ul li {
-	margin: 30px 0;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	cursor: pointer;
+  margin: 30px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
 }
 
 ul li img {
-	margin-right: 10px;
-	width: 40px;
+  margin-right: 10px;
+  width: 40px;
 }
 
 .btn:hover,
 .btn:focus-visible {
-	transform: translateY(-0.3rem);
-	transition: transform 400ms;
+  transform: translateY(-0.3rem);
+  transition: transform 400ms;
 }
 
 .elements {
-	flex-direction: column;
-	gap: 50px;
+  flex-direction: column;
+  gap: 50px;
 }
 
 .elements h1 {
-	font-family: 'diablo';
+  font-family: 'diablo';
 }
 
-.fixed-bottom .btn{
-	font-family: 'Diablo';
-	font-size:xx-large;
-	width: 180px;
-	height: 60px;
-	color: antiquewhite;
-	background-color: rgba(82, 77, 77, 0.603);
-	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.836);
-	backdrop-filter: blur(10px);
-	border-radius: 30px;
-	position: fixed;
-	bottom: 0;
-	right: 0;
-	z-index: 1050;
-	margin: 100px;
+.fixed-bottom .btn {
+  font-family: 'Diablo';
+  font-size: xx-large;
+  width: 180px;
+  height: 60px;
+  color: antiquewhite;
+  background-color: rgba(82, 77, 77, 0.603);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.836);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 1050;
+  margin: 100px;
 }
