@@ -9,4 +9,6 @@ urlpatterns = [
     path('refresh-token/', views.CookieTokenRefreshView.as_view()),
     path('logout/', views.logoutView),
     path("user/", views.user),
+    path("allusers/",views.allusers),
+    path("search/",views.search_users)
 ]

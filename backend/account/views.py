@@ -135,3 +135,26 @@ def user(request):
 
     serializer = serializers.AccountSerializer(user)
     return response.Response(serializer.data)
+
+
+
+@rest_decorators.api_view(["GET"])
+# @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def allusers(request):
+    users = models.Account.objects.all()  # Fetch all users
+    serializer = serializers.AccountSerializer(users, many=True)  # Serialize multiple users
+    return response.Response(serializer.data)  # Return serialized data
+
+
+
+@rest_decorators.api_view(["GET"])
+# @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def search_users(request):
+    search_string = request.GET.get("search", "").strip()
+
+    if not search_string:
+        return response.Response({"error": "Search string is required"}, status=400)
+
+    users = models.Account.objects.filter(username__icontains=search_string)
+    serializer = serializers.AccountSerializer(users, many=True)
+    return response.Response(serializer.data)

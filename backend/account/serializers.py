@@ -42,4 +42,4 @@ class LoginSerializer(serializers.Serializer):
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("username", "email", "avatar")
+        fields = ("id","username", "email", "avatar")
