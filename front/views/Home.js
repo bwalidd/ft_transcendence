@@ -28,6 +28,7 @@ export default class Home extends Abstract {
                         <a class="nav-link">
                             <div class="search"></div>
                             <input type="text" id="search-input" class="search-input" placeholder="Search users...">
+                            <div id="search-results" class="search-results"></div>
                         </a>
                         <a class="nav-link" href="#">
                             <div class="notif"></div>
@@ -101,26 +102,61 @@ export default class Home extends Abstract {
             window.location.href = '/login';
         });
 
-        document.getElementById('search-input').addEventListener('input', async (event) => {
-            const searchString = event.target.value;
-            if (searchString.trim()) {
-                await this.searchUsers(searchString);
-            }
-        });
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', async (event) => {
+        const searchString = event.target.value;
+        console.log('Search String:--------->', searchString)
+        if (searchString.trim()) {
+            console.log('Search String:---44444------>', searchString)
+            await this.searchUsers(searchString);
+        } else {
+            // Clear the search results if the input is empty
+            document.getElementById('search-results').style.display = 'none';
+        }
+    });
     }
 
-    async getCsrfToken() {
-        const name = 'csrftoken=';
-        const cookies = document.cookie.split(';');
-        for (let cookie of cookies) {
-            cookie = cookie.trim();
-            if (cookie.indexOf(name) === 0) {
-                return cookie.substring(name.length);
+    displaySearchResults(users) {
+        console.log('Users:---33----->', users);
+        const searchResultsContainer = document.getElementById('search-results');
+        searchResultsContainer.innerHTML = ''; // Clear previous results
+        console.log('Users:-------->', users.length);
+        if (users.length > 0) {
+            searchResultsContainer.style.display = 'block'; // Show results container
+            const ul = document.createElement('ul');
+            users.forEach(user => {
+                const li = document.createElement('li');
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'avatar';
+                avatarDiv.style.backgroundImage = `url('http://localhost:8000${user.avatar}')`;
+                
+                const usernameDiv = document.createElement('div');
+                usernameDiv.className = 'username';
+                usernameDiv.textContent = user.username;
+    
+                li.appendChild(avatarDiv);
+                li.appendChild(usernameDiv);
+                ul.appendChild(li);
+            });
+            searchResultsContainer.appendChild(ul);
+        } else {
+            searchResultsContainer.style.display = 'none'; // Hhhhhhhhide if no users found
+        }
+        }
+
+        
+        async getCsrfToken() {
+            const name = 'csrftoken=';
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.indexOf(name) === 0) {
+                    return cookie.substring(name.length);
             }
         }
         return null;
     }
-
+    
     async logoutUser() {
         try {
             const csrfToken = await this.getCsrfToken();
@@ -142,10 +178,11 @@ export default class Home extends Abstract {
             console.error('Error during logout:', error);
         }
     }
-
+    
     async searchUsers(searchString) {
         try {
             const csrfToken = await this.getCsrfToken();
+            console.log("---===========>",searchString)
             const response = await fetch(`http://localhost:8000/api/auth/search/?search=${encodeURIComponent(searchString)}`, {
                 method: 'GET',
                 headers: {
@@ -155,10 +192,10 @@ export default class Home extends Abstract {
                 },
                 credentials: 'include'
             });
-
+            console.log('Response:-------->', response.ok);
             if (response.ok) {
                 const data = await response.json();
-                console.log('Search Results:', data);
+                this.displaySearchResults(data);
             } else {
                 console.error('Error fetching search results:', await response.text());
             }

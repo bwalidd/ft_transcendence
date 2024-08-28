@@ -23,16 +23,7 @@ export default class Profile extends Abstract {
         <div class="first-container">
                 <nav class="navbar navbar-expand-lg " style="height:100px;">
                    <div class="navbar-nav">
-                        <a class="nav-link">
-                            <div class="search"></div>
-                            <input type="text" class="search-input" placeholder="Search users...">
-                        </a>
-                        <a class="nav-link" href="#">
-                            <div class="notif"></div>
-                        </a>
-                        <a class="nav-link" href="/profile">
-                            <div class="profile-img" style="background-image: url('${avatarUrl}');"></div>
-                        </a>
+                        
                     </div>
                 </nav>
 
@@ -246,6 +237,8 @@ export default class Profile extends Abstract {
                 });
             }
         });
+
+        
     }
 
 

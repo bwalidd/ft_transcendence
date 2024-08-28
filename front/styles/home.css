@@ -184,21 +184,21 @@ li a {
   width: 40px;
 }
 
-ul {
+.bodypage ul {
   list-style: none;
   padding: 0 15px;
 }
 
-ul li {
-  margin: 30px 0;
+.bodypage ul li {
+  margin: 40px 0;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
 }
 
-ul li img {
-  margin-right: 10px;
+.bodypage ul li img {
+  margin-right: 20px;
   width: 40px;
 }
 
@@ -232,4 +232,54 @@ ul li img {
   right: 0;
   z-index: 1050;
   margin: 100px;
+}
+
+
+
+/* Styles for the search results */
+.search-results {
+  position: absolute;
+  top: 50px;
+  left: auto; /* Change to auto to not affect the left positioning */
+  right: 0; /* Aligns the container to the right */
+  width: 300px;
+  margin-right: 100px; /* Adds the right margin */
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  max-height: 140px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  z-index: 1000;
+  display: none;  /* Initially hidden */
+}
+
+.search-results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-results li {
+  padding: 3px;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Highlight on hover */
+}
+
+.search-results .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+  margin-right: 10px;
+}
+
+.search-results .username {
+  color: #fff; /* Text color */
+  font-weight: 500;
 }
