@@ -242,8 +242,8 @@ li a {
   top: 50px;
   left: auto; /* Change to auto to not affect the left positioning */
   right: 0; /* Aligns the container to the right */
-  width: 300px;
-  margin-right: 100px; /* Adds the right margin */
+  width: 400px;
+  margin-right: 10px; /* Adds the right margin */
   border: 3px solid rgba(0, 0, 0, 0.2);
   border-radius: 20px;
   max-height: 140px;
@@ -260,7 +260,7 @@ li a {
 }
 
 .search-results li {
-  padding: 3px;
+  padding: 10px;
   margin: 10px 0;
   display: flex;
   align-items: center;
