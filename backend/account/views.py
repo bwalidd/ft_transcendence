@@ -148,7 +148,7 @@ def allusers(request):
 
 
 @rest_decorators.api_view(["GET"])
-# @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def search_users(request):
     search_string = request.GET.get("search", "").strip()
 

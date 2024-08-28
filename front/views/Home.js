@@ -1,8 +1,6 @@
 import Abstract from './Abstract.js';
 import { fetchUserData } from './authutils.js';
 
-
-
 function loadCSS(url) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -29,7 +27,7 @@ export default class Home extends Abstract {
                     <div class="navbar-nav">
                         <a class="nav-link">
                             <div class="search"></div>
-                            <input type="text" class="search-input" placeholder="Search users...">
+                            <input type="text" id="search-input" class="search-input" placeholder="Search users...">
                         </a>
                         <a class="nav-link" href="#">
                             <div class="notif"></div>
@@ -94,8 +92,6 @@ export default class Home extends Abstract {
         `;
     }
 
-    
-
     initialize() {
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
@@ -104,10 +100,16 @@ export default class Home extends Abstract {
             localStorage.removeItem('refresh_token');
             window.location.href = '/login';
         });
+
+        document.getElementById('search-input').addEventListener('input', async (event) => {
+            const searchString = event.target.value;
+            if (searchString.trim()) {
+                await this.searchUsers(searchString);
+            }
+        });
     }
 
-    // Function to get CSRF token from cookies
-    async  getCsrfToken() {
+    async getCsrfToken() {
         const name = 'csrftoken=';
         const cookies = document.cookie.split(';');
         for (let cookie of cookies) {
@@ -121,7 +123,7 @@ export default class Home extends Abstract {
 
     async logoutUser() {
         try {
-            const csrfToken = getCsrfToken();
+            const csrfToken = await this.getCsrfToken();
             const response = await fetch('http://localhost:8000/api/auth/logout/', {
                 method: 'POST',
                 headers: {
@@ -141,6 +143,27 @@ export default class Home extends Abstract {
         }
     }
 
-        
+    async searchUsers(searchString) {
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch(`http://localhost:8000/api/auth/search/?search=${encodeURIComponent(searchString)}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // Include CSRF token
+                },
+                credentials: 'include'
+            });
 
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Search Results:', data);
+            } else {
+                console.error('Error fetching search results:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error during search:', error);
+        }
+    }
 }
