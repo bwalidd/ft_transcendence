@@ -16,8 +16,8 @@ export default class Profile extends Abstract {
     }
 
     async getHtml() {
-        const user = await fetchUserData('http://localhost:8000/api/auth/user/');
-        const avatarUrl = `http://localhost:8000${user.avatar}`;
+        const user = await fetchUserData('http://localhost:8001/api/auth/user/');
+        const avatarUrl = `http://localhost:8001${user.avatar}`;
         console.log('Avatar URL:', avatarUrl);
         return `
         <div class="first-container">
@@ -257,7 +257,7 @@ export default class Profile extends Abstract {
     async logoutUser() {
         try {
             const csrfToken = getCsrfToken();
-            const response = await fetch('http://localhost:8000/api/auth/logout/', {
+            const response = await fetch('http://localhost:8001/api/auth/logout/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required

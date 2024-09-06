@@ -16,8 +16,8 @@ export default class Home extends Abstract {
     }
 
     async getHtml() {
-        const user = await fetchUserData('http://localhost:8000/api/auth/user/');
-        const avatarUrl = `http://localhost:8000${user.avatar}`;
+        const user = await fetchUserData('http://localhost:8001/api/auth/user/');
+        const avatarUrl = `http://localhost:8001${user.avatar}`;
         console.log('Avatar URL:', avatarUrl);
 
         return `
@@ -128,7 +128,7 @@ export default class Home extends Abstract {
                 const li = document.createElement('li');
                 const avatarDiv = document.createElement('div');
                 avatarDiv.className = 'avatar';
-                avatarDiv.style.backgroundImage = `url('http://localhost:8000${user.avatar}')`;
+                avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
                 
                 const usernameDiv = document.createElement('div');
                 usernameDiv.className = 'username';
@@ -160,7 +160,7 @@ export default class Home extends Abstract {
     async logoutUser() {
         try {
             const csrfToken = await this.getCsrfToken();
-            const response = await fetch('http://localhost:8000/api/auth/logout/', {
+            const response = await fetch('http://localhost:8001/api/auth/logout/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
@@ -183,7 +183,7 @@ export default class Home extends Abstract {
         try {
             const csrfToken = await this.getCsrfToken();
             console.log("---===========>",searchString)
-            const response = await fetch(`http://localhost:8000/api/auth/search/?search=${encodeURIComponent(searchString)}`, {
+            const response = await fetch(`http://localhost:8001/api/auth/search/?search=${encodeURIComponent(searchString)}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required

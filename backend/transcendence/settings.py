@@ -94,7 +94,7 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8005',
+    'http://localhost:8004',
 ]
 
 AUTH_USER_MODEL = "account.Account"

@@ -74,7 +74,7 @@ export default class Signup extends Abstract {
             }
 
             try {
-                const response = await fetch('http://localhost:8000/api/auth/register/', {
+                const response = await fetch('http://localhost:8001/api/auth/register/', {
                     method: 'POST',
                     body: formData,
                     credentials: 'include',

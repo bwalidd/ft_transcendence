@@ -35,7 +35,7 @@ export async function fetchUserData(url) {
 
 export async function refreshAccessToken() {
     try {
-        const response = await fetch('http://localhost:8000/api/auth/refresh-token/', {
+        const response = await fetch('http://localhost:8001/api/auth/refresh-token/', {
             method: 'POST',
             credentials: 'include'
         });
@@ -74,7 +74,7 @@ export async function logoutUser() {
         console.log('CSRF Token:', csrfToken);
         console.log('Access Token:', accessToken);
 
-        const response = await fetch('http://localhost:8000/api/auth/logout/', {
+        const response = await fetch('http://localhost:8001/api/auth/logout/', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`, // Ensure this is correct

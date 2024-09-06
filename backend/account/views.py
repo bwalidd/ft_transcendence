@@ -4,6 +4,7 @@ from django.middleware import csrf
 from rest_framework import exceptions as rest_exceptions, response, decorators as rest_decorators, permissions as rest_permissions
 from rest_framework_simplejwt import tokens, views as jwt_views, serializers as jwt_serializers, exceptions as jwt_exceptions
 from account import serializers, models
+from django.shortcuts import get_object_or_404
 
 
 def get_user_tokens(user):
@@ -157,4 +158,16 @@ def search_users(request):
 
     users = models.Account.objects.filter(username__icontains=search_string)
     serializer = serializers.AccountSerializer(users, many=True)
+    return response.Response(serializer.data)
+
+
+@rest_decorators.api_view(["GET"])
+# @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def userProfileView(request, user_id):
+    # Fetch the user by ID
+    user = get_object_or_404(models.Account, id=user_id)
+    
+    # Serialize the user data
+    serializer = serializers.AccountSerializer(user)
+    
     return response.Response(serializer.data)
