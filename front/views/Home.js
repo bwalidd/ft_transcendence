@@ -94,11 +94,71 @@ export default class Home extends Abstract {
         <div id="user-info-popup" class="user-info-popup hidden">
             <div class="user-info-content">
                 <span id="popup-close" class="popup-close">&times;</span>
-                <div class="user-avatar" id="popup-avatar"></div>
-                <div class="user-details">
+                <div class="user-card">
+                    <div class="user-avatar" id="popup-avatar"></div>
                     <h2 id="popup-username"></h2>
-                    <p id="popup-email"></p>
                 </div>
+                <div class="user-actions">
+                    <button class="btn btn-outline-light friend-btn">Add Friend</button>
+                    <h2 class="request-text">Requested</h2>
+                    <button class="btn btn-outline-light message-btn">Send Message</button>
+                </div>
+            </div>
+            <h2 class="popup-title">Latest Matches</h2>
+            <div class="latest-matches">
+            <ul>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+                <li>
+                    <div class="match-avatar"></div>
+                    <p class="match-username">User123</p>
+                    <p class="match-result">2-0</p>
+                </li>
+            </ul>
+            
             </div>
         </div>
         `;
@@ -172,13 +232,13 @@ export default class Home extends Abstract {
     
     showUserPopup(user) {
         const popup = document.getElementById('user-info-popup');
-    const avatarDiv = document.getElementById('popup-avatar');
-    const username = document.getElementById('popup-username');
-    const email = document.getElementById('popup-email');
+        const avatarDiv = document.getElementById('popup-avatar');
+        const username = document.getElementById('popup-username');
+    
     
     avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
     username.textContent = user.username;
-    email.textContent = user.email;
+    
 
     popup.classList.add('show'); // Add 'show' class to make it visible
 
@@ -229,7 +289,7 @@ export default class Home extends Abstract {
                 },
                 credentials: 'include'
             });
-            console.log('Response:-------->', response.ok);
+            
             if (response.ok) {
                 const data = await response.json();
                 this.displaySearchResults(data);

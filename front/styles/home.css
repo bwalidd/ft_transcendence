@@ -220,13 +220,13 @@ li a {
 .fixed-bottom .btn {
   font-family: 'Diablo';
   font-size: xx-large;
-  width: 180px;
-  height: 60px;
   color: antiquewhite;
   background-color: rgba(82, 77, 77, 0.603);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.836);
   backdrop-filter: blur(10px);
   border-radius: 30px;
+  width: 180px;
+  height: 60px;
   position: fixed;
   bottom: 0;
   right: 0;
@@ -299,10 +299,12 @@ popup
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); /* Center it horizontally and vertically */
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 700px;
+  height: 400px;
+  box-shadow: 35px 35px 35px rgba(0, 0, 0, 0.2);
   z-index: 1050; /* Increase z-index to ensure it stays on top of other elements */
   display: none; /* Start as hidden */
 }
@@ -313,10 +315,57 @@ popup
 
 .user-info-content {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   text-align: center;
 }
+
+.user-card{
+  width: 40%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.user-card h2 {
+  font-size: 30px;
+  font-family: 'Diablo';
+}
+
+.user-actions{
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.user-actions h2{
+  font-size: 10px;
+  font-family: 'Montserrat';
+}
+
+
+.user-actions button{
+  font-family: 'Diablo';
+  color: antiquewhite;
+  background-color: rgba(82, 77, 77, 0.603);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.836);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+}
+
+.user-actions .message-btn{
+  display: block;
+}
+
+.user-actions .request-text{
+  display: none;
+}
+
+.user-actions .friend-btn{
+  display: none;
+}
+
 
 .user-avatar {
   width: 100px;
@@ -330,7 +379,7 @@ popup
   position: absolute;
   top: 10px;
   right: 15px;
-  font-size: 20px;
+  font-size: 30px;
   cursor: pointer;
 }
 
@@ -341,4 +390,61 @@ popup
 .user-details p {
   margin: 5px 0;
   color: #666;
+}
+
+.popup-title{
+  font-family: 'Diablo';
+  font-size: 20px;
+  color: rgba(196, 196, 196, 0.803);
+  text-align: center;
+  margin-top: 20px;
+}
+
+.latest-matches{
+  margin: 10px;
+  display: flex;
+  width: 100%;
+  height: 200px;
+}
+
+.latest-matches ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.latest-matches li{
+  padding: 10px;
+  margin: 10px;
+  width: 120px;
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px;
+}
+
+.latest-matches li .match-avatar{
+  background-image: url('../images/bhazzout.jpeg');
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.latest-matches li .match-username{
+  font-family: 'Diablo';
+  font-size: 15px;
+  color: antiquewhite;
+}
+.latest-matches li .match-result{
+  font-family: 'Diablo';
+  font-size: 15px;
+  color: antiquewhite;
 }
