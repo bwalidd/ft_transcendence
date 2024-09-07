@@ -90,6 +90,17 @@ export default class Home extends Abstract {
                 <button type="button" class="btn btn-outline-light">PLAY</button>
             </div>
         </div>
+        <!-- User Info Popup -->
+        <div id="user-info-popup" class="user-info-popup hidden">
+            <div class="user-info-content">
+                <span id="popup-close" class="popup-close">&times;</span>
+                <div class="user-avatar" id="popup-avatar"></div>
+                <div class="user-details">
+                    <h2 id="popup-username"></h2>
+                    <p id="popup-email"></p>
+                </div>
+            </div>
+        </div>
         `;
     }
 
@@ -105,9 +116,7 @@ export default class Home extends Abstract {
         const searchInput = document.getElementById('search-input');
         searchInput.addEventListener('input', async (event) => {
         const searchString = event.target.value;
-        console.log('Search String:--------->', searchString)
         if (searchString.trim()) {
-            console.log('Search String:---44444------>', searchString)
             await this.searchUsers(searchString);
         } else {
             // Clear the search results if the input is empty
@@ -117,10 +126,8 @@ export default class Home extends Abstract {
     }
 
     displaySearchResults(users) {
-        console.log('Users:---33----->', users);
         const searchResultsContainer = document.getElementById('search-results');
         searchResultsContainer.innerHTML = ''; // Clear previous results
-        console.log('Users:-------->', users.length);
         if (users.length > 0) {
             searchResultsContainer.style.display = 'block'; // Show results container
             const ul = document.createElement('ul');
@@ -136,13 +143,19 @@ export default class Home extends Abstract {
     
                 li.appendChild(avatarDiv);
                 li.appendChild(usernameDiv);
+
+
+                li.addEventListener('click', () => {
+                    console.log('User clicked:', user.id);
+                    this.showUserPopup(user);
+                });
                 ul.appendChild(li);
             });
             searchResultsContainer.appendChild(ul);
         } else {
             searchResultsContainer.style.display = 'none'; // Hhhhhhhhide if no users found
         }
-        }
+    }
 
         
         async getCsrfToken() {
@@ -157,6 +170,30 @@ export default class Home extends Abstract {
         return null;
     }
     
+    showUserPopup(user) {
+        const popup = document.getElementById('user-info-popup');
+    const avatarDiv = document.getElementById('popup-avatar');
+    const username = document.getElementById('popup-username');
+    const email = document.getElementById('popup-email');
+    
+    avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
+    username.textContent = user.username;
+    email.textContent = user.email;
+
+    popup.classList.add('show'); // Add 'show' class to make it visible
+
+    // Close popup when the close button is clicked
+    document.getElementById('popup-close').addEventListener('click', () => {
+        this.closeUserPopup();
+    });
+    }
+    
+    closeUserPopup() {
+        const popup = document.getElementById('user-info-popup');
+        popup.classList.remove('show');
+    }
+    
+
     async logoutUser() {
         try {
             const csrfToken = await this.getCsrfToken();
@@ -182,7 +219,7 @@ export default class Home extends Abstract {
     async searchUsers(searchString) {
         try {
             const csrfToken = await this.getCsrfToken();
-            console.log("---===========>",searchString)
+            
             const response = await fetch(`http://localhost:8001/api/auth/search/?search=${encodeURIComponent(searchString)}`, {
                 method: 'GET',
                 headers: {

@@ -283,3 +283,62 @@ li a {
   color: #fff; /* Text color */
   font-weight: 500;
 }
+
+
+/*
+
+
+
+popup 
+
+
+
+*/
+.user-info-popup {
+  position: fixed; /* Fixed position ensures it's always relative to the viewport */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center it horizontally and vertically */
+  background-color: transparent;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1050; /* Increase z-index to ensure it stays on top of other elements */
+  display: none; /* Start as hidden */
+}
+
+.user-info-popup.show {
+  display: block; /* Show when 'show' class is added */
+}
+
+.user-info-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.user-avatar {
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.user-details h2 {
+  margin: 0;
+}
+
+.user-details p {
+  margin: 5px 0;
+  color: #666;
+}
