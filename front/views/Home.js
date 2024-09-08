@@ -101,63 +101,83 @@ export default class Home extends Abstract {
                 <div class="user-actions">
                     <button class="btn btn-outline-light friend-btn">Add Friend</button>
                     <h2 class="request-text">Requested</h2>
-                    <button class="btn btn-outline-light message-btn">Send Message</button>
+                    <button class="btn btn-outline-light message-btn" >Send Message</button>
+                </div>
+            </div>
+            <h2 class="popup-title">Stats</h2>
+            <div class="user-stats">
+                <div class="stat">
+                    <h3>Wins</h3>
+                    <p>10</p>
+                </div>
+                <div class="stat">
+                    <h3>Losses</h3>
+                    <p>5</p>
+                </div>
+                <div class="stat">
+                    <h3>Win Rate</h3>
+                    <p>66%</p>
                 </div>
             </div>
             <h2 class="popup-title">Latest Matches</h2>
             <div class="latest-matches">
-            <ul>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
-                <li>
-                    <div class="match-avatar"></div>
-                    <p class="match-username">User123</p>
-                    <p class="match-result">2-0</p>
-                </li>
+            <h2 class="no-match">No Matche Played</h2>
+            <div class="match">
+                <ul>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
+                    <li>
+                        <div class="match-avatar"></div>
+                        <p class="match-username">User123</p>
+                        <p class="match-result">2-0</p>
+                    </li>
             </ul>
+
+            </div>
+            
             
             </div>
         </div>
