@@ -6,8 +6,8 @@ from django.utils import timezone
 
 class friendList(models.Model):
     
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user')
-    friends = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='friends')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_friend_list')
+    friends = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='friend_list_friends')
 
     def __str__(self):
         return self.user.username

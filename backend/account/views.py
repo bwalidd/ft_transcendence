@@ -162,7 +162,7 @@ def search_users(request):
 
 
 @rest_decorators.api_view(["GET"])
-# @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def userProfileView(request, user_id):
     # Fetch the user by ID
     user = get_object_or_404(models.Account, id=user_id)
@@ -170,4 +170,11 @@ def userProfileView(request, user_id):
     # Serialize the user data
     serializer = serializers.AccountSerializer(user)
     
-    return response.Response(serializer.data)
+    # Check if the user is a friend of the requesting user
+    is_friend = request.user.friends.filter(id=user_id).exists()
+
+    # Add the is_friend status to the serialized data
+    response_data = serializer.data
+    response_data['is_friend'] = is_friend
+
+    return response.Response(response_data)

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from friend.models import friendList, friendRequest
+
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, username, password=None, **kwargs):
@@ -47,6 +49,9 @@ class Account(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    friends = models.ManyToManyField("self", blank=True, symmetrical=True, related_name='account_friends')  # Assign a unique related_name
+    is_friend = models.BooleanField(default=False)
+    # is_requested = models.BooleanField(default=False)
 
     objects = AccountManager()
 

@@ -371,18 +371,11 @@ popup
   border-radius: 30px;
 }
 
-.user-actions .message-btn{
-  display: none;
+.request-text{
+  font-size: x-large;
+  color: #ffffff;
+  font-weight: bolder;
 }
-
-.user-actions .request-text{
-  display: none;
-}
-
-.user-actions .friend-btn{
-  display: block;
-}
-
 
 .user-avatar {
   width: 100px;

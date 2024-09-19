@@ -20,6 +20,9 @@ export default class Home extends Abstract {
         const avatarUrl = `http://localhost:8001${user.avatar}`;
         console.log('Avatar URL:', avatarUrl);
 
+        
+        
+
         return `
         <div class="first-container">
             <div class="content">
@@ -99,9 +102,7 @@ export default class Home extends Abstract {
                     <h2 id="popup-username"></h2>
                 </div>
                 <div class="user-actions">
-                    <button class="btn btn-outline-light friend-btn">Add Friend</button>
-                    <h2 class="request-text">Requested</h2>
-                    <button class="btn btn-outline-light message-btn" >Send Message</button>
+                    <!-- Friend button will be inserted here --> 
                 </div>
             </div>
             <h2 class="popup-title">Stats</h2>
@@ -254,19 +255,34 @@ export default class Home extends Abstract {
         const popup = document.getElementById('user-info-popup');
         const avatarDiv = document.getElementById('popup-avatar');
         const username = document.getElementById('popup-username');
+        const friendButtonContainer = document.querySelector('.user-actions'); // Select the container for friend button
+        const isFriend = user.is_friend;
+        const isRequested = false // Assuming this is in the user data
+        
+        avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
+        username.textContent = user.username;
     
+        // Create the friendButtonHtml based on friendship status
+        let friendButtonHtml = '';
+        if (isFriend) {
+            friendButtonHtml = '<button class="btn btn-outline-light unfriend-btn">Unfriend</button>';
+        } else if (isRequested) {
+            friendButtonHtml = '<h2 class="request-text">Requested</h2>';
+        } else {
+            friendButtonHtml = '<button class="btn btn-outline-light friend-btn">Add Friend</button>';
+        }
     
-    avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
-    username.textContent = user.username;
+        // Insert the generated HTML into the friend button container
+        friendButtonContainer.innerHTML = friendButtonHtml;
     
-
-    popup.classList.add('show'); // Add 'show' class to make it visible
-
-    // Close popup when the close button is clicked
-    document.getElementById('popup-close').addEventListener('click', () => {
-        this.closeUserPopup();
-    });
+        popup.classList.add('show'); // Add 'show' class to make it visible
+    
+        // Close popup when the close button is clicked
+        document.getElementById('popup-close').addEventListener('click', () => {
+            this.closeUserPopup();
+        });
     }
+    
     
     closeUserPopup() {
         const popup = document.getElementById('user-info-popup');
