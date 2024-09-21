@@ -51,7 +51,7 @@ class Account(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     friends = models.ManyToManyField("self", blank=True, symmetrical=True, related_name='account_friends')  # Assign a unique related_name
     is_friend = models.BooleanField(default=False)
-    # is_requested = models.BooleanField(default=False)
+    is_requested = models.BooleanField(default=False)  # Add the requested boolean
 
     objects = AccountManager()
 
@@ -62,7 +62,7 @@ class Account(AbstractBaseUser):
         return self.username
 
     def has_perm(self, perm, obj=None):
-         return True
+        return True
 
     def has_module_perms(self, app_label):
         return True

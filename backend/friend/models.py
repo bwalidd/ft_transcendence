@@ -14,37 +14,39 @@ class friendList(models.Model):
 
     def add_friend(self, account):
         """
-        add a new friend
+        Add a new friend and ensure reciprocity
         """
-        if not account in self.friends.all():
-            self.friends.add(account)
-            self.save()
+        if account not in self.friends.all():
+            self.friends.add(account)  # Add to current user's list
+            friend_list = friendList.objects.get(user=account)
+            friend_list.friends.add(self.user)
 
-    def remove_friend(self, account):
+    def remove_friend(self, account):  # Indentation fixed here
         """
-        remove a friend
+        Remove a friend and ensure reciprocity
         """
         if account in self.friends.all():
-            self.friends.remove(account)
-            self.save()
+            self.friends.remove(account)  # Remove from current user's list
+            friend_list = friendList.objects.get(user=account)
+            friend_list.friends.remove(self.user)
         
     def unfriend(self, removee):
         """
         remove a friend
         """
-        remover_friends_list = self # person who is removing the friend
+        remover_friends_list = self  # person who is removing the friend
 
         # remove friend from remover friend list
         remover_friends_list.remove_friend(removee)
 
-        friends_list = friendList.objects.get(user=removee) # person who is being removed
+        friends_list = friendList.objects.get(user=removee)  # person who is being removed
         friends_list.remove_friend(self.user)
 
     def is_mutual_friend(self, friend):
-        if friend in self.friends.all():
-            return True
-        return False
-
+        """
+        Check if a user is a mutual friend
+        """
+        return friend in self.friends.all()
 
 class friendRequest(models.Model):
 

@@ -142,6 +142,45 @@ li a {
   margin-left: -100px;
 }
 
+
+.friend-request-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.friend-request-buttons button {
+  flex: 1; /* Make buttons take equal space */
+  margin: 0 5px; /* Add some space between buttons */
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.friend-request-buttons .accept-btn {
+  color: antiquewhite;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.friend-request-buttons .reject-btn {
+  color: antiquewhite;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  
+}
+
+.accept-btn:hover {
+  background-color: rgb(46, 133, 46);
+  opacity: 0.9; /* Slightly fade on hover */
+}
+
+.reject-btn:hover {
+  background-color: crimson;
+  opacity: 0.9; /* Slightly fade on hover */
+}
+
 .logo {
   width: 100px;
   height: 90px;
@@ -482,8 +521,14 @@ popup
   font-size: 15px;
   color: antiquewhite;
 }
+
+
 .latest-matches .match li .match-result{
   font-family: 'Diablo';
   font-size: 15px;
   color: antiquewhite;
 }
+
+
+/* Styles for the search results */
+

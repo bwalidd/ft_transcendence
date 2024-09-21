@@ -55,6 +55,7 @@ def loginView(request):
         }
         res.data = {**tokens, **user_data}
         res["X-CSRFToken"] = csrf.get_token(request)
+        print("------->"+res["X-CSRFToken"]+"------->")
         return res
     raise rest_exceptions.AuthenticationFailed(
         "Email or Password is incorrect!"
@@ -139,6 +140,7 @@ def user(request):
 
 
 
+
 @rest_decorators.api_view(["GET"])
 # @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def allusers(request):
@@ -173,8 +175,11 @@ def userProfileView(request, user_id):
     # Check if the user is a friend of the requesting user
     is_friend = request.user.friends.filter(id=user_id).exists()
 
-    # Add the is_friend status to the serialized data
+    # Check if a friend request has been sent
+    is_requested = models.friendRequest.objects.filter(sender=request.user, receiver=user).exists()
+    # Add the is_friend and is_requested status to the serialized data
     response_data = serializer.data
     response_data['is_friend'] = is_friend
+    response_data['is_requested'] = is_requested
 
     return response.Response(response_data)

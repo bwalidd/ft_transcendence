@@ -40,6 +40,9 @@ class LoginSerializer(serializers.Serializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    is_friend = serializers.BooleanField(read_only=True)
+    is_requested = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = get_user_model()
-        fields = ("id","username", "email", "avatar","friends")
+        fields = ("id", "username", "email", "avatar", "friends", "is_friend", "is_requested")

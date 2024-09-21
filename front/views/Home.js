@@ -36,6 +36,7 @@ export default class Home extends Abstract {
                         <a class="nav-link" href="#">
                             <div class="notif"></div>
                         </a>
+                        <p class="nav-link">Welcome, ${user.username}</p>
                         <a class="nav-link" href="/profile">
                             <div class="profile-img" style="background-image: url('${avatarUrl}');"></div>
                         </a>
@@ -196,14 +197,14 @@ export default class Home extends Abstract {
 
         const searchInput = document.getElementById('search-input');
         searchInput.addEventListener('input', async (event) => {
-        const searchString = event.target.value;
-        if (searchString.trim()) {
-            await this.searchUsers(searchString);
-        } else {
-            // Clear the search results if the input is empty
-            document.getElementById('search-results').style.display = 'none';
-        }
-    });
+            const searchString = event.target.value;
+            if (searchString.trim()) {
+                await this.searchUsers(searchString);
+            } else {
+                // Clear the search results if the input is empty
+                document.getElementById('search-results').style.display = 'none';
+            }
+        });
     }
 
     displaySearchResults(users) {
@@ -250,38 +251,183 @@ export default class Home extends Abstract {
         }
         return null;
     }
+
+    async sendFriendRequest(receiverId) {
+        alert('Sending friend request...');
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch(`http://localhost:8001/api/friend/send-request/${receiverId}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // Include CSRF token
+                },
+                credentials: 'include'
+            });
     
-    showUserPopup(user) {
-        const popup = document.getElementById('user-info-popup');
-        const avatarDiv = document.getElementById('popup-avatar');
-        const username = document.getElementById('popup-username');
-        const friendButtonContainer = document.querySelector('.user-actions'); // Select the container for friend button
-        const isFriend = user.is_friend;
-        const isRequested = false // Assuming this is in the user data
-        
-        avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
-        username.textContent = user.username;
-    
-        // Create the friendButtonHtml based on friendship status
-        let friendButtonHtml = '';
-        if (isFriend) {
-            friendButtonHtml = '<button class="btn btn-outline-light unfriend-btn">Unfriend</button>';
-        } else if (isRequested) {
-            friendButtonHtml = '<h2 class="request-text">Requested</h2>';
-        } else {
-            friendButtonHtml = '<button class="btn btn-outline-light friend-btn">Add Friend</button>';
+            if (response.ok) {
+                alert('Friend request sent successfully');
+                // Optionally, update the UI to reflect the new state (e.g., change button to "Requested")
+                const friendButtonContainer = document.querySelector('.user-actions');
+                friendButtonContainer.innerHTML = '<h2 class="request-text">Requested</h2>';
+            } else {
+                const errorText = await response.text();
+                console.error('Error sending friend request:', errorText);
+            }
+        } catch (error) {
+            console.error('Error during sending friend request:', error);
         }
-    
-        // Insert the generated HTML into the friend button container
-        friendButtonContainer.innerHTML = friendButtonHtml;
-    
-        popup.classList.add('show'); // Add 'show' class to make it visible
-    
-        // Close popup when the close button is clicked
-        document.getElementById('popup-close').addEventListener('click', () => {
-            this.closeUserPopup();
-        });
     }
+    
+    
+    async showUserPopup(userId) {
+        console.log('Showing user popup:', userId);
+        console.log('---------------', userId.id);
+        try {
+            // Fetch the user's profile information from the backend
+            const response = await fetch(`http://localhost:8001/api/auth/user/${userId.id}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!response.ok) {
+                console.error('Error fetching user profile:', await response.text());
+                return;
+            }
+
+
+            const statusResponse = await fetch(`http://localhost:8001/api/friend/check-status/${userId.id}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!statusResponse.ok) {
+                console.error('Error fetching user profile status:', await statusResponse.text());
+                return;
+            }
+            
+            const statusRes = await statusResponse.json();
+            const user = await response.json(); // Get user data including friend status
+    
+            const popup = document.getElementById('user-info-popup');
+            const avatarDiv = document.getElementById('popup-avatar');
+            const username = document.getElementById('popup-username');
+            const friendButtonContainer = document.querySelector('.user-actions');
+            
+            // Set avatar and username in popup
+            avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
+            username.textContent = user.username;
+    
+            // Clear any existing friend button content
+            friendButtonContainer.innerHTML = '';
+    
+            // Create the friend button based on friendship status
+            
+            // if (user.is_friend) {
+            //     // User is already a friend, show "Unfriend" button
+            //     const unfriendButton = document.createElement('button');
+            //     unfriendButton.className = 'btn btn-outline-light unfriend-btn';
+            //     unfriendButton.textContent = 'Unfriend';
+    
+            //     // Add unfriend functionality (optional: add event listener for unfriend)
+            //     friendButtonContainer.appendChild(unfriendButton);
+            // } else if (user.is_requested) {
+            //     // Friend request is already sent, show "Requested" text
+            //     const requestText = document.createElement('h2');
+            //     requestText.className = 'request-text';
+            //     requestText.textContent = 'Requested';
+            //     friendButtonContainer.appendChild(requestText);
+            // }
+            //  else {
+            //     // Not friends, show "Add Friend" button
+            //     const friendButton = document.createElement('button');
+            //     friendButton.className = 'btn btn-outline-light friend-btn';
+            //     friendButton.textContent = 'Add Friend';
+    
+            //     // Add event listener to send friend request
+            //     friendButton.addEventListener('click', () => {
+            //         this.sendFriendRequest(user.id); // Pass the user ID
+            //     });
+    
+            //     friendButtonContainer.appendChild(friendButton);
+            // }
+
+
+            // Create the friend button based on friendship status
+            
+            if (statusRes.status === 'friends') {
+                // User is already a friend, show "Unfriend" button
+                const unfriendButton = document.createElement('button');
+                unfriendButton.className = 'btn btn-outline-light unfriend-btn';
+                unfriendButton.textContent = 'Unfriend';
+    
+                // Add unfriend functionality (optional: add event listener for unfriend)
+                friendButtonContainer.appendChild(unfriendButton);
+            }else if (statusRes.status === 'request_sent'){ 
+                // Friend request is already sent, show "Requested" text
+                const requestText = document.createElement('h2');
+                requestText.className = 'request-text';
+                requestText.textContent = 'Requested';
+                friendButtonContainer.appendChild(requestText);
+            }else if (statusRes.status === 'request_received') {
+                // Create a container for the buttons
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'friend-request-buttons';
+
+                // Create Accept button
+                const acceptButton = document.createElement('button');
+                acceptButton.className = 'btn btn-outline-light accept-btn';
+                acceptButton.textContent = 'Accept';
+
+                // Create Reject button
+                const rejectButton = document.createElement('button');
+                rejectButton.className = 'btn btn-outline-light reject-btn';
+                rejectButton.textContent = 'Reject';
+
+                // Append buttons to the container
+                buttonContainer.appendChild(acceptButton);
+                buttonContainer.appendChild(rejectButton);
+
+                // Append the container to the friend button container
+                friendButtonContainer.appendChild(buttonContainer);
+            }else{
+                // Not friends, show "Add Friend" button
+                const friendButton = document.createElement('button');
+                friendButton.className = 'btn btn-outline-light friend-btn';
+                friendButton.textContent = 'Add Friend';
+    
+                // Add event listener to send friend request
+                friendButton.addEventListener('click', () => {
+                    this.sendFriendRequest(user.id); // Pass the user ID
+                });
+    
+                friendButtonContainer.appendChild(friendButton);
+            }
+
+
+            console.log('status: --->', statusRes.status);
+
+    
+            popup.classList.add('show'); // Show the popup
+    
+            // Close popup when the close button is clicked
+            document.getElementById('popup-close').addEventListener('click', () => {
+                this.closeUserPopup();
+            });
+    
+        } catch (error) {
+            console.error('Error loading user profile:', error);
+        }
+    }
+    
+    
     
     
     closeUserPopup() {
