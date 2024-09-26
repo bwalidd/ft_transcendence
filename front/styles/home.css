@@ -2,122 +2,189 @@
 @import url('https://fonts.cdnfonts.com/css/diablo');
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat';
-}
-
-body, html {
-    height: 100%;
-    margin: 0;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Montserrat';
 }
 
 .first-container {
-    z-index: 1;
-    /* background-image: url(../images/newbg.png); */
-    background-size: cover;
-    overflow: auto;
-    height: 100vh;
+	/* position: absolute; */
+	/* top: 0; */
+	/* left: 0; */
+	width: 100%;
+	height: 100vh;
+	background-image: url(../images/dark\ horror\ fantasy\,\ ping\ pong\ paddles\,\ replace\ the\ character\ with\ ping\ pong\ player.jpeg);
+	background-size: cover;
+	background-position: center;
+	overflow: hidden;
 }
 
-.overlay {
-    z-index: 2;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+.content {
+	position: relative;
+	z-index: 10;
 }
 
-.content{
-    z-index: 3;
-    position: relative;
+.bodypage {
+	width: 100%;
+	height: 100vh;
 }
 
-.nav-bar {
-    width: 100%;
-    height: 80px;
-    padding-left: 3%;
-    padding-right: 2%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* background-color: rgba(0, 0, 0, 0.3); Black opacity background */
-    position: fixed;
-    top: 0;
-    left: 0;
-    /* z-index: 10; */
+.navbar {
+	/* background-color: red; */
+	justify-content: flex-end;
 }
 
-.navbar-toggler {
-    font-size: 1.5rem;
-    color: white;
-    border-color: white;
+.navbar-nav {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
-
-.font-of-logo{
-    font-family: 'diablo';
-
+.profile-img {
+	background: url('../images/bhazzout.jpeg');
+	width: 50px;
+	height: 50px;
+	background-position: center;
+	background-size: cover;
+	border-radius: 50%;
 }
 
-
-.nav-item {
-    font-size: larger;
-    font-weight: bold;
-    padding-left: 40px;
+.search {
+	background: url('../images/search.svg');
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 40px;
+	height: 40px;
 }
 
+.notif {
+	/* background-color: red; */
+	margin-bottom: 20px;
+	background-image: url("../images/notif.svg");
+	background-size: contain;
+	background-position: center;
+	/* background-repeat: no-repeat; */
+	width: 40px;
+	height: 40px;
+}
 
-.nav-item:hover {
-    font-size: larger;
-    font-weight: bold;
-    color: brown;
+.side-nav {
+	/* flex: 0 0 25%; */
+	overflow-y: auto;
+	width: 110px;
+	overflow-x: hidden;
+	height: 100vh;
+	left: 0;
+	top: 0;
+	position: fixed;
+	padding: 30px 15px;
+	background: rgba(255, 255, 255, 0.034);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	/* border: solid white 2px; */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	transition: width 0.4s;
+	border-right: solid rgba(255, 255, 255, 0.39) 1px;
+	/* background-color: red; */
+}
+
+.side-nav:hover {
+	width: 250px;
+}
+
+.sep {
+	border: solid rgba(255, 255, 255, 0.219) 1px;
+	width: 400px;
+	margin-left: -100px;
 }
 
 .logo {
-    padding: 10px;
-    margin-top: 10px;
-    background: url('../images/pongx.png');
-    width: 200px;
-    height: 150px;
-    background-position: center;
+	width: 100px;
+	height: 90px;
+	margin-top: -20px;
+	background: url('../images/mini\ pongx.png');
+	/* background-color: red; */
+	background-position: center;
+	background-size: cover;
+	padding-left: 50px;
+	transition: width 0.3s, max-height 0.3s;
+}
+
+.side-nav:hover .logo {
+    width: 100%; /* Width of the logo on hover (relative to the side nav) */
+    height: 100px;
+	max-height: 100px; /* Maximum height of the logo on hover */
+    background: url('../images/pongx.png') no-repeat center center;
     background-size: cover;
 }
 
-.btn {
-    /* width: 400px;
-    height: 100px;
-    background-color: transparent;
-    background-image: url("../images/pongbutton.png");
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat; */
-    transition: transform 1000ms;
+.side-nav li p {
+	white-space: nowrap;
+	display: none;
+}
+
+.side-nav:hover li p {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 5px 0;
+}
+
+.side-nav:hover ul li img {
+	margin-right: 10px;
+	width: 40px;
+}
+
+ul {
+	list-style: none;
+	padding: 0 15px;
+}
+
+ul li {
+	margin: 30px 0;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	cursor: pointer;
+}
+
+ul li img {
+	margin-right: 10px;
+	width: 40px;
 }
 
 .btn:hover,
 .btn:focus-visible {
-    transform: translateY(-0.5rem);
-    transition: transform 400ms;
+	transform: translateY(-0.3rem);
+	transition: transform 400ms;
 }
 
-.profile-img {
-    background: url('../images/bhazzout.jpeg');
-    width: 50px;
-    height: 50px;
-    background-position: center;
-    background-size: cover;
-    border-radius: 50%;
+.elements {
+	flex-direction: column;
+	gap: 50px;
 }
 
-@media (max-width:750px) {
-    .hero {
-        margin-top: 100px;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }    
+.elements h1 {
+	font-family: 'diablo';
+}
+
+.fixed-bottom .btn{
+	font-family: 'Diablo';
+	font-size:xx-large;
+	width: 180px;
+	height: 60px;
+	color: antiquewhite;
+	background-color: rgba(82, 77, 77, 0.603);
+	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.836);
+	backdrop-filter: blur(10px);
+	border-radius: 30px;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 1050;
+	margin: 100px;
 }

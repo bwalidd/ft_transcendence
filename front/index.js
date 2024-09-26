@@ -6,6 +6,7 @@ const routes = [
     { path: "/profile", view: "Profile" },
     { path: "/chat", view: "Chat" },
     { path: "/signup", view: "Signup" },
+    { path: "/leaderboard", view: "leaderboard" },
 ];
 
 const shouldAuthPages = ["home", "profile", "chat", "landing"];

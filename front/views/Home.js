@@ -18,42 +18,45 @@ export default class Home extends Abstract {
         return `
 
         <div class="first-container">
-            <div class="overlay"></div>
             <div class="content">
-                <div class="nav-bar navbar-expand-lg">
-                    <div class="logo"></div>
-                    <div class="d-flex align-items-center">
-                        <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                            <ul class="navbar-nav d-flex align-items-center gap-3">
-                                <li class="nav-item">
-                                    <a class="nav-link" aria-current="page" href="#">Tournament</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Chat</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Search</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="profile-img"></div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                <nav class="navbar navbar-expand-lg " style="height:100px;">
+                    <div class="navbar-nav">
+                        <a class="nav-link" href="#">
+                            <div class="notif"></div>
+                        </a>
+                        <a class="nav-link" href="#">
+                            <div class="search"></div>
+                        </a>
+                        <a class="nav-link" href="#">
+                            <div class="profile-img"></div>
+                        </a>
                     </div>
+                </nav>
+
+                <div class="bodypage">
+                    <div class="side-nav">
+                        <div class="logo"></div>
+                        <ul>
+                            <li> <img src="../images/sidenav-img/home.png" class="home"><p>Home</p></li>
+                            <li> <img src="../images/sidenav-img/leaderboard.png" class="home"><p>Leaderboard</p></li>
+                            <li> <img src="../images/sidenav-img/trophy.png" class="home"><p>Tournament</p></li>
+                            <li> <img src="../images/sidenav-img/messages.png" class="home"><p>Messages</p></li>
+                            <li> <img src="../images/sidenav-img/settings.png" class="home"><p>Setting</p></li>
+                        </ul>
+                        <div class="sep"></div>
+                        <ul>
+                            <li>
+                                <img src="../images/sidenav-img/logout.png">
+                                <p>Logout</p>
+                            </li>
+                        </ul>
+                    </div>   
                 </div>
 
-                <div class="hero container-fluid d-flex w-100 bg-warning justify-content-center align-items-center" style="height:100vh">
-                    <button class="btn battle container d-flex bg-danger justify-content-center align-items-center" style="width:350px; height:550px">
-                    </button>
-                    <button class="btn training container d-flex bg-success justify-content-center align-items-center" style="width:350px; height:550px">
-                    </button>
-                </div>
-        
+            </div>
+            <div class="fixed-bottom text-right p-4">
+                <button type="button" class="btn btn-outline-light">Play</button>
+            </div>
         </div>
             
 
