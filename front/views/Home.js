@@ -280,6 +280,33 @@ export default class Home extends Abstract {
         }
     }
     
+    async acceptFriendRequest(requestId) {
+        console.log('Accepting friend request with ID:', requestId);
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch(`http://localhost:8001/api/friend/accept-request/${requestId}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // Include CSRF token
+                },
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                alert('Friend request accepted successfully');
+                const friendButtonContainer = document.querySelector('.user-actions');
+                friendButtonContainer.innerHTML = '<button class="btn btn-outline-light unfriend-btn">Unfriend</button>';
+            } else {
+                const errorText = await response.text();
+                console.error('Error accepting friend request:', errorText);
+            }
+        } catch (error) {
+            console.error('Error during accepting friend request:', error);
+        }
+    }
+    
     
     async showUserPopup(userId) {
         console.log('Showing user popup:', userId);
@@ -360,6 +387,11 @@ export default class Home extends Abstract {
             // }
 
 
+            
+    
+            
+
+
             // Create the friend button based on friendship status
             
             if (statusRes.status === 'friends') {
@@ -397,6 +429,15 @@ export default class Home extends Abstract {
 
                 // Append the container to the friend button container
                 friendButtonContainer.appendChild(buttonContainer);
+
+                // Add event listeners to the buttons
+                acceptButton.addEventListener('click', () => {
+                    this.acceptFriendRequest(user.id);
+                });
+
+                rejectButton.addEventListener('click', () => {
+                    this.rejectFriendRequest(user.id);
+                });
             }else{
                 // Not friends, show "Add Friend" button
                 const friendButton = document.createElement('button');

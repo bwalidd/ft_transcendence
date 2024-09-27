@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
+from friend.models import friendList, friendRequest
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
@@ -39,10 +39,39 @@ class LoginSerializer(serializers.Serializer):
         style={"input_type": "password"}, write_only=True)
 
 
+class FriendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ("id", "username", "avatar")  # Simplified fields for friends
+
+
 class AccountSerializer(serializers.ModelSerializer):
-    is_friend = serializers.BooleanField(read_only=True)
-    is_requested = serializers.BooleanField(read_only=True)
+    friends = serializers.SerializerMethodField()
+    is_friend = serializers.SerializerMethodField()
+    is_requested = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
         fields = ("id", "username", "email", "avatar", "friends", "is_friend", "is_requested")
+
+    def get_friends(self, obj):
+        try:
+            # Retrieve the user's friend list
+            friend_list = obj.user_friend_list
+            # Serialize the friends using the FriendSerializer (simplified)
+            friends = friend_list.friends.all()
+            return FriendSerializer(friends, many=True, context=self.context).data
+        except friendList.DoesNotExist:
+            return []
+
+    def get_is_friend(self, obj):
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+            return request.user.friends.filter(id=obj.id).exists()
+        return False
+
+    def get_is_requested(self, obj):
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+            return friendRequest.objects.filter(sender=request.user, receiver=obj).exists()
+        return False
