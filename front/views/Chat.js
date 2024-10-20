@@ -88,7 +88,7 @@ export default class Chat extends Abstract {
                                                     <p class="time"> 10:45 </p>
                                                 </div>
                                                 <div class="message">
-                                                    <p>Hello,kkkkkkkkkkkkkkkkkkfdfd dfdfdjkkdkfdkfkdkfkdkkkkk</p>
+                                                    <p>Hello</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -97,7 +97,7 @@ export default class Chat extends Abstract {
                                 <div id="friendsContent" class="tab-content">
                                     <div class="friend-l">
                                         <div class="friend-block ">
-                                            <div class="cover" style="background: url(../images/bhazzout.jpeg); background-position: center; background-size: cover;">
+                                            <div class="opned-chat-usename-profile" style="background: url(../images/bhazzout.jpeg); background-position: center; background-size: cover;">
                                             </div>
                                             <div class="details d-flex justify-content-between">
                                                 <div class="listHead">
@@ -115,17 +115,15 @@ export default class Chat extends Abstract {
                         </div>
                         <div class="rightSide">
                             <div class="header d-flex align-items-center justify-content-between">
-                                <div class="cover" style="background: url(../images/bhazzout.jpeg); background-position: center; background-size: cover;">
+                                <div class="opened-chat-usename-profile" style="background: url(../images/bhazzout.jpeg); background-position: center; background-size: cover;">
                                 </div>
-
                                 <div class="button-wrapper">
                                     <button class="game-button" id="gameButton">
                                         <div class="game-ico"></div>
                                     </button>
                                     <span class="tooltip">Invite to game</span>
                                 </div>
-
-                                <div class="name-stat d-flex flex-column justify-content-center" style="position:absolute; left:80px; padding:5px 5px;">
+                                <div class="opened-chat-username d-flex flex-column justify-content-center" style="position:absolute; left:80px;">
                                     <h4> Wbouwach </h4>
                                 </div>
                                 
@@ -141,54 +139,6 @@ export default class Chat extends Abstract {
                                 </div>
                                 <div class="message sent">
                                     <div class="message-content">Hi there! I'm doing great, thanks for asking. How about you?</div>
-                                </div>
-                                <div class="message received">
-                                    <div class="message-content">I'm good too! I was wondering if you'd like to play a game together?</div>
-                                </div>
-                                <div class="message sent">
-                                    <div class="message-content">Sure, that sounds fun! What game did you have in mind?</div>
-                                </div>
-                                <div class="message received">
-                                    <div class="message-content">How about a quick round of chess?</div>
-                                </div>
-                                <div class="message sent">
-                                    <div class="message-content">Perfect! I'm always up for chess. Let's do it!</div>
-                                </div>
-                                <div class="message received">
-                                    <div class="message-content">Hey Wbouwach! How's it going?</div>
-                                </div>
-                                <div class="message sent">
-                                    <div class="message-content">Hi there! I'm doing great, thanks for asking. How about you?</div>
-                                </div>
-                                <div class="message received">
-                                    <div class="message-content">I'm good too! I was wondering if you'd like to play a game together?</div>
-                                </div>
-                                <div class="message sent">
-                                    <div class="message-content">Sure, that sounds fun! What game did you have in mind?</div>
-                                </div>
-                                <div class="message received">
-                                    <div class="message-content">How about a quick round of chess?</div>
-                                </div>
-                                <div class="message sent">
-                                    <div class="message-content">Perfect! I'm always up for chess. Let's do it!</div>
-                                </div>
-                                <div class="message received">
-                                    <div class="message-content">Hey Wbouwachkdsfjsdkhfhjhgjfhjhgjhfjjhjfhjhfjfhjfhfjfjfhfjhfjfhjifnlgkdgdgkdfgjdlgkjdlfkgjldfkgjfjdshkfjdshkfjhsdkfjshdkfjshdkfjdshkjfhskdjfhksdjfhkjsdhfkjsdhfkjsdkhfjsdhfkjshkfjshdkfjshkdfjshkfdjshkdf! How's it going?</div>
-                                </div>
-                                <div class="message sent">
-                                    <div class="message-content">Hi there! I'm doing great, thanks for asking. How about you?</div>
-                                </div>
-                                <div class="message received">
-                                    <div class="message-content">I'm good too! I was wondering if you'd like to play a game together?</div>
-                                </div>
-                                <div class="message sent">
-                                    <div class="message-content">Sure, that sounds fun! What game did you have in mind?</div>
-                                </div>
-                                <div class="message received">
-                                    <div class="message-content">How about a quick round of chess?</div>
-                                </div>
-                                <div class="message sent">
-                                    <div class="message-content">Perfect! I'm always up for chess. Let's do it!</div>
                                 </div>
                             </div>
 
@@ -261,11 +211,26 @@ export default class Chat extends Abstract {
                     </div>
                 </div>
             `;
+
+            friendBlock.addEventListener('click', () => {
+                this.displaySelectedFriend(friend);
+            });
+            
     
             friendsList.appendChild(friendBlock);
         });
     }    
 
+
+    displaySelectedFriend(friend) {
+        console.log('Selected friend:', friend);
+        const username = document.querySelector('.opened-chat-username h4');
+        username.textContent = friend.username;
+        const profile = document.querySelector('.opened-chat-usename-profile');
+        profile.style.background = `url(http://localhost:8001${friend.avatar})`;
+        profile.style.backgroundPosition = 'center';
+        profile.style.backgroundSize = 'cover';
+    }
 
     initialize() {
         // This assumes the chat container is always in the DOM

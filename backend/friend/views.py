@@ -31,30 +31,6 @@ def send_friend_request(request, receiver_id):
     return response.Response({'detail': 'Friend request sent successfully.'}, status=status.HTTP_201_CREATED)
 
 
-# @rest_decorators.api_view(["POST"])
-# @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
-# def accept_friend_request(request, request_id):
-#     # try:
-#     #     logger.info(f"----(accept friend func)-->Trying to find friend request with ID {request_id} for user {request.user}")
-#     #     friend_request = friendRequest.objects.get(id=request_id, is_active=True)
-#     #     logger.info(f"----(accept friend func)-->Friend request found: {friend_request}")
-#     try:
-#         logger.info(f"----(accept friend func)-->Trying to find friend request with ID {request_id} for user {request.user}")
-#         friend_request = friendRequest.objects.get(id=request_id, is_active=True)
-#         logger.info(f"----(accept friend func)-->Friend request found: {friend_request}")
-#     except friendRequest.DoesNotExist:
-#         logger.error(f"----(accept friend func)-->Friend request {request_id} not found or inactive for user {request.user}")
-#         return response.Response({'detail': 'No friend request matches the given query.'}, status=status.HTTP_404_NOT_FOUND)
-    
-#     if friend_request.receiver == request.user:
-#         friend_request.accept()
-#         logger.info(f"----(accept friend func)-->Friend request with ID {request_id} accepted by {request.user}")
-#         return response.Response({'detail': 'Friend request accepted.'}, status=status.HTTP_200_OK)
-#     else:
-#         logger.error(f"----(accept friend func)-->Unauthorized attempt by {request.user} to accept friend request with ID {request_id}")
-#         return response.Response({'detail': 'Not authorized to accept this request.'}, status=status.HTTP_403_FORBIDDEN)
-
-
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def accept_friend_request(request, sender_id):
