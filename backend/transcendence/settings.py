@@ -11,22 +11,26 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'channels',
+    'daphne',
+    'chat',
+    'core',
+    'friend',
+    'api.apps.ApiConfig',
+    'account.apps.AccountConfig',
+
+
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
+
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
-    'api.apps.ApiConfig',
-    'corsheaders',
-    # 'profiles.apps.ProfilesConfig',
-    'rest_framework_simplejwt',
-    'rest_framework',
-    'account.apps.AccountConfig',
-    'friend',
-    # 'channels',
-    'chat'
 ]
 
 
@@ -72,8 +76,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'transcendence.wsgi.application'
 ASGI_APPLICATION = 'transcendence.asgi.application'
+WSGI_APPLICATION = 'transcendence.wsgi.application'
 
 
 DATABASES = {
@@ -168,14 +172,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Channels settings
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],  # Redis should be running
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],  # Redis should be running
+#         },
+#     },
+# }
 
 
 
