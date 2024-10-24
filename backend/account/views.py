@@ -14,6 +14,17 @@ def get_user_tokens(user):
         "access_token": str(refresh.access_token)
     }
 
+def set_csrf_token(response, request):
+    response["X-CSRFToken"] = csrf.get_token(request)
+
+
+def get_user_tokens(user):
+    refresh = tokens.RefreshToken.for_user(user)
+    return {
+        "refresh_token": str(refresh),
+        "access_token": str(refresh.access_token)
+    }
+
 
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([])
@@ -52,10 +63,11 @@ def loginView(request):
             "username": user.username,
             "email": user.email,
             "avatar": request.build_absolute_uri(user.avatar.url) if user.avatar else None,
+            "csrf_token": csrf.get_token(request),  # Include CSRF token here
         }
         res.data = {**tokens, **user_data}
-        res["X-CSRFToken"] = csrf.get_token(request)
-        print("------->"+res["X-CSRFToken"]+"------->")
+
+        print("------->" + res.data["csrf_token"] + "------->")  # Log the CSRF token for debugging
         return res
     raise rest_exceptions.AuthenticationFailed(
         "Email or Password is incorrect!"
@@ -89,8 +101,10 @@ def logoutView(request):
         res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
         res.delete_cookie("X-CSRFToken")
         res.delete_cookie("csrftoken")
-        # res["X-CSRFToken"]=None
         
+        # Set CSRF token in the response
+        set_csrf_token(res, request)
+
         return res
     except:
         raise rest_exceptions.ParseError("Invalid token")
@@ -136,8 +150,12 @@ def user(request):
         return response.Response(status=404)
 
     serializer = serializers.AccountSerializer(user)
-    return response.Response(serializer.data)
+    res = response.Response(serializer.data)
 
+    # Set CSRF token in the response
+    set_csrf_token(res, request)
+
+    return res
 
 
 
