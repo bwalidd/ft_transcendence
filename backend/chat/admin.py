@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import ChatMessage
+from .models import MychatModel
 
-# Register your models here.
-
-admin.site.register(ChatMessage)
+@admin.register(MychatModel)
+class MychatModelAdmin(admin.ModelAdmin):
+    list_display = ('id','me','frnd','chats')

@@ -1,8 +1,6 @@
 from django.urls import path
-from . import views
-
-app_name = 'chat' 
+from .views import chat_view
 
 urlpatterns = [
-    path('create_or_get/', views.create_or_get_chat, name='create_or_get_chat'),
+    path('chatView/', chat_view, name='chat_view'),
 ]
