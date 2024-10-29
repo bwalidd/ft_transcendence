@@ -226,7 +226,11 @@ export default class Chat extends Abstract {
         profile.style.background = `url(http://localhost:8001${friend.avatar})`;
         profile.style.backgroundPosition = 'center';
         profile.style.backgroundSize = 'cover';
-        
+
+        // Clear the chat box when switching friends
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML = ''; // Clear previous messages
+
         // Set the current friend and connect the WebSocket
         this.currentFriend = friend;
         this.connectWebSocket(friend.id); // Assuming friend has an id property
