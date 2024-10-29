@@ -45,13 +45,13 @@ const loadView = async (path) => {
     const viewName = route ? route.view : "NotFound";
 
     try {
-        console.log(`Attempting to import ../views/${viewName}.js`);
+        // console.log(`Attempting to import ../views/${viewName}.js`);
         const module = await import(`../views/${viewName}.js`);
         if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
             alert('You need to login first');
             return navigate('/login');
         }
-        console.log('Imported module:', module);
+        // console.log('Imported module:', module);
         const View = module.default;
 
         if (typeof View !== 'function') {

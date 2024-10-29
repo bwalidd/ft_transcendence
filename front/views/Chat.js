@@ -12,6 +12,9 @@ export default class Chat extends Abstract {
         super(params);
         this.setTitle("Chat");
         loadCSS('../styles/chat.css');
+        this.socket = null; // This will hold the current socket
+        this.currentFriend = null; // Store the currently selected friend
+        this.userData = null;
     }
 
     async getHtml() {
@@ -78,13 +81,12 @@ export default class Chat extends Abstract {
                             </div>
 
                             <div class="chat-box" id="chatBox">
-                                <div class="message received"><div class="message-content">Hey Wbouwach! How's it going?</div></div>
-                                <div class="message sent"><div class="message-content">Hi there! I'm doing great, thanks for asking. How about you?</div></div>
+                                <!-- Messages will be appended here -->
                             </div>
 
                             <div class="message-input">
-                                <input type="text" id="messageInput" placeholder="Type a message...">
-                                <button id="sendMsgBtn" class="send-msg-btn">Send</button>
+                                <input type="text" id="messageInput" placeholder="Type a message..." disabled>
+                                <button id="sendMsgBtn" class="send-msg-btn" disabled>Send</button>
                             </div>
                         </div>
                     </div>
@@ -93,23 +95,61 @@ export default class Chat extends Abstract {
         `;
     }
 
+    connectWebSocket(friendId) {
+        // Close existing socket if there is one
+        if (this.socket) {
+            this.socket.close();
+        }
+
+        // Create a new WebSocket connection for the selected friend
+        this.socket = new WebSocket(`ws://localhost:8001/ws/wsc/${this.userData.id}/${friendId}/`);
+        this.socket.onopen = () => {
+            console.log(`WebSocket connection established with ${friendId}.`);
+            document.getElementById('messageInput').disabled = false;
+            document.getElementById('sendMsgBtn').disabled = false;
+        };
+
+        this.socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            this.handleIncomingMessage(data);
+        };
+
+        this.socket.onclose = () => {
+            console.log(`WebSocket connection closed for ${friendId}.`);
+            document.getElementById('messageInput').disabled = true;
+            document.getElementById('sendMsgBtn').disabled = true;
+        };
+
+        this.socket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+    }
+
+    handleIncomingMessage(data) {
+        const { msg } = data;
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML += `<div class="message received"><div class="message-content">${msg}</div></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+    }
+
     sendMessages() {
         const sendMsgBtn = document.getElementById('sendMsgBtn');
         sendMsgBtn.addEventListener('click', () => {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
-
-            if (message) {
-                // Add the message to the chat box (for demonstration)
+    
+            if (message && this.socket) {
+                this.socket.send(JSON.stringify({ msg: message }));
                 const chatBox = document.getElementById('chatBox');
                 chatBox.innerHTML += `<div class="message sent"><div class="message-content">${message}</div></div>`;
                 messageInput.value = ''; // Clear the input field
-                // alert('Message sent: ' + message); // Alert the sent message
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
             } else {
-                alert('Please enter a message.');
+                alert('Please enter a message or connect to a friend.');
             }
         });
     }
+    
 
     async getCsrfToken() {
         const name = 'csrftoken=';
@@ -140,9 +180,9 @@ export default class Chat extends Abstract {
                 throw new Error(`Failed to fetch user data: ${response.status} ${response.statusText} - ${errorDetails}`);
             }
 
-            const userData = await response.json();
-            console.log('User data:', userData);
-            this.populateFriends(userData.friends);
+            this.userData = await response.json();
+            console.log('User data:', this.userData);
+            this.populateFriends(this.userData.friends);
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
@@ -166,8 +206,6 @@ export default class Chat extends Abstract {
                 <div class="details d-flex justify-content-between">
                     <div class="listHead">
                         <h5>${friend.username}</h5>
-                        <div class="message-icon" style="background: url('../images/sidenav-img/messages.png'); background-position: center; background-size: cover;"></div>
-                        <div class="game-message" style="background: url('../images/console.png'); background-position: center; background-size: cover;"></div>
                     </div>
                 </div>
             `;
@@ -188,6 +226,10 @@ export default class Chat extends Abstract {
         profile.style.background = `url(http://localhost:8001${friend.avatar})`;
         profile.style.backgroundPosition = 'center';
         profile.style.backgroundSize = 'cover';
+        
+        // Set the current friend and connect the WebSocket
+        this.currentFriend = friend;
+        this.connectWebSocket(friend.id); // Assuming friend has an id property
     }
 
     initialize() {
