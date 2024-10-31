@@ -1,40 +1,27 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions as rest_permissions
+from rest_framework import decorators as rest_decorators
 from rest_framework.response import Response
-from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import MychatModel
-from django.contrib.auth import get_user_model
-import json
+from django.db.models import Q
 
-User = get_user_model()
+@rest_decorators.api_view(["GET"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def get_chat_messages(request, user_id, friend_id):
+    # Ensure the logged-in user is either `user_id` or `friend_id`
+    if request.user.id not in [user_id, friend_id]:
+        return Response({'error': 'Unauthorized access'}, status=403)
 
-@api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated])
-def chat_view(request):
-    if request.method == "GET":
-        # Fetch chat history
-        frnd_username = request.GET.get('user', None)
-        if frnd_username:
-            frnd = get_object_or_404(User, username=frnd_username)
-            # Retrieve chat history
-            chat_history = MychatModel.objects.filter(me=request.user, frnd=frnd).values('chats')
-            return Response({"chats": list(chat_history)}, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Friend username not provided."}, status=status.HTTP_400_BAD_REQUEST)
+    # Query for a chat record between `user_id` and `friend_id`
+    chat_record = MychatModel.objects.filter(
+        (Q(me_id=user_id) & Q(frnd_id=friend_id)) |
+        (Q(me_id=friend_id) & Q(frnd_id=user_id))
+    ).first()
 
-    elif request.method == "POST":
-        # Send a new message
-        frnd_username = request.data.get('user')
-        message = request.data.get('message')
+    if chat_record:
+        messages = chat_record.chats  # Retrieve the messages from the `chats` JSON field
+    else:
+        messages = []
 
-        if not frnd_username or not message:
-            return Response({"error": "Friend username and message are required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        frnd = get_object_or_404(User, username=frnd_username)
-
-        # Save the message
-        chat_entry = MychatModel(me=request.user, frnd=frnd, chats=json.dumps({"message": message}))
-        chat_entry.save()
-
-        return Response({"success": "Message sent."}, status=status.HTTP_201_CREATED)
+    # Return the chat messages as JSON response
+    return Response({'messages': messages})

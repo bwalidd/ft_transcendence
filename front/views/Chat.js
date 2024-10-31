@@ -218,7 +218,7 @@ export default class Chat extends Abstract {
         });
     }
 
-    displaySelectedFriend(friend) {
+    async displaySelectedFriend(friend) {
         console.log('Selected friend:', friend);
         const username = document.querySelector('.opened-chat-username h4');
         username.textContent = friend.username;
@@ -226,15 +226,65 @@ export default class Chat extends Abstract {
         profile.style.background = `url(http://localhost:8001${friend.avatar})`;
         profile.style.backgroundPosition = 'center';
         profile.style.backgroundSize = 'cover';
-
+    
         // Clear the chat box when switching friends
         const chatBox = document.getElementById('chatBox');
         chatBox.innerHTML = ''; // Clear previous messages
-
-        // Set the current friend and connect the WebSocket
+    
         this.currentFriend = friend;
+        await this.loadChatHistory(friend.id); // Load chat history before connecting WebSocket
         this.connectWebSocket(friend.id); // Assuming friend has an id property
     }
+    
+    async loadChatHistory(friendId) {
+        try {
+            const response = await fetch(`http://localhost:8001/api/chats/messages/${this.userData.id}/${friendId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to load chat history: ${errorText}`);
+            }
+    
+            const data = await response.json(); // Get the complete response object
+            console.log('API Response:', data); // Log the response for debugging
+    
+            // Check if messages is an array within the data object
+            if (!Array.isArray(data.messages)) {
+                console.error('Expected messages to be an array, but got:', data.messages);
+                return; // Exit the function if it's not an array
+            }
+    
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = ''; // Clear existing messages before appending new ones
+    
+            data.messages.forEach(msg => {
+                console.log('Message Object:', msg); // Log the individual message object for further inspection
+    
+                // Update the properties based on the actual structure
+                const messageClass = msg.sender === this.userData.id ? 'sent' : 'received';
+                const messageContent = msg.message || ''; // Use msg.message for content
+    
+                chatBox.innerHTML += `
+                    <div class="message ${messageClass}">
+                        <div class="message-content">${messageContent}</div>
+                    </div>
+                `;
+            });
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom to show latest messages
+        } catch (error) {
+            console.error('Error loading chat history:', error);
+        }
+    }
+    
+    
+    
+    
 
     initialize() {
         const chatContainer = document.querySelector('.chat-container');

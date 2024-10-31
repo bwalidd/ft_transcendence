@@ -1,6 +1,10 @@
 from django.urls import path
-from .views import chat_view
+from . import views
+
+app_name = 'chat'
+
 
 urlpatterns = [
-    path('chatView/', chat_view, name='chat_view'),
+    # Other endpoints...
+    path('messages/<int:user_id>/<int:friend_id>/', views.get_chat_messages, name='get_chat_messages'),
 ]
