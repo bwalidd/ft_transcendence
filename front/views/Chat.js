@@ -111,7 +111,7 @@ export default class Chat extends Abstract {
 
         this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            this.handleIncomingMessage(data);
+            this.handleIncomingMessage(data, friendId);
         };
 
         this.socket.onclose = () => {
@@ -125,13 +125,62 @@ export default class Chat extends Abstract {
         };
     }
 
-    handleIncomingMessage(data) {
-        const { msg } = data;
+    handleIncomingMessage(data, friendId) {
+        const { msg, sender } = data; // Ensure 'sender' and 'msg' are included in the message data
         const chatBox = document.getElementById('chatBox');
         chatBox.innerHTML += `<div class="message received"><div class="message-content">${msg}</div></div>`;
         chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+    
+        // Trigger the notification
+        console.log('sender message:------->', friendId,"message---->", msg);
+        this.showNotification({ sender, msg }, friendId);
     }
 
+    
+
+    async showNotification(message, friendId) {
+        const csrfToken = await this.getCsrfToken();
+        try {
+            const response = await fetch(`http://localhost:8001/api/auth/user/${friendId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            });
+    
+            if (!response.ok) {
+                const errorDetails = await response.text();
+                throw new Error(`Failed to fetch user data: ${response.status} ${response.statusText} - ${errorDetails}`);
+            }
+    
+            const userData = await response.json();
+            console.log('User data:', userData);
+    
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.classList.add('notification');
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <strong>${userData.username || friendId}</strong>: ${message.msg}
+                </div>
+            `;
+            document.body.appendChild(notification);
+    
+            // Show the notification with animation
+            setTimeout(() => notification.classList.add('show'), 10);
+    
+            // Hide and remove the notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+    
     sendMessages() {
         const sendMsgBtn = document.getElementById('sendMsgBtn');
         sendMsgBtn.addEventListener('click', () => {
