@@ -163,7 +163,7 @@ export default class Chat extends Abstract {
             notification.classList.add('notification');
             notification.innerHTML = `
                 <div class="notification-content">
-                    <strong>${userData.username || friendId}</strong>: ${message.msg}
+                    <strong>${userData.username || friendId}</strong>: ${message.msg.length <= 15? message.msg : message.msg.slice(0, 15) + '...'}
                 </div>
             `;
             document.body.appendChild(notification);
@@ -174,7 +174,7 @@ export default class Chat extends Abstract {
             // Hide and remove the notification after 3 seconds
             setTimeout(() => {
                 notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
+                setTimeout(() => notification.remove(), 3000);
             }, 3000);
         } catch (error) {
             console.error(error.message);

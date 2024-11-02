@@ -106,10 +106,13 @@ body {
 
 .notification {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #333;
-    color: white;
+    top: 30px;
+    right: 30px;
+    background: linear-gradient(270deg, darkred, black);
+	color: antiquewhite;
+	font-family: 'diablo';
+	width: 200px;
+	height: 60px;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
