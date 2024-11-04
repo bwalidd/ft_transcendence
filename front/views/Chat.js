@@ -96,33 +96,56 @@ export default class Chat extends Abstract {
     }
 
     connectWebSocket(friendId) {
-        // Close existing socket if there is one
         if (this.socket) {
             this.socket.close();
         }
-
-        // Create a new WebSocket connection for the selected friend
+    
         this.socket = new WebSocket(`ws://localhost:8001/ws/wsc/${this.userData.id}/${friendId}/`);
         this.socket.onopen = () => {
-            console.log(`WebSocket connection established with ${friendId}.`);
-            document.getElementById('messageInput').disabled = false;
-            document.getElementById('sendMsgBtn').disabled = false;
+            console.log(`WebSocket connected with friend ID ${friendId}.`);
+            this.enableChatInput(true);
         };
-
+    
         this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            this.handleIncomingMessage(data, friendId);
+            if (data.type === 'status' && data.user_id === friendId) {
+                this.updateOnlineStatus(data.status === 'online');
+            } else if (data.msg) {
+                this.handleIncomingMessage(data);
+            }
         };
-
+    
         this.socket.onclose = () => {
-            console.log(`WebSocket connection closed for ${friendId}.`);
-            document.getElementById('messageInput').disabled = true;
-            document.getElementById('sendMsgBtn').disabled = true;
+            console.log(`WebSocket connection closed for friend ID ${friendId}.`);
+            this.enableChatInput(false);
         };
+    }
 
-        this.socket.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
+    enableChatInput(enable) {
+        document.getElementById('messageInput').disabled = !enable;
+        document.getElementById('sendMsgBtn').disabled = !enable;
+    }
+    
+    updateOnlineStatus(isOnline) {
+        const onlineIndicator = document.querySelector('.online b');
+        const statusCircle = document.querySelector('.online .circle');
+        if (isOnline) {
+            onlineIndicator.textContent = 'Online';
+            statusCircle.style.backgroundColor = 'green';
+        } else {
+            onlineIndicator.textContent = 'Offline';
+            statusCircle.style.backgroundColor = 'gray';
+        }
+    }
+
+    handleIncomingMessage(data) {
+        const { msg, sender } = data;
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML += `<div class="message received"><div class="message-content">${msg}</div></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Display the notification
+        this.showNotification({ sender, msg });
     }
 
     handleIncomingMessage(data, friendId) {
@@ -132,16 +155,16 @@ export default class Chat extends Abstract {
         chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
     
         // Trigger the notification
-        console.log('sender message:------->', friendId,"message---->", msg);
+        // console.log('sender message:------->', friendId,"message---->", msg);
         this.showNotification({ sender, msg }, friendId);
     }
 
     
 
-    async showNotification(message, friendId) {
+    async showNotification(message) {
         const csrfToken = await this.getCsrfToken();
         try {
-            const response = await fetch(`http://localhost:8001/api/auth/user/${friendId}`, {
+            const response = await fetch(`http://localhost:8001/api/auth/user/${message.sender}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -150,34 +173,25 @@ export default class Chat extends Abstract {
                 }
             });
     
-            if (!response.ok) {
-                const errorDetails = await response.text();
-                throw new Error(`Failed to fetch user data: ${response.status} ${response.statusText} - ${errorDetails}`);
-            }
+            if (!response.ok) throw new Error(`Failed to fetch user data: ${response.statusText}`);
     
             const userData = await response.json();
-            console.log('User data:', userData);
-    
-            // Create notification element
             const notification = document.createElement('div');
             notification.classList.add('notification');
             notification.innerHTML = `
                 <div class="notification-content">
-                    <strong>${userData.username || friendId}</strong>: ${message.msg.length <= 15? message.msg : message.msg.slice(0, 15) + '...'}
+                    <strong>${userData.username}</strong>: ${message.msg.length <= 15 ? message.msg : message.msg.slice(0, 15) + '...'}
                 </div>
             `;
             document.body.appendChild(notification);
     
-            // Show the notification with animation
             setTimeout(() => notification.classList.add('show'), 10);
-    
-            // Hide and remove the notification after 3 seconds
             setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => notification.remove(), 3000);
             }, 3000);
         } catch (error) {
-            console.error(error.message);
+            console.error('Notification error:', error);
         }
     }
     
@@ -230,7 +244,7 @@ export default class Chat extends Abstract {
             }
 
             this.userData = await response.json();
-            console.log('User data:', this.userData);
+            // console.log('User data:', this.userData);
             this.populateFriends(this.userData.friends);
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -268,7 +282,7 @@ export default class Chat extends Abstract {
     }
 
     async displaySelectedFriend(friend) {
-        console.log('Selected friend:', friend);
+        // console.log('Selected friend:', friend);
         const username = document.querySelector('.opened-chat-username h4');
         username.textContent = friend.username;
         const profile = document.querySelector('.opened-chat-usename-profile');
@@ -301,7 +315,7 @@ export default class Chat extends Abstract {
             }
     
             const data = await response.json(); // Get the complete response object
-            console.log('API Response:', data); // Log the response for debugging
+            // console.log('API Response:', data); // Log the response for debugging
     
             // Check if messages is an array within the data object
             if (!Array.isArray(data.messages)) {
@@ -313,7 +327,7 @@ export default class Chat extends Abstract {
             chatBox.innerHTML = ''; // Clear existing messages before appending new ones
     
             data.messages.forEach(msg => {
-                console.log('Message Object:', msg); // Log the individual message object for further inspection
+                // console.log('Message Object:', msg); // Log the individual message object for further inspection
     
                 // Update the properties based on the actual structure
                 const messageClass = msg.sender === this.userData.id ? 'sent' : 'received';

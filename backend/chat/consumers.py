@@ -1,5 +1,3 @@
-# chat/consumers.py
-
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
@@ -7,6 +5,10 @@ from .models import MychatModel
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+# In-memory dictionary to track online users in room groups
+# This is a simplified example; in production, consider using a persistent cache
+active_connections = {}
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -18,6 +20,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         
         print(f"User {self.user_id} connected to chat with {self.friend_id}")
 
+        # Initialize room group in active connections if not present
+        if self.room_group_name not in active_connections:
+            active_connections[self.room_group_name] = set()
+
+        # Add current user to the active connections for the room group
+        active_connections[self.room_group_name].add(self.user_id)
+
         # Join room group
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -25,13 +34,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
         await self.accept()
+        print(f"---->user {self.user_id} connected with {self.friend_id} on {self.room_group_name}")
+
+        # Check if both users are online
+        await self.notify_online_status()
 
     async def disconnect(self, close_code):
+        # Remove user from active connections for the room group
+        if self.room_group_name in active_connections:
+            active_connections[self.room_group_name].discard(self.user_id)
+            if not active_connections[self.room_group_name]:  # Remove empty room group
+                del active_connections[self.room_group_name]
+
+        # Notify the friend that this user is offline
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'user_status',
+                'status': 'offline',
+                'user_id': self.user_id
+            }
+        )
+
         # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
+        print(f"---->user {self.user_id} disconnected with {self.friend_id} on {self.room_group_name}")
+        
+        # Check if both users are still online
+        await self.notify_online_status()
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -60,6 +93,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'msg': message
             }))
 
+    async def user_status(self, event):
+        # Send online/offline status to WebSocket
+        status = event['status']
+        user_id = event['user_id']
+        await self.send(text_data=json.dumps({
+            'type': 'status',
+            'status': status,
+            'user_id': user_id
+        }))
+
     @database_sync_to_async
     def save_chat_message(self, user_id, friend_id, message):
         chat, created = MychatModel.objects.get_or_create(
@@ -74,3 +117,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
         chat.chats = chat_data
         chat.save()
 
+    async def notify_online_status(self):
+        # Check if both users are online in the room group
+        users_in_room = active_connections.get(self.room_group_name, set())
+        both_online = {self.user_id, self.friend_id}.issubset(users_in_room)
+
+        # Notify current user about the friend's online status
+        await self.send(text_data=json.dumps({
+            'type': 'status',
+            'status': 'online' if both_online else 'offline',
+            'user_id': self.friend_id
+        }))
+
+        # Notify friend about the current user's online status if they are also online
+        if both_online:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'user_status',
+                    'status': 'online',
+                    'user_id': self.user_id
+                }
+            )
