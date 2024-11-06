@@ -111,7 +111,7 @@ export default class Chat extends Abstract {
             if (data.type === 'status' && data.user_id === friendId) {
                 this.updateOnlineStatus(data.status === 'online');
             } else if (data.msg) {
-                this.handleIncomingMessage(data);
+                this.handleIncomingMessage(data, friendId);
             }
         };
     
@@ -138,15 +138,15 @@ export default class Chat extends Abstract {
         }
     }
 
-    handleIncomingMessage(data) {
-        const { msg, sender } = data;
-        const chatBox = document.getElementById('chatBox');
-        chatBox.innerHTML += `<div class="message received"><div class="message-content">${msg}</div></div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
+    // handleIncomingMessage(data) {
+    //     const { msg, sender } = data;
+    //     const chatBox = document.getElementById('chatBox');
+    //     chatBox.innerHTML += `<div class="message received"><div class="message-content">${msg}</div></div>`;
+    //     chatBox.scrollTop = chatBox.scrollHeight;
 
-        // Display the notification
-        this.showNotification({ sender, msg });
-    }
+    //     // Display the notification
+    //     this.showNotification({ sender, msg });
+    // }
 
     handleIncomingMessage(data, friendId) {
         const { msg, sender } = data; // Ensure 'sender' and 'msg' are included in the message data
@@ -155,16 +155,17 @@ export default class Chat extends Abstract {
         chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
     
         // Trigger the notification
-        // console.log('sender message:------->', friendId,"message---->", msg);
-        this.showNotification({ sender, msg }, friendId);
+        console.log('sender message:------->', friendId,"message---->", msg);
+        this.showNotification({ sender, msg },friendId);
     }
 
     
 
-    async showNotification(message) {
+    async showNotification(message,friendId) {
+        console.log("hi from notification");
         const csrfToken = await this.getCsrfToken();
         try {
-            const response = await fetch(`http://localhost:8001/api/auth/user/${message.sender}`, {
+            const response = await fetch(`http://localhost:8001/api/auth/user/${friendId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -172,7 +173,6 @@ export default class Chat extends Abstract {
                     'X-CSRFToken': csrfToken
                 }
             });
-    
             if (!response.ok) throw new Error(`Failed to fetch user data: ${response.statusText}`);
     
             const userData = await response.json();
