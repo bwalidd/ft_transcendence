@@ -72,7 +72,7 @@ export default class Home extends Abstract {
                                 </a>
                             </li>
                             <li>
-                                <a>
+                                <a href="/settings">
                                     <img src="../images/sidenav-img/settings.png" class="home">
                                     <p>Setting</p>
                                 </a>
@@ -355,36 +355,7 @@ export default class Home extends Abstract {
             // Clear any existing friend button content
             friendButtonContainer.innerHTML = '';
     
-            // Create the friend button based on friendship status
             
-            // if (user.is_friend) {
-            //     // User is already a friend, show "Unfriend" button
-            //     const unfriendButton = document.createElement('button');
-            //     unfriendButton.className = 'btn btn-outline-light unfriend-btn';
-            //     unfriendButton.textContent = 'Unfriend';
-    
-            //     // Add unfriend functionality (optional: add event listener for unfriend)
-            //     friendButtonContainer.appendChild(unfriendButton);
-            // } else if (user.is_requested) {
-            //     // Friend request is already sent, show "Requested" text
-            //     const requestText = document.createElement('h2');
-            //     requestText.className = 'request-text';
-            //     requestText.textContent = 'Requested';
-            //     friendButtonContainer.appendChild(requestText);
-            // }
-            //  else {
-            //     // Not friends, show "Add Friend" button
-            //     const friendButton = document.createElement('button');
-            //     friendButton.className = 'btn btn-outline-light friend-btn';
-            //     friendButton.textContent = 'Add Friend';
-    
-            //     // Add event listener to send friend request
-            //     friendButton.addEventListener('click', () => {
-            //         this.sendFriendRequest(user.id); // Pass the user ID
-            //     });
-    
-            //     friendButtonContainer.appendChild(friendButton);
-            // }
 
 
             

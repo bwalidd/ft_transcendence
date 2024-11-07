@@ -11,5 +11,6 @@ urlpatterns = [
     path("user/", views.user),
     path("allusers/",views.allusers),
     path("search/",views.search_users),
+    path('userdetails/',views.userDetailView),
     path("user/<int:user_id>/", views.userProfileView),
 ]

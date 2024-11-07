@@ -28,7 +28,7 @@ export default class Chat extends Abstract {
                             <li><a href="/leaderboard"><img src="../images/sidenav-img/leaderboard.png" class="home"><p>Leaderboard</p></a></li>
                             <li><a><img src="../images/sidenav-img/trophy.png" class="home"><p>Tournament</p></a></li>
                             <li><a href="/chat"><img src="../images/sidenav-img/messages.png" class="home"><p>Messages</p></a></li>
-                            <li><a><img src="../images/sidenav-img/settings.png" class="home"><p>Setting</p></a></li>
+                            <li><a href="/settings"><img src="../images/sidenav-img/settings.png" class="home"><p>Setting</p></a></li>
                         </ul>
                         <div class="sep"></div>
                         <ul>
@@ -350,6 +350,14 @@ export default class Chat extends Abstract {
     
 
     initialize() {
+        document.getElementById('logout-link').addEventListener('click', async (event) => {
+            event.preventDefault();
+            await this.logoutUser();
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = '/login';
+        });
+
         const chatContainer = document.querySelector('.chat-container');
         chatContainer.addEventListener('click', (e) => {
             if (e.target.id === 'discussionTab') {

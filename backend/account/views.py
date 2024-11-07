@@ -158,6 +158,17 @@ def user(request):
     return res
 
 
+@rest_decorators.api_view(["GET"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def userDetailView(request):
+    try:
+        user = models.Account.objects.get(id=request.user.id)
+    except models.Account.DoesNotExist:
+        return response.Response(status=404)
+
+    serializer = serializers.AccountDetailSerializer(user)
+    return response.Response(serializer.data)
+
 
 
 @rest_decorators.api_view(["GET"])

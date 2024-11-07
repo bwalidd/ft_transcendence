@@ -75,3 +75,8 @@ class AccountSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return friendRequest.objects.filter(sender=request.user, receiver=obj).exists()
         return False
+
+class AccountDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ("id", "username", "email", "avatar","password")

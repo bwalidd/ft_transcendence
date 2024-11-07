@@ -8,10 +8,11 @@ const routes = [
     { path: "/profile", view: "Profile" },
     { path: "/chat", view: "Chat"},
     { path: "/leaderboard", view: "Leaderboard"},
+    { path: "/settings", view: "settings"},
     
 ];
 
-const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard"];
+const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard","settings"];
 
 const loadCSS = (url) => {
     return new Promise((resolve, reject) => {
