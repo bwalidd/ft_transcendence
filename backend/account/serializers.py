@@ -80,3 +80,40 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ("id", "username", "email", "avatar","password")
+
+
+# from rest_framework import serializers
+from django.contrib.auth.password_validation import validate_password
+# from .models import Account
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
+    confirm_password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'email', 'password', 'confirm_password', 'avatar')
+
+    def validate(self, data):
+        # Validate that passwords match if provided
+        if data.get('password') or data.get('confirm_password'):
+            if data.get('password') != data.get('confirm_password'):
+                raise serializers.ValidationError({"password": "Passwords do not match."})
+        return data
+
+    def update(self, instance, validated_data):
+        # Update username and email
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        
+        # Update avatar if provided
+        if 'avatar' in validated_data:
+            instance.avatar = validated_data['avatar']
+        
+        # Update password if both password fields are filled
+        password = validated_data.get('password')
+        if password:
+            instance.set_password(password)
+        
+        instance.save()
+        return instance

@@ -5,6 +5,9 @@ from rest_framework import exceptions as rest_exceptions, response, decorators a
 from rest_framework_simplejwt import tokens, views as jwt_views, serializers as jwt_serializers, exceptions as jwt_exceptions
 from account import serializers, models
 from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from .serializers import UserUpdateSerializer
 
 
 def get_user_tokens(user):
@@ -213,3 +216,18 @@ def userProfileView(request, user_id):
     response_data['is_requested'] = is_requested
 
     return response.Response(response_data)
+
+
+@rest_decorators.api_view(["PUT"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def update_user(request):
+    user = request.user  # Current authenticated user
+    serializer = UserUpdateSerializer(user, data=request.data, partial=True)
+    
+    if serializer.is_valid():
+        serializer.save()
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+    print("-------->",serializer.data)
+    return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

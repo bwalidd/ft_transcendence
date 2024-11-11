@@ -13,4 +13,6 @@ urlpatterns = [
     path("search/",views.search_users),
     path('userdetails/',views.userDetailView),
     path("user/<int:user_id>/", views.userProfileView),
+    path('user/update/', views.update_user),
 ]
+
