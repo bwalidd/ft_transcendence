@@ -11,6 +11,7 @@ export default class Settings extends Abstract {
     constructor(params) {
         super(params);
         this.avatarRemoved = false; // Flag to track if the avatar was removed
+        this.newAvatarFile = null; 
         this.setTitle("Settings");
         loadCSS('../styles/Settings.css');
     }
@@ -25,9 +26,9 @@ export default class Settings extends Abstract {
                         <!-- Avatar Section -->
                         <div class="form-group avatar-group">
                             <div class="avatar-preview" id="avatarPreview" style="background-image: url('../images/default-avatar.png');"></div>
-                            <input type="file" id="avatar" name="avatar" accept="image/*" onchange="previewAvatar(event)" disabled>
+                            <input type="file" id="avatar" name="avatar" accept="image/*" onchange="uploadAvatar(event)" disabled>
                             <button type="button" id="remove-avatar" class="pic-avatar remove-avatar" onclick="removeAvatar()">Remove</button>
-                            <button type="button" id="upload-avatar" class="pic-avatar upload-avatar" onclick="uploadAvatar()">Upload</button>
+                            <button type="button" id="upload-avatar" class="pic-avatar upload-avatar" onclick="triggerUpload()">Upload</button>    
                         </div>
 
                         <!-- Username Section -->
@@ -78,7 +79,9 @@ export default class Settings extends Abstract {
     async initialize() {
         window.toggleInput = this.toggleInput.bind(this);
         window.saveSettings = this.saveSettings.bind(this);
-        window.removeAvatar = this.removeAvatar.bind(this);  // Bind removeAvatar method
+        window.removeAvatar = this.removeAvatar.bind(this);
+        window.uploadAvatar = (event) => this.uploadAvatar(event);
+        window.triggerUpload = this.triggerUpload.bind(this);
         await this.fetchUserData();
     }
     
@@ -195,22 +198,42 @@ export default class Settings extends Abstract {
     
     async removeAvatar() {
         const avatarPreview = document.getElementById("avatarPreview");
-        if (avatarPreview) {
-            avatarPreview.style.backgroundImage = 'url("../images/default.jpeg")';
+        avatarPreview.style.backgroundImage = 'url("../images/default.jpeg")';
+        avatarPreview.style.backgroundSize = "cover";
+        avatarPreview.style.backgroundPosition = "center";
+        document.getElementById('remove-avatar').style.display = 'none';
+        document.getElementById('upload-avatar').style.display = 'block';
+        document.getElementById('avatar').disabled = false; // Enable the file input
+        this.avatarRemoved = true;
+        this.newAvatarFile = null;
+    }
+    
+    
+
+    triggerUpload() {
+        console.log("Upload button clicked, opening file input...");
+        document.getElementById('avatar').click();
+    }
+    
+    async uploadAvatar(event) {
+        console.log('Uploading avatar...');
+        if (event && event.target && event.target.files && event.target.files.length > 0) {
+            const file = event.target.files[0];
+            console.log("File selected:", file);
+            const avatarPreview = document.getElementById("avatarPreview");
+            avatarPreview.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
             avatarPreview.style.backgroundSize = "cover";
             avatarPreview.style.backgroundPosition = "center";
-            document.getElementById('remove-avatar').style.display = 'none';
-            document.getElementById('upload-avatar').style.display = 'block';
-            this.avatarRemoved = true; // Set flag to true
-        }
-        const avatarInput = document.getElementById('avatar');
-        if (avatarInput) {
-            avatarInput.value = '';  // Clear the file input field
+    
+            this.newAvatarFile = file;
+            this.avatarRemoved = false;
+    
+            document.getElementById('remove-avatar').style.display = 'block';
+            document.getElementById('upload-avatar').style.display = 'none';
+        } else {
+            console.warn("No file selected or invalid event.");
         }
     }
     
-
-    async uploadAvatar() {
-        
-    }
+    
 }
