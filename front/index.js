@@ -1,5 +1,6 @@
 // Your existing routes and loadView function
 const routes = [
+    {path: "/welcome", view: "Welcome"},
     { path: "/", view: "Home"},
     { path: "/login", view: "Login"},
     { path: "/signup", view: "Signup"},
@@ -50,7 +51,7 @@ const loadView = async (path) => {
         const module = await import(`../views/${viewName}.js`);
         if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
             alert('You need to login first');
-            return navigate('/login');
+            return navigate('/welcome');
         }
         // console.log('Imported module:', module);
         const View = module.default;

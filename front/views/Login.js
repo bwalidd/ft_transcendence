@@ -17,6 +17,7 @@ export default class Login extends Abstract {
     async getHtml() {
         return `
         <div class="container-f d-flex justify-content-center align-items-center position-relative" style="height:100vh">
+            <div class="overlay"></div>    
             <div class="container signbg d-flex rounded flex-column justify-content-center align-items-center" style="width:500px; height:100vh">
                 <h1 class="big-text text-center display-4 mb-5" style="margin-top: -90px;">Login</h1>
                 <div class="form-container d-flex flex-column justify-content-center">

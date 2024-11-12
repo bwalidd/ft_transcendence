@@ -9,15 +9,37 @@
 }
 
 .container-f {
-    background-image: url("../images/signupbg.jpg");
+    background-image: url("../images/lloginpic.jpg");
     background-size: cover;
     background-position: center;
     overflow: hidden;
 }
 
-.signbg h1 {
-    color: rgba(255, 255, 255, 0.904);
+.big-text {
+    font-family: 'Diablo', sans-serif;
+    font-size: 3rem;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: fadeInDown 1s ease forwards;
 }
+
+.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+
+.signbg{
+    z-index: 2;
+}
+
 
 #login{
     margin-top: 20px;
@@ -50,4 +72,13 @@ a.btn-outline-light {
     background-color: transparent;
     border: 1px solid #f8f9fa;
     color: #f8f9fa;
+}
+
+
+.form-control{
+    border-radius: 14px;
+    width: 100%;
+    padding: 10px;
+    height: 50px;
+    background-color: transparent;
 }

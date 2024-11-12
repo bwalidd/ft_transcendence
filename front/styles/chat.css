@@ -94,14 +94,20 @@ body {
 }
 
 .logo {
-	width: 100px;
+	width: 90px;
 	height: 90px;
-	margin-top: -20px;
-	background: url('../images/mini\ pongx.png');
+	background: url('../images/llogo.png');
 	background-position: center;
 	background-size: cover;
-	padding-left: 50px;
 	transition: width 0.3s, max-height 0.3s;
+  }
+  
+.side-nav:hover .logo {
+	width: 230px;
+	height: 200px;
+	margin-top: 10px;
+	background: url('../images/llogo.png') no-repeat center center;
+	background-size: cover;
 }
 
 .notification {
@@ -132,13 +138,6 @@ body {
 }
 
 
-.side-nav:hover .logo {
-    width: 100%;
-    height: 100px;
-	max-height: 100px;
-    background: url('../images/pongx.png') no-repeat center center;
-    background-size: cover;
-}
 
 .side-nav li p {
 	white-space: nowrap;

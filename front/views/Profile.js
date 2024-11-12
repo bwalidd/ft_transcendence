@@ -217,7 +217,7 @@ export default class Profile extends Abstract {
             await this.logoutUser();
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
-            window.location.href = '/login';
+            window.location.href = '/welcome';
         });
 
         document.addEventListener("DOMContentLoaded", () => {

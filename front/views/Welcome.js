@@ -19,20 +19,19 @@ export default class Welcome extends Abstract {
         <div class="containerr">
             <div class="overlay"></div>
             <div class="content">
-                <div class="our-logo">
-                </div>
-                <div>
-                    <p class="quoate-p">
-                    Life is like a game of ping pong. The more you play, the better you get. Enjoy every rally and embrace the challenge!
-                    </p>
-                </div>
-                <button class="login-btn">Sign in With Intra 42</button>
+                <h1 class="headline">
+                    <span class="word">FUN</span>
+                    <span class="word">MOOD</span>
+                    <span class="word">ALL</span>
+                    <span class="word">DAY!</span>
+                </h1>
+                <a href="/login" class="login-link">Start Fight</a>
             </div>
         </div>
         `;
     }
 
     initialize() {
-        // Any additional initialization code
+        loadCSS(this.cssUrl);
     }
 }

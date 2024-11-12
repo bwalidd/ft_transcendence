@@ -17,8 +17,9 @@ export default class Signup extends Abstract {
     async getHtml() {
         return `
         <div class="container-f d-flex justify-content-center align-items-center position-relative" style="height:100vh">
-            <div class="container signbg d-flex rounded flex-column justify-content-center align-items-center" style="width:500px; height:100vh">
-                <h1 class="big-text text-center display-4 mb-5" style="margin-top: -150px;">Sign Up</h1>
+        <div class="overlay"></div>    
+        <div class="container signbg d-flex rounded flex-column justify-content-center align-items-center" style="width:500px; height:100vh">
+                <h1 class="big-text text-center display-4 mb-5" style="margin-top: -150px;">Register</h1>
                 <div class="form-container d-flex flex-column justify-content-center">
                     <form id="signup-form" class="container" enctype="multipart/form-data">
                         <div class="form-group mb-4">

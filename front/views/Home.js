@@ -33,10 +33,10 @@ export default class Home extends Abstract {
                             <input type="text" id="search-input" class="search-input" placeholder="Search users...">
                             <div id="search-results" class="search-results"></div>
                         </a>
-                        <a class="nav-link" href="#">
-                            <div class="notif"></div>
-                        </a>
-                        <p class="nav-link">Welcome, ${user.username}</p>
+                        <div class="nav-link">
+                            <p class="greeting">Hey,</p>
+                            <p class="username"><strong>${user.username}</strong></p>
+                        </div>
                         <a class="nav-link" href="/profile">
                             <div class="profile-img" style="background-image: url('${avatarUrl}');"></div>
                         </a>
@@ -192,7 +192,7 @@ export default class Home extends Abstract {
             await this.logoutUser();
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
-            window.location.href = '/login';
+            window.location.href = '/welcome';
         });
 
         const searchInput = document.getElementById('search-input');
