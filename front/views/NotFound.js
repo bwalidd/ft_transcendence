@@ -28,6 +28,6 @@ export default class NotFound extends Abstract {
     }
 
     initialize() {
-        // Any additional initialization code
+        
     }
 }

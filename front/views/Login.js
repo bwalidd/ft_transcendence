@@ -1,3 +1,4 @@
+import { navigate } from '../index.js';
 import Abstract from './Abstract.js';
 
 function loadCSS(url) {
@@ -9,9 +10,9 @@ function loadCSS(url) {
 
 export default class Login extends Abstract {
     constructor(params) {
+        loadCSS('../styles/Login.css');
         super(params);
         this.setTitle("Login");
-        loadCSS('../styles/Login.css');
     }
 
     async getHtml() {
@@ -41,6 +42,7 @@ export default class Login extends Abstract {
     }
 
     initialize() {
+        
         const form = document.getElementById('login-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -65,8 +67,8 @@ export default class Login extends Abstract {
                     const data = await response.json();
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('refresh_token', data.refresh_token);
-                    alert('Login successful!');
-                    window.location.href = '/home';
+                    alert('Login successful');
+                    navigate('/home');
                 } else {
                     const errorData = await response.json();
                     document.getElementById('error-message').innerText = errorData.detail || 'Login failed. Please try again.';

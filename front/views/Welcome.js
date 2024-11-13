@@ -18,6 +18,7 @@ export default class Welcome extends Abstract {
         return `
         <div class="containerr">
             <div class="overlay"></div>
+            <div class="smoke"></div>
             <div class="content">
                 <h1 class="headline">
                     <span class="word">FUN</span>
@@ -32,6 +33,6 @@ export default class Welcome extends Abstract {
     }
 
     initialize() {
-        loadCSS(this.cssUrl);
+        
     }
 }

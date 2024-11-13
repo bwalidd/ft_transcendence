@@ -82,3 +82,8 @@ a.btn-outline-light {
     height: 50px;
     background-color: transparent;
 }
+
+.back-home a{
+    color: antiquewhite;
+    font-family: 'Diablo';
+}

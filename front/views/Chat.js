@@ -1,3 +1,4 @@
+import { navigate } from '../index.js';
 import Abstract from './Abstract.js';
 
 function loadCSS(url) {
@@ -9,9 +10,9 @@ function loadCSS(url) {
 
 export default class Chat extends Abstract {
     constructor(params) {
+        loadCSS('../styles/chat.css');
         super(params);
         this.setTitle("Chat");
-        loadCSS('../styles/chat.css');
         this.socket = null; // This will hold the current socket
         this.currentFriend = null; // Store the currently selected friend
         this.userData = null;
@@ -350,12 +351,13 @@ export default class Chat extends Abstract {
     
 
     initialize() {
+        
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
-            window.location.href = '/welcome';
+            navigate('/welcome');
         });
 
         const chatContainer = document.querySelector('.chat-container');

@@ -1,3 +1,4 @@
+import { navigate } from '../index.js';
 import Abstract from './Abstract.js';
 import { fetchUserData } from './authutils.js';
 
@@ -10,9 +11,9 @@ function loadCSS(url) {
 
 export default class Profile extends Abstract {
     constructor(params) {
+        loadCSS('../styles/Profile.css');
         super(params);
         this.setTitle("Profile");
-        loadCSS('../styles/Profile.css');
     }
 
     async getHtml() {
@@ -211,13 +212,13 @@ export default class Profile extends Abstract {
 
 
     initialize() {
-
+        
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
-            window.location.href = '/welcome';
+            navigate('/welcome');
         });
 
         document.addEventListener("DOMContentLoaded", () => {

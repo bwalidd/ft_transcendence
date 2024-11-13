@@ -107,6 +107,14 @@ a.btn-secondary:hover {
 }
 
 
+p a{
+    font-family: 'Diablo';
+    color: antiquewhite;
+}
+
+
+
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }

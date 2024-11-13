@@ -13,7 +13,7 @@ const routes = [
     
 ];
 
-const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard","settings"];
+const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard","Settings"];
 
 const loadCSS = (url) => {
     return new Promise((resolve, reject) => {
@@ -35,9 +35,6 @@ const loadCSS = (url) => {
 const unloadCSS = () => {
     document.querySelectorAll('link.dynamic-css').forEach(link => link.remove());
 };
-
-
-
 
 
 const loadedCSS = new Set();

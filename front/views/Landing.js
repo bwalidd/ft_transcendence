@@ -37,6 +37,6 @@ export default class Landing extends Abstract {
     }
 
     initialize() {
-        // Any additional initialization code
+        
     }
 }

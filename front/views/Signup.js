@@ -1,3 +1,4 @@
+import { navigate } from '../index.js';
 import Abstract from './Abstract.js';
 
 function loadCSS(url) {
@@ -9,9 +10,9 @@ function loadCSS(url) {
 
 export default class Signup extends Abstract {
     constructor(params) {
+        loadCSS('../styles/Signup.css');
         super(params);
         this.setTitle("Signup");
-        loadCSS('../styles/Signup.css');
     }
 
     async getHtml() {
@@ -50,6 +51,7 @@ export default class Signup extends Abstract {
     }
 
     initialize() {
+        
         const form = document.getElementById('signup-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -87,7 +89,7 @@ export default class Signup extends Abstract {
 
                 const data = await response.json();
                 alert('Registration successful!');
-                window.location.href = '/login';
+                navigate('/login');
             } catch (error) {
                 console.error('Error:', error);
                 alert('Registration failed. Please try again.');

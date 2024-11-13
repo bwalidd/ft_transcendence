@@ -1,3 +1,4 @@
+import { navigate } from '../index.js';
 import Abstract from './Abstract.js';
 import { fetchUserData } from './authutils.js';
 
@@ -11,8 +12,8 @@ function loadCSS(url) {
 export default class Home extends Abstract {
     constructor(params) {
         super(params);
-        this.setTitle("Home");
         loadCSS('../styles/home.css');
+        this.setTitle("Home");
     }
 
     async getHtml() {
@@ -187,12 +188,13 @@ export default class Home extends Abstract {
     }
 
     initialize() {
+        
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
-            window.location.href = '/welcome';
+            navigate('/welcome');
         });
 
         const searchInput = document.getElementById('search-input');

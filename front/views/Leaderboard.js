@@ -10,8 +10,8 @@ function loadCSS(url) {
 export default class Leaderboard extends Abstract {
     constructor(params) {
         super(params);
-        this.setTitle("Leaderboard");
         loadCSS('../styles/leaderboard.css');
+        this.setTitle("Leaderboard");
     }
 
     async getHtml() {
@@ -153,6 +153,6 @@ export default class Leaderboard extends Abstract {
     }
 
     initialize() {
-        // Any additional initialization code
+        
     }
 }

@@ -9,11 +9,11 @@ function loadCSS(url) {
 
 export default class Settings extends Abstract {
     constructor(params) {
+        loadCSS('../styles/Settings.css');
         super(params);
         this.avatarRemoved = false; // Flag to track if the avatar was removed
         this.newAvatarFile = null; 
         this.setTitle("Settings");
-        loadCSS('../styles/Settings.css');
     }
 
     async getHtml() {
@@ -69,7 +69,7 @@ export default class Settings extends Abstract {
                         <button type="button" id="saveSettingsButton" class="save-button" onclick="saveSettings()">Save Changes</button>
                     </form>
                     <div class="back-home">
-                        <a href="/home">Back to Home</a>
+                        <a href="/">Back to Home</a>
                     </div>
                 </div>
             </div>
@@ -77,6 +77,7 @@ export default class Settings extends Abstract {
     }
 
     async initialize() {
+        console.log('Settings page initialized');
         window.toggleInput = this.toggleInput.bind(this);
         window.saveSettings = this.saveSettings.bind(this);
         window.removeAvatar = this.removeAvatar.bind(this);
