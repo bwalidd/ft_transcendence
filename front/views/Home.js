@@ -92,7 +92,7 @@ export default class Home extends Abstract {
                 </div>
             </div>
             <div class="fixed-bottom text-right p-4">
-                <button type="button" class="btn btn-outline-light">PLAY</button>
+                <a href="/training" class="btn btn-outline-light">PLAY</a>
             </div>
         </div>
         <!-- User Info Popup -->

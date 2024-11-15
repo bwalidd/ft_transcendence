@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'chat',
     'core',
     'friend',
+    'game',
     'api.apps.ApiConfig',
     'account.apps.AccountConfig',
 

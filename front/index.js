@@ -1,6 +1,7 @@
 // Your existing routes and loadView function
 const routes = [
     {path: "/welcome", view: "Welcome"},
+    {path: "/training", view: "GameAi"},
     { path: "/", view: "Home"},
     { path: "/login", view: "Login"},
     { path: "/signup", view: "Signup"},
@@ -13,7 +14,7 @@ const routes = [
     
 ];
 
-const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard","Settings"];
+const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard","Settings","GameAi"];
 
 const loadCSS = (url) => {
     return new Promise((resolve, reject) => {
