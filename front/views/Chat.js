@@ -357,6 +357,15 @@ export default class Chat extends Abstract {
             await this.logoutUser();
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
+            const alertBox = document.createElement('div');
+            alertBox.className = 'custom-alert';
+            alertBox.innerText = 'Logout Done!';
+            document.body.appendChild(alertBox);
+
+            // Remove the alert after 3 seconds
+            setTimeout(() => {
+                alertBox.remove();
+            }, 3000);
             navigate('/welcome');
         });
 

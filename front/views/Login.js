@@ -42,14 +42,13 @@ export default class Login extends Abstract {
     }
 
     initialize() {
-        
         const form = document.getElementById('login-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-
+    
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
+    
             try {
                 const response = await fetch('http://localhost:8001/api/auth/login/', {
                     method: 'POST',
@@ -62,13 +61,24 @@ export default class Login extends Abstract {
                         password: password
                     })
                 });
-
+    
                 if (response.ok) {
                     const data = await response.json();
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('refresh_token', data.refresh_token);
-                    alert('Login successful');
-                    navigate('/home');
+                    
+                    // Create custom alert
+                    const alertBox = document.createElement('div');
+                    alertBox.className = 'custom-alert';
+                    alertBox.innerText = 'Login successful!';
+                    document.body.appendChild(alertBox);
+    
+                    // Remove the alert after 3 seconds
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 3000);
+    
+                    navigate('/');
                 } else {
                     const errorData = await response.json();
                     document.getElementById('error-message').innerText = errorData.detail || 'Login failed. Please try again.';
@@ -79,37 +89,7 @@ export default class Login extends Abstract {
             }
         });
     }
+    
 }
 
 
-
-
-/*
-
- document.getElementById("login-form").addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            try {
-                const response = await fetch('http://localhost:8001/api/login/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password })
-                });
-
-                if (response.ok) {
-                    alert('Login successful');
-                    window.location.href = '/profile';
-                } else {
-                    const errorData = await response.json();
-                    document.getElementById("error-message").innerText = errorData.message || 'An error occurred during login. Please try again.';
-                }
-            } catch (error) {
-                document.getElementById("error-message").innerText = 'An error occurred. Please try again.';
-            }
-        });
-*/

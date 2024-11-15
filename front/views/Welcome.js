@@ -9,9 +9,9 @@ function loadCSS(url) {
 
 export default class Welcome extends Abstract {
     constructor(params) {
+        loadCSS('../styles/welcome.css');
         super(params);
         this.setTitle("Welcome");
-        this.cssUrl = '../styles/welcome.css';
     }
 
     async getHtml() {

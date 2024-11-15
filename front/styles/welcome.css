@@ -5,24 +5,25 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'diablo', sans-serif;
 }
 
 html, body {
-    overflow-x: hidden; /* Ensures no horizontal overflow on the main page */
-    width: 100%; /* Prevents overflow issues */
+    overflow-x: hidden;
+    width: 100%;
 }
 
 .containerr {
     position: relative;
-    width: 100vw; /* Ensures it exactly matches the viewport width */
+    width: 100vw;
     height: 100vh;
-    overflow: hidden; /* Prevents any content from going outside of the container */
+    overflow: hidden;
     background: url('../images/lloginpic.jpg') no-repeat center center / cover;
     display: flex;
     align-items: center;
     justify-content: flex-end;
 }
+
 
 .overlay {
     position: absolute;
@@ -40,13 +41,13 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../images/smoke.png'); /* Add your smoke image URL */
+    background-image: url('../images/smoke.png');
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 0.5;
-    z-index: 1.5; /* Sits between the overlay (z-index: 1) and content (z-index: 2) */
+    z-index: 1.5;
     animation: moveSmoke 60s linear infinite;
-    pointer-events: none; /* Prevents smoke from interfering with interactions */
+    pointer-events: none;
 }
 
 @keyframes moveSmoke {
@@ -54,10 +55,9 @@ html, body {
         transform: translateY(0px) translateX(0px);
     }
     to {
-        transform: translateY(-50px) translateX(50px); /* Adjust this for desired movement */
+        transform: translateY(-50px) translateX(50px);
     }
 }
-
 
 .content {
     position: relative;
@@ -65,11 +65,12 @@ html, body {
     margin-right: 5%;
     text-align: right;
     color: #fff;
+    padding: 0 5%;
 }
 
 .headline {
     font-family: 'Diablo', sans-serif;
-    font-size: 8em;
+    font-size: 8vw; /* Adjusts size based on viewport width */
     line-height: 1.2;
     text-align: right;
     color: transparent;
@@ -89,11 +90,6 @@ html, body {
 .word:nth-child(2) { animation-delay: 0.5s; }
 .word:nth-child(3) { animation-delay: 0.8s; }
 .word:nth-child(4) { animation-delay: 1.2s; }
-
-
-.word{
-    font-family: 'Diablo';
-}
 
 @keyframes fadeInWord {
     from {
@@ -142,7 +138,45 @@ a:hover {
     }
 }
 
-.login-link:hover {
-    transform: scale(1.1);
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .headline {
+        font-size: 10vw;
+    }
+
+    .login-link {
+        font-size: 1.2em;
+        padding: 8px 15px;
+    }
+
+    .content {
+        margin-right: 10%;
+        text-align: center;
+    }
+
+    .containerr {
+        background-position: center center;
+        background-size: cover;
+    }
+}
+
+@media (max-width: 480px) {
+    .headline {
+        font-size: 12vw;
+    }
+
+    .login-link {
+        font-size: 1em;
+        padding: 6px 12px;
+    }
+
+    .content {
+        margin-right: 5%;
+        text-align: center;
+    }
+
+    .containerr {
+        background-position: center center;
+        background-size: cover;
+    }
 }

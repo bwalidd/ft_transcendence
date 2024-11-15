@@ -88,7 +88,16 @@ export default class Signup extends Abstract {
                 }
 
                 const data = await response.json();
-                alert('Registration successful!');
+                // Create custom alert
+                    const alertBox = document.createElement('div');
+                    alertBox.className = 'custom-alert';
+                    alertBox.innerText = 'Login successful!';
+                    document.body.appendChild(alertBox);
+
+                    // Remove the alert after 3 seconds
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 3000);
                 navigate('/login');
             } catch (error) {
                 console.error('Error:', error);
