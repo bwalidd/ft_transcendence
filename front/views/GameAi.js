@@ -43,44 +43,6 @@ export default class GameAi extends Abstract {
         canvas.width = 800;  // Adjust as needed
         canvas.height = 400; // Adjust as needed
 
-        // let player;
-        // let computer;
-
-        // Fetch initial game data from Django backend
-        // try {
-        //     const response = await fetch('/game/', {
-        //         method: 'GET',
-        //         headers: {
-        //             'X-Requested-With': 'XMLHttpRequest',
-        //             'Accept': 'application/json',
-        //         }
-        //     });
-        //     const gameData = await response.json();
-        //     console.log(JSON.stringify(gameData, null, 2));
-        //     console.log("-----------");
-        //     player = gameData.player;
-        //     computer = gameData.computer;
-        //     // ...
-        // } catch (error) {
-        //     console.error('Error fetching game data:', error);
-        //     // Fallback to default values if fetch fails
-        //     player = {
-        //         x: 0,
-        //         y: canvas.height / 2 - PLAYER_HEIGHT / 2,
-        //         width: PLAYER_WIDTH,
-        //         height: PLAYER_HEIGHT,
-        //         color: "BLUE",
-        //         score: 5,
-        //     };
-        //     computer = {
-        //         x: canvas.width - PLAYER_WIDTH,
-        //         y: canvas.height / 2 - PLAYER_HEIGHT / 2,
-        //         width: PLAYER_WIDTH,
-        //         height: PLAYER_HEIGHT,
-        //         color: "BLUE",
-        //         score: 10,
-        //     };
-        // }
 
         const net = {
             x: canvas.width / 2 - 1,
@@ -95,7 +57,7 @@ export default class GameAi extends Abstract {
             y: canvas.height / 2 - PLAYER_HEIGHT / 2,
             width: PLAYER_WIDTH,
             height: PLAYER_HEIGHT,
-            color: "BLUE",
+            color: "RED",
             score: 0,
         };
 
@@ -104,7 +66,7 @@ export default class GameAi extends Abstract {
             y: canvas.height / 2 - PLAYER_HEIGHT / 2,
             width: PLAYER_WIDTH,
             height: PLAYER_HEIGHT,
-            color: "BLUE",
+            color: "RED",
             score: 0,
         };
 
@@ -165,7 +127,7 @@ export default class GameAi extends Abstract {
             ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
         
             // Determine winner
-            const winner = player.score >= SCORE_LIMIT ? "Player" : "Computer";
+            const winner = player.score >= SCORE_LIMIT ? "You" : "Computer";
             ctx.font = "30px Arial";
             ctx.fillText(`${winner} Wins!`, canvas.width / 2, canvas.height / 2 + 50);
         }
@@ -179,12 +141,12 @@ export default class GameAi extends Abstract {
 
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             // Clear the canvas
-            Rectdraw(0, 0, canvas.width, canvas.height, "#E8F9FD");
+            Rectdraw(0, 0, canvas.width, canvas.height, "#000");
             // Draw other elements
             Netdraw();
             // Draw score
-            Textdraw(player.score, canvas.width / 4.5, canvas.height / 5, "black");
-            Textdraw(computer.score, (3 * canvas.width) / 4, canvas.height / 5, "black");
+            Textdraw(player.score, canvas.width / 4.5, canvas.height / 5, "RED");
+            Textdraw(computer.score, (3 * canvas.width) / 4, canvas.height / 5, "RED");
             // Draw the player and computer
             Rectdraw(player.x, player.y, player.width, player.height, player.color);
             Rectdraw(computer.x, computer.y, computer.width, computer.height, computer.color);
