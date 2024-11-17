@@ -127,6 +127,74 @@ export default class Chat extends Abstract {
         document.getElementById('sendMsgBtn').disabled = !enable;
     }
     
+    async inviteToGame() {
+        const gameButton = document.getElementById("gameButton");
+        gameButton.addEventListener("click", async () => {
+            if (!this.currentFriend) {
+                alert("Please select a friend to invite to a game.");
+                return;
+            }
+    
+            const userId = this.userData.id;
+            const friendId = this.currentFriend.id;
+    
+            // Construct WebSocket URL
+            const wsUrl = `ws://localhost:8001/ws/game-invite/${userId}/${friendId}/`;
+    
+            // Establish WebSocket connection if not open
+            if (!this.gameSocket || this.gameSocket.readyState !== WebSocket.OPEN) {
+                this.gameSocket = new WebSocket(wsUrl);
+            }
+    
+            // Handle WebSocket events
+            this.gameSocket.onopen = () => {
+                console.log("WebSocket connection established for game invitations.");
+                this.sendGameInvitation();
+            };
+    
+            this.gameSocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log("Received WebSocket message:", data);
+                if (data.type === "game_invitation") {
+                    alert(`New game invitation from user ${data.from}: ${data.message}`);
+                } else {
+                    console.log("Unexpected message type:", data.type);
+                }
+            };
+    
+            this.gameSocket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+                alert("An error occurred while sending the game invitation.");
+            };
+    
+            this.gameSocket.onclose = () => {
+                console.log("WebSocket connection closed for game invitations.");
+            };
+        });
+    }
+    
+    
+    
+    sendGameInvitation() {
+        // Ensure WebSocket is ready
+        if (this.gameSocket.readyState === WebSocket.OPEN) {
+            const invitationData = {
+                type: "game_invitation",
+                from: this.userData.id, // Sender's user ID
+                to: this.currentFriend.id, // Recipient's user ID
+                message: `${this.userData.username} has invited you to a game.`,
+            };
+    
+            // Send the invitation through WebSocket
+            this.gameSocket.send(JSON.stringify(invitationData));
+            alert(`Game invitation sent to ${this.currentFriend.username}!`);
+        } else {
+            console.error("WebSocket is not open. Cannot send invitation.");
+        }
+    }
+    
+    
+
     updateOnlineStatus(isOnline) {
         const onlineIndicator = document.querySelector('.online b');
         const statusCircle = document.querySelector('.online .circle');
@@ -138,16 +206,6 @@ export default class Chat extends Abstract {
             statusCircle.style.backgroundColor = 'gray';
         }
     }
-
-    // handleIncomingMessage(data) {
-    //     const { msg, sender } = data;
-    //     const chatBox = document.getElementById('chatBox');
-    //     chatBox.innerHTML += `<div class="message received"><div class="message-content">${msg}</div></div>`;
-    //     chatBox.scrollTop = chatBox.scrollHeight;
-
-    //     // Display the notification
-    //     this.showNotification({ sender, msg });
-    // }
 
     handleIncomingMessage(data, friendId) {
         const { msg, sender } = data; // Ensure 'sender' and 'msg' are included in the message data
@@ -379,6 +437,7 @@ export default class Chat extends Abstract {
         });
         this.fetchUserData();
         this.sendMessages(); // Make sure to call sendMessages
+        this.inviteToGame();
     }
 
     setActiveTab(tab, content) {

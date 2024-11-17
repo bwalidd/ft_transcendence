@@ -30,7 +30,7 @@ export default class GameAi extends Abstract {
         const ctx = canvas.getContext("2d");
 
         // Game variables
-        const SCORE_LIMIT = 3;
+        const SCORE_LIMIT = 5;
         const PLAYER_HEIGHT = 100;
         const PLAYER_WIDTH = 20;
         const BALL_START_SPEED = 1;
@@ -121,15 +121,16 @@ export default class GameAi extends Abstract {
 
         function gameover() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "black";
-            ctx.font = "50px Arial";
+            ctx.fillStyle = "antiquewhite";
+            ctx.font = "50px diablo";
             ctx.textAlign = "center";
-            ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
-        
-            // Determine winner
             const winner = player.score >= SCORE_LIMIT ? "You" : "Computer";
-            ctx.font = "30px Arial";
-            ctx.fillText(`${winner} Wins!`, canvas.width / 2, canvas.height / 2 + 50);
+            if (winner === "You")
+                ctx.fillText("Congrats!!", canvas.width / 2, canvas.height / 2);
+            else
+                ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+            ctx.font = "30px diablo";
+            ctx.fillText(`${winner} Win!`, canvas.width / 2, canvas.height / 2 + 50);
         }
 
         // Redraw the canvas

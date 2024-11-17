@@ -139,3 +139,74 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'user_id': self.user_id
                 }
             )
+
+
+class GameConsumer(AsyncWebsocketConsumer):
+    
+    async def connect(self):
+        # Extract user_id and friend_id from the URL
+        self.user_id = self.scope['url_route']['kwargs']['user_id']
+        self.friend_id = self.scope['url_route']['kwargs']['friend_id']
+
+        print(f"User ID: {self.user_id}, Friend ID: {self.friend_id}")
+        self.group_name = f"game_{min(self.user_id, self.friend_id)}_{max(self.user_id, self.friend_id)}"
+        
+        # Make sure user 12 joins the correct group
+        user_group = f"user_{self.user_id}"
+        print(f"User {self.user_id} is joining group {user_group}")
+        
+        # Join the WebSocket group
+        await self.channel_layer.group_add(
+            user_group,  # Ensure each user joins their own unique group
+            self.channel_name
+        )
+        await self.accept()
+        print(f"User {self.user_id} connected to group {user_group}")
+
+
+    async def disconnect(self, close_code):
+        # Ensure that group_name exists before trying to leave the group
+        if hasattr(self, 'group_name'):
+            await self.channel_layer.group_discard(
+                self.group_name,
+                self.channel_name
+            )
+            print(f"User {self.user_id} disconnected from {self.group_name}")
+        else:
+            print("Group name not set, skipping group discard.")
+
+    async def receive(self, text_data):
+        try:
+            data = json.loads(text_data)
+            recipient_id = data.get('to')
+            message = data.get('message')
+
+            if not recipient_id or not message:
+                print("Missing recipient or message in received data")
+                return
+
+            print(f"--1-->Message from {self.user_id} to {recipient_id}: {message}")
+
+            # Send the message to the recipient's group (user_12 instead of game_11_12)
+            to_user_group = f"user_{recipient_id}"
+            print(f"---2-->Sending game invitation to group {to_user_group}: {message}")
+            await self.channel_layer.group_send(
+                to_user_group,  # Send the message to the recipient's group
+                {
+                    "type": "game_invitation_message",
+                    "from": self.user_id,
+                    "message": message
+                }
+            )
+        except Exception as e:
+            print(f"Error processing received message: {e}")
+
+    async def game_invitation_message(self, event):
+        print(f"---3-->Sending game invitation: {event['message']} from {event['from']} to {self.user_id}")
+        await self.send(text_data=json.dumps({
+            "type": "game_invitation",
+            "from": event["from"],
+            "message": event["message"]
+        }))
+
+
