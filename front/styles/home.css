@@ -132,6 +132,7 @@ form .computer-match{
 .match button{
   font-family: 'Diablo';
   font-size: large;
+  width: 200px;
   color: antiquewhite;
   background-color: rgba(82, 77, 77, 0.603);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.836);

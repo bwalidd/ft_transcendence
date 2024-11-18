@@ -106,12 +106,12 @@ export default class Home extends Abstract {
                     <div class="match local-match">
                         <h3 class="first-el">LOCAL MATCH</h3>
                         <div class="avatar-match"></div>
-                        <button type="submit" class="btn btn-outline-light second-el">Start</button>
+                        <button id="local-match" type="submit" class="btn btn-outline-light second-el">Start</button>
                     </div>
                     <div class="match computer-match">
                         <h3 class="first-el">COMPUTER MATCH</h3>
                         <div class="avatar-match ai"></div>
-                        <button type="submit" class="btn btn-outline-light second-el">Start</button>
+                        <button id="play-computer" type="submit" class="btn btn-outline-light second-el">Start</button>
                     </div>
                 </form>
             </div>
@@ -195,6 +195,19 @@ export default class Home extends Abstract {
         if (playButton) {
             playButton.addEventListener('click', this.localOrComputer);
         }
+        document.getElementById('close-button').addEventListener('click', () => {
+            // alert('Close button clicked');
+            const playFormContainer = document.getElementById('play-form-container');
+            playFormContainer.classList.add('hidden');
+        });
+
+        document.getElementById('play-computer').addEventListener('click', () => {
+            navigate('/training');
+        });
+
+        document.getElementById('local-match').addEventListener('click', () => {
+            navigate('/friendly');
+        });
     }
     
     localOrComputer = () => {
@@ -225,10 +238,11 @@ export default class Home extends Abstract {
             playFormContainer.classList.add('hidden');
         });
 
-        document.getElementById('close-button').addEventListener('click', () => {
-            const playFormContainer = document.getElementById('play-form-container');
-            playFormContainer.classList.add('hidden');
-        });
+        // document.getElementById('close-button').addEventListener('click', () => {
+        //     alert('Close button clicked');
+        //     const playFormContainer = document.getElementById('play-form-container');
+        //     playFormContainer.classList.add('hidden');
+        // });
         
     };
     
