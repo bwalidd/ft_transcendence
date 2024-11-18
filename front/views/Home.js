@@ -61,7 +61,7 @@ export default class Home extends Abstract {
                                 </a>
                             </li>
                             <li>
-                                <a>
+                                <a href="/tournaments">
                                     <img src="../images/sidenav-img/trophy.png" class="home">
                                     <p>Tournament</p>
                                 </a>
