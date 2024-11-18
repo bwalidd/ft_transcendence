@@ -21,10 +21,10 @@
 }
 
 h1{
-    font-family: 'Montserrat';  
+    font-family: 'diablo', sans-serif;  
     color: antiquewhite;
-    letter-spacing: 3px;
     font-size: 40px;
+    text-shadow: rgba(255, 204, 0, 0.614) 1px 0 10px;
 }
 
 .tournament-container {
@@ -54,7 +54,7 @@ h1{
 }
 
 button {
-    background-color: #007bff;
+    background-color: #d5eaff;
     color: #fff;
     border: none;
     padding: 10px 15px;
@@ -63,7 +63,9 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    transform: translateY(-0.3rem);
+    transition: transform 400ms;
+    
 }
 
 .tournament-map {
@@ -89,7 +91,7 @@ button:hover {
     font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     border: 2px solid #ccc;
-    border-radius: 12px !important;
+    border-radius: 23px !important;
     background-color: rgba(0, 0, 0, 0.6);
     padding: 10px 15px;
     width: 100%;
@@ -101,7 +103,7 @@ button:hover {
 
 
 input:focus {
-    border-color: #007bff;
+    border-color: #d8ebff;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
     color: #000;
@@ -113,7 +115,7 @@ input::placeholder {
 }
 
 input:hover {
-    border-color: #007bff;
+    border-color: #d9ecff;
 }
 
 
