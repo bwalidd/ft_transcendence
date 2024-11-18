@@ -92,9 +92,31 @@ export default class Home extends Abstract {
                 </div>
             </div>
             <div class="fixed-bottom text-right p-4">
-                <a href="/training" class="btn btn-outline-light">PLAY</a>
+                <button id="play" click="localOrComputer" class="btn btn-outline-light">PLAY</button>
             </div>
         </div>
+        <!-- AI or LOCAL -->
+        <div id="play-form-container" class="play-form-container hidden">
+            <div class="play-form">
+                <div class="top-bar">
+                    <h2>Select Opponent</h2>
+                    <span id="close-button" class="close-icon">&times;</span>
+                </div>
+                <form>
+                    <div class="match local-match">
+                        <h3 class="first-el">LOCAL MATCH</h3>
+                        <div class="avatar-match"></div>
+                        <button type="submit" class="btn btn-outline-light second-el">Start</button>
+                    </div>
+                    <div class="match computer-match">
+                        <h3 class="first-el">COMPUTER MATCH</h3>
+                        <div class="avatar-match ai"></div>
+                        <button type="submit" class="btn btn-outline-light second-el">Start</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- User Info Popup -->
         <div id="user-info-popup" class="user-info-popup hidden">
             <div class="user-info-content">
@@ -124,71 +146,22 @@ export default class Home extends Abstract {
             </div>
             <h2 class="popup-title">Latest Matches</h2>
             <div class="latest-matches">
-            <h2 class="no-match">No Matche Played</h2>
-            <div class="match">
-                <ul>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-                    <li>
-                        <div class="match-avatar"></div>
-                        <p class="match-username">User123</p>
-                        <p class="match-result">2-0</p>
-                    </li>
-            </ul>
-
+                <h2 class="no-match">No Matche Played</h2>
+                <div class="match">
+                    <ul>
+                        <li>
+                            <div class="match-avatar"></div>
+                            <p class="match-username">User123</p>
+                            <p class="match-result">2-0</p>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            
-            
-            </div>
-        </div>
+    </div>
         `;
     }
 
     initialize() {
-        
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
@@ -198,14 +171,14 @@ export default class Home extends Abstract {
             alertBox.className = 'custom-alert';
             alertBox.innerText = 'Logout Done!';
             document.body.appendChild(alertBox);
-
+    
             // Remove the alert after 3 seconds
             setTimeout(() => {
                 alertBox.remove();
             }, 3000);
             navigate('/welcome');
         });
-
+    
         const searchInput = document.getElementById('search-input');
         searchInput.addEventListener('input', async (event) => {
             const searchString = event.target.value;
@@ -216,7 +189,52 @@ export default class Home extends Abstract {
                 document.getElementById('search-results').style.display = 'none';
             }
         });
+    
+        // Bind the localOrComputer logic to the Play button
+        const playButton = document.getElementById('play');
+        if (playButton) {
+            playButton.addEventListener('click', this.localOrComputer);
+        }
     }
+    
+    localOrComputer = () => {
+        console.log('Play button clicked');
+        const playFormContainer = document.getElementById('play-form-container');
+        const cancelButton = document.getElementById('cancel-button');
+    
+        if (!playFormContainer) {
+            console.error('Play form container not found');
+            return;
+        }else{
+            console.log('Play form container found');
+        }
+    
+        // Show the form
+        playFormContainer.classList.remove('hidden');
+    
+        // Cancel button hides the form
+        cancelButton.addEventListener('click', () => {
+            playFormContainer.classList.add('hidden');
+        });
+    
+        // Handle form submission
+        playFormContainer.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const selectedOption = document.querySelector('input[name="opponent"]:checked').value;
+            alert(`You selected: ${selectedOption}`);
+            playFormContainer.classList.add('hidden');
+        });
+
+        document.getElementById('close-button').addEventListener('click', () => {
+            const playFormContainer = document.getElementById('play-form-container');
+            playFormContainer.classList.add('hidden');
+        });
+        
+    };
+    
+    
+    
+    
 
     displaySearchResults(users) {
         const searchResultsContainer = document.getElementById('search-results');
