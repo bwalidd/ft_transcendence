@@ -212,12 +212,63 @@ export default class Chat extends Abstract {
     
         this.gameSocket.onmessage = (event) => {
             const data = JSON.parse(event.data);
+        
             if (data.type === "game_invitation") {
-                alert(`Game invitation received from ${data.from}: ${data.message}`);
+                // Create the custom alert box
+                const alertBox = document.createElement("div");
+                alertBox.className = "invite-alert";
+                console.log("data from invite", data);
+                alertBox.innerHTML = `
+                    <p>${data.message}</p>
+                    <div class="alert-buttons">
+                        <button class="accept-btn">Accept</button>
+                        <button class="decline-btn">Decline</button>
+                    </div>
+                `;
+        
+                document.body.appendChild(alertBox);
+        
+                // Add event listeners for the buttons
+                const acceptButton = alertBox.querySelector(".accept-btn");
+                const declineButton = alertBox.querySelector(".decline-btn");
+        
+                acceptButton.addEventListener("click", () => {
+                    // Handle game acceptance logic
+                    this.gameSocket.send(
+                        JSON.stringify({
+                            type: "game_response",
+                            from: this.userData.id,
+                            to: data.from,
+                            response: "accepted",
+                        })
+                    );
+                    alertBox.remove();
+                });
+        
+                declineButton.addEventListener("click", () => {
+                    // Handle game decline logic
+                    this.gameSocket.send(
+                        JSON.stringify({
+                            type: "game_response",
+                            from: this.userData.id,
+                            to: data.from,
+                            response: "declined",
+                        })
+                    );
+                    alertBox.remove();
+                });
+        
+                // Automatically remove the alert after 3 seconds
+                setTimeout(() => {
+                    if (alertBox) {
+                        alertBox.remove();
+                    }
+                }, 7000);
             } else {
                 console.log("Unhandled WebSocket message:", data);
             }
         };
+        
     
         this.gameSocket.onclose = () => {
             console.log("Game WebSocket connection closed.");
@@ -493,7 +544,14 @@ export default class Chat extends Abstract {
                 };
     
                 this.gameSocket.send(JSON.stringify(invitationData));
-                alert(`Game invitation sent to ${this.currentFriend.username}!`);
+                // alert(`Game invitation sent to ${this.currentFriend.username}!`);
+                const alertBox = document.createElement('div');
+                alertBox.className = 'custom-alert';
+                alertBox.innerText = 'Game invitation sent !';
+                document.body.appendChild(alertBox);
+                setTimeout(() => {
+                    alertBox.remove();
+                }, 3000);
             } else {
                 alert("Game WebSocket is not connected.");
             }
