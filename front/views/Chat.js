@@ -212,7 +212,7 @@ export default class Chat extends Abstract {
             // Handle navigation to /play
             else if (data.type === "navigate_to_play") {
                 console.log(`Navigating to /play with user: ${data.from}`);
-                window.location.href = `/play`;
+                navigate('/play');
             } else {
                 console.log("Unhandled WebSocket message:", data);
             }
