@@ -172,6 +172,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
         
+    
     async def receive(self, text_data):
         try:
             data = json.loads(text_data)
@@ -203,17 +204,40 @@ class GameConsumer(AsyncWebsocketConsumer):
                     return
 
                 to_user_group = f"user_{recipient_id}"
-                await self.channel_layer.group_send(
-                    to_user_group,
-                    {
-                        "type": "game_response_message",
-                        "from": self.user_id,
-                        "response": response
-                    }
-                )
+
+                # Forward both players to /play if accepted
+                if response == "accepted":
+                    # Notify both players to navigate to /play
+                    await self.channel_layer.group_send(
+                        f"user_{self.user_id}",
+                        {
+                            "type": "navigate_to_play",
+                            "from": self.user_id,
+                            "to": recipient_id
+                        }
+                    )
+                    await self.channel_layer.group_send(
+                        f"user_{recipient_id}",
+                        {
+                            "type": "navigate_to_play",
+                            "from": recipient_id,
+                            "to": self.user_id
+                        }
+                    )
+                else:
+                    # Send response back to inviter if declined
+                    await self.channel_layer.group_send(
+                        to_user_group,
+                        {
+                            "type": "game_response_message",
+                            "from": self.user_id,
+                            "response": response
+                        }
+                    )
 
         except Exception as e:
             print(f"Error: {e}")
+
 
     async def game_invitation_message(self, event):
         await self.send(text_data=json.dumps({
@@ -228,3 +252,11 @@ class GameConsumer(AsyncWebsocketConsumer):
             "from": event["from"],
             "response": event["response"]
         }))
+
+    async def navigate_to_play(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "navigate_to_play",
+            "from": event["from"],
+            "to": event["to"]
+        }))
+

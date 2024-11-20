@@ -202,12 +202,17 @@ export default class Chat extends Abstract {
             else if (data.type === "game_response") {
                 console.log(`Game response from ${data.from}: ${data.response}`);
     
-                // You can update the UI based on the response here (e.g., show acceptance/decline status)
+                // Update the UI based on the response
                 if (data.response === "accepted") {
                     alert("Game Accepted!");
                 } else if (data.response === "declined") {
                     alert("Game Declined!");
                 }
+            } 
+            // Handle navigation to /play
+            else if (data.type === "navigate_to_play") {
+                console.log(`Navigating to /play with user: ${data.from}`);
+                window.location.href = `/play`;
             } else {
                 console.log("Unhandled WebSocket message:", data);
             }
@@ -221,6 +226,7 @@ export default class Chat extends Abstract {
             console.error("Game WebSocket error:", error);
         };
     }
+    
     
     
     
