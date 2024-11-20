@@ -212,6 +212,8 @@ export default class Chat extends Abstract {
             // Handle navigation to /play
             else if (data.type === "navigate_to_play") {
                 console.log(`Navigating to /play with user: ${data.from}`);
+                localStorage.setItem("userId_for_game", userId);
+                localStorage.setItem("friendId_for_game", friendId);
                 navigate('/play');
             } else {
                 console.log("Unhandled WebSocket message:", data);

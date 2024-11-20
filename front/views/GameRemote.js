@@ -19,12 +19,12 @@ export default class GameRemote extends Abstract {
         return `
         <div class="informations">
             <div class="right-div">
-                <div class="avatar"></div>
-                <h2>myName</h2>
+                <div id="my-username-avatar" class="avatar"></div>
+                <h2 id="my-username">Logged username </h2>
             </div>
             <div class="left-div">
-                <h2>myName</h2>
-                <div class="avatar"></div>
+                <h2 id="friend-username">Friend username</h2>
+                <div id="friend-username-avatar" class="avatar"></div>
             </div>
         </div>
         <div class="game-header">
@@ -38,6 +38,78 @@ export default class GameRemote extends Abstract {
 
 
     async initialize() {
+        this.fillFields();
+        this.runTheGame();
+        this.setupWebSocket();
+    }
+
+    async fetchAndFillFriend(username, id){
+        const response = await fetch(`http://localhost:8001/api/auth/user/${username}/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.error('Error fetching user profile:', await response.text());
+            return;
+        }
+        const data = await response.json();
+        document.getElementById(id).textContent = data.username;
+        const userAvatar = data.avatar;
+        console.log(userAvatar);
+        document.getElementById(id + "-avatar").style.backgroundImage = `url('http://localhost:8001${userAvatar}')`;
+
+    }
+
+    fillFields() {
+        const user = JSON.parse(localStorage.getItem('userId_for_game'));
+        const friend = JSON.parse(localStorage.getItem('friendId_for_game'));
+        this.fetchAndFillFriend(user,"my-username");
+        this.fetchAndFillFriend(friend,"friend-username");
+        localStorage.removeItem('userId_for_game');
+        localStorage.removeItem('friendId_for_game');
+       
+    }
+
+   
+    setupWebSocket() {
+        const userId = 10; // Replace with actual user data if needed
+        this.gameSocket = new WebSocket(`ws://localhost:8001/ws/game/${userId}/`);
+    
+        this.gameSocket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+    
+            if (data.type === "game_update") {
+                // Synchronize game state with the opponent
+                this.updateGameState(data);
+            } else {
+                console.log("Unhandled WebSocket message:", data);
+            }
+        };
+    
+        this.gameSocket.onopen = () => {
+            console.log("Game WebSocket connected for /play.");
+        };
+    
+        this.gameSocket.onclose = () => {
+            console.log("Game WebSocket closed.");
+        };
+    
+        this.gameSocket.onerror = (error) => {
+            console.error("Game WebSocket error:", error);
+        };
+    }
+    
+    updateGameState(data) {
+        // Update game variables based on data received from the server
+        console.log("Received game state update:", data);
+        // e.g., synchronize ball position, player scores, etc.
+    }
+
+    runTheGame(){
         const canvas = document.querySelector("#pong");
         const ctx = canvas.getContext("2d");
 
@@ -224,5 +296,7 @@ export default class GameRemote extends Abstract {
         });
     }
 
+
 }
+
 

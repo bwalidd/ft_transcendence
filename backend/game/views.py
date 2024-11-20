@@ -1,35 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from .models import Player, Computer
+from .models import GameSession
 
-def index(request):
-    return render(request, 'hello')
+def create_game(request):
+    # Assume player_1 is the logged-in user
+    game = GameSession.objects.create(player_1=request.user)
+    return JsonResponse({'game_id': game.id})
 
-def game_view(request):
-    if request.method == 'GET' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Fetch player and computer data from the database
-        player = Player.objects.first()
-        computer = Computer.objects.first()
-
-        game_data = {
-            'player': {
-                'x': player.x,
-                'y': player.y,
-                'width': player.width,
-                'height': player.height,
-                'color': player.color,
-                'score': player.score,
-            },
-            'computer': {
-                'x': computer.x,
-                'y': computer.y,
-                'width': computer.width,
-                'height': computer.height,
-                'color': computer.color,
-                'score': computer.score,
-            }
-        }
-        return JsonResponse(game_data)
-
-    # Render the HTML for non-AJAX requests
-    return render(request, 'hello world')
+def join_game(request, game_id):
+    game = get_object_or_404(GameSession, id=game_id)
+    if not game.player_2:
+        game.player_2 = request.user
+        game.save()
+    return JsonResponse({'game_id': game.id})
