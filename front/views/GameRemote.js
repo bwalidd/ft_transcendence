@@ -17,6 +17,7 @@ export default class GameRemote extends Abstract {
 
     async getHtml() {
         return `
+        <div class="informations"></div>
         <div class="game-header">
             <button class="game-instruction" id="game-instruction">Back to Home page</button>
         </div>
