@@ -127,73 +127,6 @@ export default class Chat extends Abstract {
         document.getElementById('sendMsgBtn').disabled = !enable;
     }
     
-    // async inviteToGame(friendIdd) {
-    //     const gameButton = document.getElementById("gameButton");
-    //     gameButton.addEventListener("click", async () => {
-    //         if (!this.currentFriend) {
-    //             const userId = this.userData.id;
-    //             const friendId = friendIdd;
-        
-    //             // Construct WebSocket URL
-    //             const wsUrl = `ws://localhost:8001/ws/game-invite/${userId}/${friendId}/`;
-    //             alert("Please select a friend to invite to a game.");
-    //             return;
-    //         }
-    
-    
-    //         // Establish WebSocket connection if not open
-    //         if (!this.gameSocket || this.gameSocket.readyState !== WebSocket.OPEN) {
-    //             this.gameSocket = new WebSocket(wsUrl);
-    //         }
-    
-    //         // Handle WebSocket events
-    //         this.gameSocket.onopen = () => {
-    //             console.log("WebSocket connection established for game invitations.");
-    //             this.sendGameInvitation();
-    //         };
-    
-    //         this.gameSocket.onmessage = (event) => {
-    //             const data = JSON.parse(event.data);
-    //             console.log("Received WebSocket message:", data);
-    //             if (data.type === "game_invitation") {
-    //                 alert(`New game invitation from user ${data.from}: ${data.message}`);
-    //             } else {
-    //                 console.log("Unexpected message type:", data.type);
-    //             }
-    //         };
-    
-    //         this.gameSocket.onerror = (error) => {
-    //             console.error("WebSocket error:", error);
-    //             alert("An error occurred while sending the game invitation.");
-    //         };
-    
-    //         this.gameSocket.onclose = () => {
-    //             console.log("WebSocket connection closed for game invitations.");
-    //         };
-    //     });
-    // }
-
-    
-    
-    
-    
-    // sendGameInvitation() {
-        //     // Ensure WebSocket is ready
-        //     if (this.gameSocket.readyState === WebSocket.OPEN) {
-            //         const invitationData = {
-                //             type: "game_invitation",
-                //             from: this.userData.id, // Sender's user ID
-                //             to: this.currentFriend.id, // Recipient's user ID
-                //             message: `${this.userData.username} has invited you to a game.`,
-                //         };
-                
-                //         // Send the invitation through WebSocket
-                //         this.gameSocket.send(JSON.stringify(invitationData));
-                //         alert(`Game invitation sent to ${this.currentFriend.username}!`);
-                //     } else {
-                    //         console.error("WebSocket is not open. Cannot send invitation.");
-                    //     }
-                    // }
                     
     connectGameInviteSocket(friendId) {
         const userId = this.userData.id;
@@ -212,7 +145,8 @@ export default class Chat extends Abstract {
     
         this.gameSocket.onmessage = (event) => {
             const data = JSON.parse(event.data);
-        
+    
+            // Handle game invitation message
             if (data.type === "game_invitation") {
                 // Create the custom alert box
                 const alertBox = document.createElement("div");
@@ -225,13 +159,12 @@ export default class Chat extends Abstract {
                         <button class="decline-btn">Decline</button>
                     </div>
                 `;
-        
                 document.body.appendChild(alertBox);
-        
+    
                 // Add event listeners for the buttons
                 const acceptButton = alertBox.querySelector(".accept-btn");
                 const declineButton = alertBox.querySelector(".decline-btn");
-        
+    
                 acceptButton.addEventListener("click", () => {
                     // Handle game acceptance logic
                     this.gameSocket.send(
@@ -244,7 +177,7 @@ export default class Chat extends Abstract {
                     );
                     alertBox.remove();
                 });
-        
+    
                 declineButton.addEventListener("click", () => {
                     // Handle game decline logic
                     this.gameSocket.send(
@@ -257,18 +190,28 @@ export default class Chat extends Abstract {
                     );
                     alertBox.remove();
                 });
-        
-                // Automatically remove the alert after 3 seconds
+    
+                // Automatically remove the alert after 7 seconds
                 setTimeout(() => {
                     if (alertBox) {
                         alertBox.remove();
                     }
                 }, 7000);
+            } 
+            // Handle game response message (accepted/declined)
+            else if (data.type === "game_response") {
+                console.log(`Game response from ${data.from}: ${data.response}`);
+    
+                // You can update the UI based on the response here (e.g., show acceptance/decline status)
+                if (data.response === "accepted") {
+                    alert("Game Accepted!");
+                } else if (data.response === "declined") {
+                    alert("Game Declined!");
+                }
             } else {
                 console.log("Unhandled WebSocket message:", data);
             }
         };
-        
     
         this.gameSocket.onclose = () => {
             console.log("Game WebSocket connection closed.");
@@ -278,6 +221,8 @@ export default class Chat extends Abstract {
             console.error("Game WebSocket error:", error);
         };
     }
+    
+    
     
 
     updateOnlineStatus(isOnline) {
