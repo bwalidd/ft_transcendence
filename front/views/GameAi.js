@@ -17,16 +17,7 @@ export default class GameAi extends Abstract {
 
     async getHtml() {
         return `
-        <div class="informations">
-            <div class="right-div">
-                <div class="avatar"></div>
-                <h2>myName</h2>
-            </div>
-            <div class="left-div">
-                <h2>myName</h2>
-                <div class="avatar"></div>
-            </div>
-        </div>
+        
         <div class="game-header">
             <button class="game-instruction" id="game-instruction">Back to Home page</button>
         </div>
