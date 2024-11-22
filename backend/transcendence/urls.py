@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/auth/', include('account.urls',namespace='account')),
     path('api/friend/', include('friend.urls',namespace='friend')),
     path('api/chats/', include('chat.urls',namespace='chat')),
+    path('api/game/', include('game.urls',namespace='game')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,6 +3,9 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import MychatModel
 from django.contrib.auth import get_user_model
+import uuid
+from asgiref.sync import sync_to_async
+
 
 User = get_user_model()
 
@@ -140,21 +143,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
 
+
+
+
+import json
 import uuid
+from channels.generic.websocket import AsyncWebsocketConsumer
+from game.models import GameSession
+from django.contrib.auth.models import User
 
 class GameConsumer(AsyncWebsocketConsumer):
-    
+
     async def connect(self):
         self.user_id = self.scope['url_route']['kwargs']['user_id']
         self.friend_id = self.scope['url_route']['kwargs']['friend_id']
         
-        # Create the group name for the game interaction
         self.group_name = f"game_{min(self.user_id, self.friend_id)}_{max(self.user_id, self.friend_id)}"
         
-        # Define the user-specific group
         user_group = f"user_{self.user_id}"
-        
-        # Add the user to the game group and the user group
         await self.channel_layer.group_add(
             user_group,
             self.channel_name
@@ -169,12 +175,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
         
-    
     async def receive(self, text_data):
         try:
             data = json.loads(text_data)
 
-            # Handle game invitation
             if data['type'] == 'game_invitation':
                 recipient_id = data.get('to')
                 message = data.get('message')
@@ -192,7 +196,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                     }
                 )
 
-            # Handle game response (accepted or declined)
             elif data['type'] == 'game_response':
                 recipient_id = data.get('to')
                 response = data.get('response')
@@ -202,27 +205,25 @@ class GameConsumer(AsyncWebsocketConsumer):
 
                 to_user_group = f"user_{recipient_id}"
 
-                # Forward both players to /play if accepted
                 if response == "accepted":
+                    # Generate a unique session ID
+                    session_id = str(uuid.uuid4())
+
+                    # Create a GameSession object
+                    await self.create_game_session(self.user_id, recipient_id, session_id)
+
                     # Notify both players to navigate to /play
-                    await self.channel_layer.group_send(
-                        f"user_{self.user_id}",
-                        {
-                            "type": "navigate_to_play",
-                            "from": self.user_id,
-                            "to": recipient_id
-                        }
-                    )
-                    await self.channel_layer.group_send(
-                        f"user_{recipient_id}",
-                        {
-                            "type": "navigate_to_play",
-                            "from": recipient_id,
-                            "to": self.user_id
-                        }
-                    )
+                    for user_id in [self.user_id, recipient_id]:
+                        await self.channel_layer.group_send(
+                            f"user_{user_id}",
+                            {
+                                "type": "navigate_to_play",
+                                "from": self.user_id,
+                                "to": recipient_id,
+                                "session_id": session_id
+                            }
+                        )
                 else:
-                    # Send response back to inviter if declined
                     await self.channel_layer.group_send(
                         to_user_group,
                         {
@@ -234,7 +235,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         except Exception as e:
             print(f"Error: {e}")
-
 
     async def game_invitation_message(self, event):
         await self.send(text_data=json.dumps({
@@ -254,6 +254,24 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             "type": "navigate_to_play",
             "from": event["from"],
-            "to": event["to"]
+            "to": event["to"],
+            "session_id": event["session_id"]
         }))
 
+    async def create_game_session(self, player_one_id, player_two_id, session_id):
+        """
+        Create a GameSession object in the database.
+        """
+        try:
+            player_one = await sync_to_async(User.objects.get)(id=player_one_id)
+            player_two = await sync_to_async(User.objects.get)(id=player_two_id)
+
+            await sync_to_async(GameSession.objects.create)(
+                session_id=session_id,
+                player_one=player_one,
+                player_two=player_two
+            )
+
+            print(f"Game session created: {session_id}")
+        except Exception as e:
+            print(f"Error creating game session: {e}")

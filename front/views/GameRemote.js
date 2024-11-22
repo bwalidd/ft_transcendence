@@ -36,20 +36,82 @@ export default class GameRemote extends Abstract {
         `;
     }
 
-
-    async initialize() {
-        this.fillFields();
-        this.runTheGame();
-        this.setupWebSocket();
+    async getCsrfToken() {
+        const name = 'csrftoken=';
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length);
+            }
+        }
+        return null;
     }
 
+    
+
+    async initialize() {
+        const user = JSON.parse(localStorage.getItem('userId_for_game'));
+        const friend = JSON.parse(localStorage.getItem('friendId_for_game'));
+        const session_id = localStorage.getItem('session_id');
+
+        
+    
+        // Send player names and session ID to backend if needed (via WebSocket or API)
+        this.fillFields();
+        await this.sendPlayerNamesAndSession(user,friend,localStorage.getItem('my-username'),localStorage.getItem('friend-username'));
+    
+        this.runTheGame();
+    }
+    
+    async sendPlayerNamesAndSession(userId, friendId, userName, friendName) {
+        console.log("===============================================");
+        console.log("me id --> ", userId);
+        console.log("friend id --> ", friendId);
+        console.log("me username --> ", userName);
+        console.log("friend username --> ", friendName);
+        console.log("===============================================");
+    
+        const csrfToken = await this.getCsrfToken();
+        const response = await fetch('http://localhost:8001/api/game/start/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                player_one: userId,   // This is the current user (player_one)
+                player_two: friendId, // This is the friend (player_two)
+                player1_name: userName, // Send the player's name
+                player2_name: friendName, // Send the friend's name
+            }),
+        });
+    
+        if (!response.ok) {
+            console.error('Error starting the game:', await response.text());
+            return;
+        }
+    
+        const data = await response.json();
+        console.log('Game started:', data);
+    }
+    
+    
+    
+    
+
     async fetchAndFillFriend(username, id){
+        const csrfToken = await this.getCsrfToken();
         const response = await fetch(`http://localhost:8001/api/auth/user/${username}/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            credentials: 'include'
         });
 
         if (!response.ok) {
@@ -60,6 +122,11 @@ export default class GameRemote extends Abstract {
         document.getElementById(id).textContent = data.username;
         const userAvatar = data.avatar;
         console.log(userAvatar);
+        if (id === "my-username") {
+            localStorage.setItem('my-username', data.username);
+        }else if(id === "friend-username"){
+            localStorage.setItem('friend-username', data.username);
+        }
         document.getElementById(id + "-avatar").style.backgroundImage = `url('http://localhost:8001${userAvatar}')`;
 
     }
@@ -75,39 +142,7 @@ export default class GameRemote extends Abstract {
     }
 
    
-    setupWebSocket() {
-        const userId = 10; // Replace with actual user data if needed
-        this.gameSocket = new WebSocket(`ws://localhost:8001/ws/game/${userId}/`);
-    
-        this.gameSocket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-    
-            if (data.type === "game_update") {
-                // Synchronize game state with the opponent
-                this.updateGameState(data);
-            } else {
-                console.log("Unhandled WebSocket message:", data);
-            }
-        };
-    
-        this.gameSocket.onopen = () => {
-            console.log("Game WebSocket connected for /play.");
-        };
-    
-        this.gameSocket.onclose = () => {
-            console.log("Game WebSocket closed.");
-        };
-    
-        this.gameSocket.onerror = (error) => {
-            console.error("Game WebSocket error:", error);
-        };
-    }
-    
-    updateGameState(data) {
-        // Update game variables based on data received from the server
-        console.log("Received game state update:", data);
-        // e.g., synchronize ball position, player scores, etc.
-    }
+
 
     runTheGame(){
         const canvas = document.querySelector("#pong");
@@ -295,8 +330,6 @@ export default class GameRemote extends Abstract {
             navigate('/home');
         });
     }
-
-
 }
 
 

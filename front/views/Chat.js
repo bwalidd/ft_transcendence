@@ -130,6 +130,7 @@ export default class Chat extends Abstract {
                     
     connectGameInviteSocket(friendId) {
         const userId = this.userData.id;
+        const userName = this.userData.username; // Get the current user's name
     
         // Close any existing socket
         if (this.gameSocket) {
@@ -148,7 +149,6 @@ export default class Chat extends Abstract {
     
             // Handle game invitation message
             if (data.type === "game_invitation") {
-                // Create the custom alert box
                 const alertBox = document.createElement("div");
                 alertBox.className = "invite-alert";
                 console.log("data from invite", data);
@@ -161,18 +161,20 @@ export default class Chat extends Abstract {
                 `;
                 document.body.appendChild(alertBox);
     
-                // Add event listeners for the buttons
                 const acceptButton = alertBox.querySelector(".accept-btn");
                 const declineButton = alertBox.querySelector(".decline-btn");
     
                 acceptButton.addEventListener("click", () => {
-                    // Handle game acceptance logic
+                    // Send game response with player names and session ID
                     this.gameSocket.send(
                         JSON.stringify({
                             type: "game_response",
                             from: this.userData.id,
                             to: data.from,
                             response: "accepted",
+                            session_id: data.session_id,
+                            player1_name: userName, // Include the player's name
+                            player2_name: data.from_username, // Include the friend's name
                         })
                     );
                     alertBox.remove();
@@ -191,30 +193,30 @@ export default class Chat extends Abstract {
                     alertBox.remove();
                 });
     
-                // Automatically remove the alert after 7 seconds
                 setTimeout(() => {
                     if (alertBox) {
                         alertBox.remove();
                     }
                 }, 7000);
-            } 
-            // Handle game response message (accepted/declined)
+            }
+    
             else if (data.type === "game_response") {
                 console.log(`Game response from ${data.from}: ${data.response}`);
-    
-                // Update the UI based on the response
                 if (data.response === "accepted") {
                     alert("Game Accepted!");
                 } else if (data.response === "declined") {
                     alert("Game Declined!");
                 }
-            } 
-            // Handle navigation to /play
+            }
+    
             else if (data.type === "navigate_to_play") {
-                console.log(`Navigating to /play with user: ${data.from}`);
-                localStorage.setItem("userId_for_game", userId);
-                localStorage.setItem("friendId_for_game", friendId);
-                navigate('/play');
+                if (data.from === this.userData.id) {
+                    console.log("User is the inviter. Saving match data...");
+                    this.saveMatchData(data);
+                    
+                }
+                alert("Navigating to the play page...");
+                //  navigate('/play');
             } else {
                 console.log("Unhandled WebSocket message:", data);
             }
@@ -229,6 +231,100 @@ export default class Chat extends Abstract {
         };
     }
     
+
+    async fetchUserIds(userID , dest){
+        const csrfToken = await this.getCsrfToken();
+        const response = await fetch(`http://localhost:8001/api/auth/user/${userID}/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            console.error('Error fetching user profile:', await response.text());
+            return;
+        }
+        const data = await response.json();
+        dest = data.username;
+    }
+
+    async fetchUsername(userId) {
+        const csrfToken = await this.getCsrfToken();
+        try {
+            const response = await fetch(`http://localhost:8001/api/auth/user/${userId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include'
+            });
+    
+            if (!response.ok) {
+                console.error(`Error fetching username for user ID ${userId}:`, await response.text());
+                return null;
+            }
+    
+            const data = await response.json();
+            return data.username;
+        } catch (error) {
+            console.error('Error in fetchUsername:', error);
+            return null;
+        }
+    }
+    
+
+ 
+    async saveMatchData(data) {
+            console.log("Match data:", data);
+        
+            // Fetch inviter and invitee usernames
+            const inviter = await this.fetchUsername(data.from);
+            const invitee = await this.fetchUsername(data.to);
+        
+            const csrfToken = await this.getCsrfToken();
+        
+            try {
+                const response = await fetch('http://localhost:8001/api/game/start/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        player_one: data.from, // Inviter's ID
+                        player_two: data.to,   // Invitee's ID
+                        session_id: data.session_id // Session ID from the WebSocket message
+                    }),
+                });
+        
+                if (!response.ok) {
+                    console.error('Error starting the game:', await response.text());
+                    alert('Failed to start the game. Please try again.');
+                    return;
+                }
+        
+                const responseData = await response.json();
+                console.log("Game session created:", responseData);
+        
+                // Navigate to the game page or perform additional actions
+                alert(`Game session created successfully with ID: ${responseData.session_id}`);
+                // Example: Navigate to the play page
+                // this.navigate('/play', { sessionId: responseData.session_id });
+            } catch (error) {
+                console.error('Error in saveMatchData:', error);
+                alert('An error occurred while starting the game.');
+            }
+        }
+        
+
     
     
     
@@ -448,6 +544,8 @@ export default class Chat extends Abstract {
     
 
     initialize() {
+        this.inviter = null;
+        this.invitee = null;
         
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
