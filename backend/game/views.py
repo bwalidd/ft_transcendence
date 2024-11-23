@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import GameSession
 from django.contrib.auth import get_user_model
+from rest_framework.views import APIView
+from .models import GameSession
+from .serializers import GameSessionSerializer ,GameSessionSerializerDetail
 
 User = get_user_model()
 
@@ -55,3 +58,27 @@ def start_game(request):
         return Response(
             {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+ # Ensure you have this serializer defined
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def game_session_detail(request, session_id):
+    """
+    Retrieve game session details by session ID.
+    """
+    try:
+        # Fetch the game session by session_id
+        game_session = GameSession.objects.get(session_id=session_id)
+        serializer = GameSessionSerializerDetail(game_session)  # Serialize the game session
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except GameSession.DoesNotExist:
+        return Response(
+            {"error": "Game session not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    except Exception as e:
+        return Response(
+            {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+

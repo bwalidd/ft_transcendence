@@ -44,5 +44,5 @@ class GameSession(models.Model):
         verbose_name_plural = "Game Sessions"
 
     def __str__(self):
-        return f"Game Session {self.player_two} vs {self.player_one} at : {self.created_at}"
+        return f"Game Session {self.player_two} vs {self.player_one} | {self.session_id}"
 

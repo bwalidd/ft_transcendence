@@ -51,52 +51,46 @@ export default class GameRemote extends Abstract {
     
 
     async initialize() {
-        const user = JSON.parse(localStorage.getItem('userId_for_game'));
-        const friend = JSON.parse(localStorage.getItem('friendId_for_game'));
-        const session_id = localStorage.getItem('session_id');
-
-        
+        const sessionId = localStorage.getItem("currentSessionId");
+        console.log("Session ID from localStorage:", sessionId);
     
-        // Send player names and session ID to backend if needed (via WebSocket or API)
-        this.fillFields();
-        await this.sendPlayerNamesAndSession(user,friend,localStorage.getItem('my-username'),localStorage.getItem('friend-username'));
-    
+        if (sessionId) {
+            await this.fillFields(sessionId);
+        } else {
+            console.error("No sessionId found in localStorage.");
+        }
         this.runTheGame();
     }
     
-    async sendPlayerNamesAndSession(userId, friendId, userName, friendName) {
-        console.log("===============================================");
-        console.log("me id --> ", userId);
-        console.log("friend id --> ", friendId);
-        console.log("me username --> ", userName);
-        console.log("friend username --> ", friendName);
-        console.log("===============================================");
+    async fillFields(sessionId) {
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch(`http://localhost:8001/api/game/details/${sessionId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include'
+            });
     
-        const csrfToken = await this.getCsrfToken();
-        const response = await fetch('http://localhost:8001/api/game/start/', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                player_one: userId,   // This is the current user (player_one)
-                player_two: friendId, // This is the friend (player_two)
-                player1_name: userName, // Send the player's name
-                player2_name: friendName, // Send the friend's name
-            }),
-        });
+            if (!response.ok) {
+                console.error('Error fetching game session:', await response.text());
+                return;
+            }
     
-        if (!response.ok) {
-            console.error('Error starting the game:', await response.text());
-            return;
+            const data = await response.json();
+            console.log('Game session details:', data);
+    
+            // Optionally populate fields with game session data
+            await this.fetchAndFillFriend(data.player_one, "my-username");
+            await this.fetchAndFillFriend(data.player_two, "friend-username");
+        } catch (err) {
+            console.error("Error in fillFields:", err);
         }
-    
-        const data = await response.json();
-        console.log('Game started:', data);
     }
+    
     
     
     
@@ -131,16 +125,7 @@ export default class GameRemote extends Abstract {
 
     }
 
-    fillFields() {
-        const user = JSON.parse(localStorage.getItem('userId_for_game'));
-        const friend = JSON.parse(localStorage.getItem('friendId_for_game'));
-        this.fetchAndFillFriend(user,"my-username");
-        this.fetchAndFillFriend(friend,"friend-username");
-        localStorage.removeItem('userId_for_game');
-        localStorage.removeItem('friendId_for_game');
-       
-    }
-
+    
    
 
 

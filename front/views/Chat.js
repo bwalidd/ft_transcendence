@@ -128,108 +128,7 @@ export default class Chat extends Abstract {
     }
     
                     
-    connectGameInviteSocket(friendId) {
-        const userId = this.userData.id;
-        const userName = this.userData.username; // Get the current user's name
-    
-        // Close any existing socket
-        if (this.gameSocket) {
-            this.gameSocket.close();
-        }
-    
-        // Establish a new WebSocket connection
-        this.gameSocket = new WebSocket(`ws://localhost:8001/ws/game-invite/${userId}/${friendId}/`);
-    
-        this.gameSocket.onopen = () => {
-            console.log(`Game WebSocket connected for friend ID: ${friendId}`);
-        };
-    
-        this.gameSocket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-    
-            // Handle game invitation message
-            if (data.type === "game_invitation") {
-                const alertBox = document.createElement("div");
-                alertBox.className = "invite-alert";
-                console.log("data from invite", data);
-                alertBox.innerHTML = `
-                    <p>${data.message}</p>
-                    <div class="alert-buttons">
-                        <button class="accept-btn">Accept</button>
-                        <button class="decline-btn">Decline</button>
-                    </div>
-                `;
-                document.body.appendChild(alertBox);
-    
-                const acceptButton = alertBox.querySelector(".accept-btn");
-                const declineButton = alertBox.querySelector(".decline-btn");
-    
-                acceptButton.addEventListener("click", () => {
-                    // Send game response with player names and session ID
-                    this.gameSocket.send(
-                        JSON.stringify({
-                            type: "game_response",
-                            from: this.userData.id,
-                            to: data.from,
-                            response: "accepted",
-                            session_id: data.session_id,
-                            player1_name: userName, // Include the player's name
-                            player2_name: data.from_username, // Include the friend's name
-                        })
-                    );
-                    alertBox.remove();
-                });
-    
-                declineButton.addEventListener("click", () => {
-                    // Handle game decline logic
-                    this.gameSocket.send(
-                        JSON.stringify({
-                            type: "game_response",
-                            from: this.userData.id,
-                            to: data.from,
-                            response: "declined",
-                        })
-                    );
-                    alertBox.remove();
-                });
-    
-                setTimeout(() => {
-                    if (alertBox) {
-                        alertBox.remove();
-                    }
-                }, 7000);
-            }
-    
-            else if (data.type === "game_response") {
-                console.log(`Game response from ${data.from}: ${data.response}`);
-                if (data.response === "accepted") {
-                    alert("Game Accepted!");
-                } else if (data.response === "declined") {
-                    alert("Game Declined!");
-                }
-            }
-    
-            else if (data.type === "navigate_to_play") {
-                if (data.from === this.userData.id) {
-                    console.log("User is the inviter. Saving match data...");
-                    this.saveMatchData(data);
-                    
-                }
-                alert("Navigating to the play page...");
-                //  navigate('/play');
-            } else {
-                console.log("Unhandled WebSocket message:", data);
-            }
-        };
-    
-        this.gameSocket.onclose = () => {
-            console.log("Game WebSocket connection closed.");
-        };
-    
-        this.gameSocket.onerror = (error) => {
-            console.error("Game WebSocket error:", error);
-        };
-    }
+    1
     
 
     async fetchUserIds(userID , dest){
@@ -282,11 +181,6 @@ export default class Chat extends Abstract {
  
     async saveMatchData(data) {
             console.log("Match data:", data);
-        
-            // Fetch inviter and invitee usernames
-            const inviter = await this.fetchUsername(data.from);
-            const invitee = await this.fetchUsername(data.to);
-        
             const csrfToken = await this.getCsrfToken();
         
             try {
@@ -315,7 +209,7 @@ export default class Chat extends Abstract {
                 console.log("Game session created:", responseData);
         
                 // Navigate to the game page or perform additional actions
-                alert(`Game session created successfully with ID: ${responseData.session_id}`);
+                // alert(`Game session created successfully with ID: ${responseData.session_id}`);
                 // Example: Navigate to the play page
                 // this.navigate('/play', { sessionId: responseData.session_id });
             } catch (error) {
@@ -324,7 +218,114 @@ export default class Chat extends Abstract {
             }
         }
         
+        connectGameInviteSocket(friendId) {
+            const userId = this.userData.id;
+            const userName = this.userData.username; // Get the current user's name
+        
+            // Close any existing socket
+            if (this.gameSocket) {
+                this.gameSocket.close();
+            }
+        
+            // Establish a new WebSocket connection
+            this.gameSocket = new WebSocket(`ws://localhost:8001/ws/game-invite/${userId}/${friendId}/`);
+        
+            this.gameSocket.onopen = () => {
+                console.log(`Game WebSocket connected for friend ID: ${friendId}`);
+            };
+        
+            this.gameSocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+        
+                // Handle game invitation message
+                if (data.type === "game_invitation") {
+                    const alertBox = document.createElement("div");
+                    alertBox.className = "invite-alert";
+                    console.log("data from invite", data);
+                    alertBox.innerHTML = `
+                        <p>${data.message}</p>
+                        <div class="alert-buttons">
+                            <button class="accept-btn">Accept</button>
+                            <button class="decline-btn">Decline</button>
+                        </div>
+                    `;
+                    document.body.appendChild(alertBox);
+        
+                    const acceptButton = alertBox.querySelector(".accept-btn");
+                    const declineButton = alertBox.querySelector(".decline-btn");
+        
+                    acceptButton.addEventListener("click", () => {
+                        // Send game response with player names and session ID
+                        this.gameSocket.send(
+                            JSON.stringify({
+                                type: "game_response",
+                                from: this.userData.id,
+                                to: data.from,
+                                response: "accepted",
+                                session_id: data.session_id,
+                                player1_name: userName, // Include the player's name
+                                player2_name: data.from_username, // Include the friend's name
+                            })
+                        );
+                        alertBox.remove();
+                    });
+        
+                    declineButton.addEventListener("click", () => {
+                        // Handle game decline logic
+                        this.gameSocket.send(
+                            JSON.stringify({
+                                type: "game_response",
+                                from: this.userData.id,
+                                to: data.from,
+                                response: "declined",
+                            })
+                        );
+                        alertBox.remove();
+                    });
+        
+                    setTimeout(() => {
+                        if (alertBox) {
+                            alertBox.remove();
+                        }
+                    }, 7000);
+                }
+        
+                else if (data.type === "game_response") {
+                    console.log(`Game response from ${data.from}: ${data.response}`);
+                    if (data.response === "accepted") {
+                        alert("Game Accepted!");
+                    } else if (data.response === "declined") {
+                        alert("Game Declined!");
+                    }
+                }
+        
+                else if (data.type === "navigate_to_play") {
+                    const sessionId = data.session_id; // Extract the session ID
+                    console.log("Navigating to /play with session ID:", sessionId);
 
+                    // Option 2: Store sessionId in localStorage (optional for simplicity)
+                    localStorage.setItem("currentSessionId", sessionId);
+
+                    if (data.from === this.userData.id) {
+                        console.log("User is the inviter. Saving match data...");
+                        this.saveMatchData(data);
+                    }
+                    navigate('/play');
+                } else {
+                    console.log("Unhandled WebSocket message:", data);
+                }
+            };
+        
+            this.gameSocket.onclose = () => {
+                console.log("Game WebSocket connection closed.");
+            };
+        
+            this.gameSocket.onerror = (error) => {
+                console.error("Game WebSocket error:", error);
+            };
+        }
+    
+    
     
     
     
