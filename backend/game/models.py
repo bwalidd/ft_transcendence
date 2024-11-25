@@ -37,6 +37,14 @@ class GameSession(models.Model):
         null=True,
         blank=True,  # Loser may be blank if the game is not finished
     )
+    paddle_one_y = models.FloatField(default=0)  # Paddle Y-coordinate for player one
+    paddle_two_y = models.FloatField(default=0)  # Paddle Y-coordinate for player two
+    ball_x = models.FloatField(default=0)  # Ball X-coordinate
+    ball_y = models.FloatField(default=0)  # Ball Y-coordinate
+    ball_velocity_x = models.FloatField(default=0)
+    ball_velocity_y = models.FloatField(default=0)
+    is_active = models.BooleanField(default=True)  # Track if the game is ongoing
+
 
     class Meta:
         ordering = ["-created_at"]

@@ -193,8 +193,8 @@ export default class Chat extends Abstract {
                     },
                     credentials: 'include',
                     body: JSON.stringify({
-                        player_one: data.from, // Inviter's ID
-                        player_two: data.to,   // Invitee's ID
+                        player_one: data.to, // Inviter's ID
+                        player_two: data.from,   // Invitee's ID
                         session_id: data.session_id // Session ID from the WebSocket message
                     }),
                 });

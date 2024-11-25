@@ -10,9 +10,18 @@ function loadCSS(url) {
 
 export default class GameRemote extends Abstract {
     constructor(params) {
-        loadCSS('../styles/GameRemote.css');
         super(params);
+        loadCSS('../styles/GameRemote.css');
         this.setTitle("Friendly Match");
+        this.currentPlayer = null;
+        this.currentUsername = null;
+        this.leftuser = null;
+        this.gameCanvas = null;
+        this.ctx = null;
+        this.player1 = null;
+        this.player2 = null;
+        this.ball = null;
+        this.ws = null;
     }
 
     async getHtml() {
@@ -20,7 +29,7 @@ export default class GameRemote extends Abstract {
         <div class="informations">
             <div class="right-div">
                 <div id="my-username-avatar" class="avatar"></div>
-                <h2 id="my-username">Logged username </h2>
+                <h2 id="my-username">Logged username</h2>
             </div>
             <div class="left-div">
                 <h2 id="friend-username">Friend username</h2>
@@ -31,7 +40,7 @@ export default class GameRemote extends Abstract {
             <button class="game-instruction" id="game-instruction">Back to Home page</button>
         </div>
         <div class="game-container">
-            <canvas id="pong" class="container" width="600" height="500"></canvas>
+            <canvas id="pong" class="container" width="800" height="400"></canvas>
         </div>
         `;
     }
@@ -48,21 +57,24 @@ export default class GameRemote extends Abstract {
         return null;
     }
 
-    
-
     async initialize() {
-        const sessionId = localStorage.getItem("currentSessionId");
-        console.log("Session ID from localStorage:", sessionId);
-    
-        if (sessionId) {
-            await this.fillFields(sessionId);
-        } else {
-            console.error("No sessionId found in localStorage.");
+        this.leftuser = null;
+        try {
+            const sessionId = localStorage.getItem("currentSessionId");
+            console.log("Session ID from localStorage:", sessionId);
+
+            if (sessionId) {
+                await this.initializeGameSession(sessionId);
+            } else {
+                console.error("No sessionId found in localStorage.");
+            }
+            this.setupGameEnvironment();
+        } catch (error) {
+            console.error("Error during initialization:", error);
         }
-        this.runTheGame();
     }
-    
-    async fillFields(sessionId) {
+
+    async initializeGameSession(sessionId) {
         try {
             const csrfToken = await this.getCsrfToken();
             const response = await fetch(`http://localhost:8001/api/game/details/${sessionId}/`, {
@@ -76,245 +88,212 @@ export default class GameRemote extends Abstract {
             });
     
             if (!response.ok) {
-                console.error('Error fetching game session:', await response.text());
-                return;
+                throw new Error('Failed to fetch game session details');
             }
     
             const data = await response.json();
             console.log('Game session details:', data);
     
-            // Optionally populate fields with game session data
-            await this.fetchAndFillFriend(data.player_one, "my-username");
-            await this.fetchAndFillFriend(data.player_two, "friend-username");
-        } catch (err) {
-            console.error("Error in fillFields:", err);
+            // Fetch and display user info for both players
+            await this.fetchAndDisplayUserInfo(data.player_one, "my-username");
+            await this.fetchAndDisplayUserInfo(data.player_two, "friend-username");
+    
+            // Ensure the inviter (player_one) is on the left side
+            const myUsername = localStorage.getItem('my-username');
+            const friendUsername = localStorage.getItem('friend-username');
+    
+            this.leftuser = document.getElementById('my-username').textContent;
+    
+            // Ensure checkWhoLoggedIn finishes before setting currentPlayer
+            this.currentUsername = await this.checkWhoLoggedIn();
+            console.log('Current user is:------->', this.currentUsername);
+            console.log('Left user is:------->', this.leftuser);
+    
+            if (this.currentUsername === this.leftuser) {
+                this.currentPlayer = 'player_one';
+                console.log('Current player is player_one');
+            } else {
+                this.currentPlayer = 'player_two';
+                console.log('Current player is player_two');
+            }
+            
+        } catch (error) {
+            console.error("Error in initializeGameSession:", error);
+            throw error;
         }
     }
     
     
+    async checkWhoLoggedIn() {
+        try{
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch('http://localhost:8001/api/auth/user/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include'
+            });
+            
+            const data = await response.json();
     
-    
-    
-
-    async fetchAndFillFriend(username, id){
-        const csrfToken = await this.getCsrfToken();
-        const response = await fetch(`http://localhost:8001/api/auth/user/${username}/`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            credentials: 'include'
-        });
-
-        if (!response.ok) {
-            console.error('Error fetching user profile:', await response.text());
-            return;
+            return data.username;
+        }catch (error) {
+            console.error("Error in checkWhoLoggedIn:", error);
         }
-        const data = await response.json();
-        document.getElementById(id).textContent = data.username;
-        const userAvatar = data.avatar;
-        console.log(userAvatar);
-        if (id === "my-username") {
-            localStorage.setItem('my-username', data.username);
-        }else if(id === "friend-username"){
-            localStorage.setItem('friend-username', data.username);
-        }
-        document.getElementById(id + "-avatar").style.backgroundImage = `url('http://localhost:8001${userAvatar}')`;
 
     }
 
-    
-   
+    async fetchAndDisplayUserInfo(username, elementId) {
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch(`http://localhost:8001/api/auth/user/${username}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include'
+            });
 
-
-    runTheGame(){
-        const canvas = document.querySelector("#pong");
-        const ctx = canvas.getContext("2d");
-
-        // Game variables
-        const SCORE_LIMIT = 3;
-        const PLAYER_HEIGHT = 100;
-        const PLAYER_WIDTH = 20;
-        const BALL_START_SPEED = 1;
-        const SPEED_INCREMENT_INTERVAL = 10000; // Increase speed every 10 seconds
-        const SPEED_INCREMENT_AMOUNT = 0.2;
-
-        let gameOver = false;
-
-        canvas.width = 800; 
-        canvas.height = 400;
-
-        const net = {
-            x: canvas.width / 2 - 1,
-            y: 0,
-            width: 2,
-            height: 10,
-            color: "RED",
-        };
-
-        const player1 = {
-            x: 0,
-            y: canvas.height / 2 - PLAYER_HEIGHT / 2,
-            width: PLAYER_WIDTH,
-            height: PLAYER_HEIGHT,
-            color: "RED",
-            score: 0,
-        };
-
-        const player2 = {
-            x: canvas.width - PLAYER_WIDTH,
-            y: canvas.height / 2 - PLAYER_HEIGHT / 2,
-            width: PLAYER_WIDTH,
-            height: PLAYER_HEIGHT,
-            color: "BLUE",
-            score: 0,
-        };
-
-        const ball = {
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            radius: 10,
-            speed: BALL_START_SPEED,
-            velocityX: 5,
-            velocityY: 5,
-            color: "GREEN",
-        };
-
-        function Rectdraw(x, y, w, h, color) {
-            ctx.fillStyle = color;
-            ctx.fillRect(x, y, w, h);
-        }
-
-        function Circledraw(x, y, r, color) {
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.arc(x, y, r, 0, Math.PI * 2, false);
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        function Textdraw(text, x, y, color) {
-            ctx.fillStyle = color;
-            ctx.font = "45px Arial";
-            ctx.fillText(text, x, y);
-        }
-
-        function Netdraw() {
-            for (let i = 0; i <= canvas.height; i += 15) {
-                Rectdraw(net.x, net.y + i, net.width, net.height, net.color);
-            }
-        }
-
-        function collision(b, p) {
-            return (
-                b.x + b.radius > p.x &&
-                b.x - b.radius < p.x + p.width &&
-                b.y + b.radius > p.y &&
-                b.y - b.radius < p.y + p.height
-            );
-        }
-
-        function lerp(start, end, amount) {
-            return (1 - amount) * start + amount * end;
-        }
-
-        function gameover() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "antiquewhite";
-            ctx.font = "50px diablo";
-            ctx.textAlign = "center";
-            const winner = player1.score >= SCORE_LIMIT ? "Player 1" : "Player 2";
-            ctx.fillText(`${winner} Wins!`, canvas.width / 2, canvas.height / 2);
-        }
-
-        function render() {
-            if (gameOver) {
-                gameover();
-                return;
+            if (!response.ok) {
+                throw new Error('Failed to fetch user profile');
             }
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            Rectdraw(0, 0, canvas.width, canvas.height, "#000");
-            Netdraw();
-            Textdraw(player1.score, canvas.width / 4.5, canvas.height / 5, "RED");
-            Textdraw(player2.score, (3 * canvas.width) / 4, canvas.height / 5, "BLUE");
-            Rectdraw(player1.x, player1.y, player1.width, player1.height, player1.color);
-            Rectdraw(player2.x, player2.y, player2.width, player2.height, player2.color);
-            Circledraw(ball.x, ball.y, ball.radius, ball.color);
+            const data = await response.json();
+            document.getElementById(elementId).textContent = data.username;
+
+            const userAvatar = data.avatar || '/default-avatar.png';
+            console.log('User avatar:', userAvatar);
+
+            if (elementId === "my-username") {
+                localStorage.setItem('my-username', data.username);
+            } else if (elementId === "friend-username") {
+                localStorage.setItem('friend-username', data.username);
+            }
+
+            document.getElementById(`${elementId}-avatar`).style.backgroundImage = `url('http://localhost:8001${userAvatar}')`;
+        } catch (error) {
+            console.error(`Error in fetchAndDisplayUserInfo for ${elementId}:`, error);
+            throw error;
         }
+    }
 
-        function Update() {
-            if (player1.score >= SCORE_LIMIT || player2.score >= SCORE_LIMIT) {
-                gameOver = true;
-            }
+    setupGameEnvironment() {
+        this.gameCanvas = document.querySelector("#pong");
+        this.ctx = this.gameCanvas.getContext("2d");
 
-            ball.x += ball.velocityX * ball.speed;
-            ball.y += ball.velocityY * ball.speed;
+        // Game Variables
+        const PLAYER_WIDTH = 10, PLAYER_HEIGHT = 100, BALL_RADIUS = 10;
+        this.player1 = { x: 0, y: this.gameCanvas.height / 2 - PLAYER_HEIGHT / 2, width: PLAYER_WIDTH, height: PLAYER_HEIGHT, color: 'white' };
+        this.player2 = { x: this.gameCanvas.width - PLAYER_WIDTH, y: this.gameCanvas.height / 2 - PLAYER_HEIGHT / 2, width: PLAYER_WIDTH, height: PLAYER_HEIGHT, color: 'white' };
+        this.ball = { x: this.gameCanvas.width / 2, y: this.gameCanvas.height / 2, radius: BALL_RADIUS, velocityX: 5, velocityY: 5, color: 'white' };
 
-            if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-                ball.velocityY = -ball.velocityY;
-            }
-
-            const selectedPlayer = ball.x < canvas.width / 2 ? player1 : player2;
-            if (collision(ball, selectedPlayer)) {
-                ball.velocityX = -ball.velocityX;
-            }
-
-            if (ball.x - ball.radius < 0) {
-                player2.score++;
-                resetBall();
-            } else if (ball.x + ball.radius > canvas.width) {
-                player1.score++;
-                resetBall();
-            }
-        }
-
-        function resetBall() {
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height / 2;
-            ball.velocityX = -ball.velocityX;
-            ball.speed = BALL_START_SPEED;
-        }
-
-        function game() {
-            Update();
-            render();
-        }
-
-        // Speed up the ball every SPEED_INCREMENT_INTERVAL
-        setInterval(() => {
-            if (!gameOver) {
-                ball.speed += SPEED_INCREMENT_AMOUNT;
-            }
-        }, SPEED_INCREMENT_INTERVAL);
-
-        const FPS = 60;
-        setInterval(game, 1000 / FPS);
-
-        // Player controls
-        window.addEventListener("keydown", (event) => {
-            switch (event.key) {
-                case "ArrowUp":
-                    player2.y = Math.max(player2.y - 20, 0);
-                    break;
-                case "ArrowDown":
-                    player2.y = Math.min(player2.y + 20, canvas.height - player2.height);
-                    break;
-                case "w":
-                    player1.y = Math.max(player1.y - 20, 0);
-                    break;
-                case "s":
-                    player1.y = Math.min(player1.y + 20, canvas.height - player1.height);
-                    break;
-            }
+        // Focus the canvas to ensure key events work
+        this.gameCanvas.addEventListener('click', () => {
+            this.gameCanvas.focus();
         });
 
-        document.getElementById("game-instruction").addEventListener("click", function () {
-            navigate('/home');
+        this.initializeWebSocket();
+    }
+
+    initializeWebSocket() {
+        const sessionId = localStorage.getItem("currentSessionId");
+        this.ws = new WebSocket(`ws://localhost:8001/ws/game/${sessionId}/`);
+        
+        this.ws.onopen = () => {
+            console.log('Connected to WebSocket');
+            // Send initial state with player identification
+            this.ws.send(JSON.stringify({
+                action: "initial_state",
+                player: this.currentPlayer,
+                paddle_y: this.currentPlayer === 'player_one' ? this.player1.y : this.player2.y
+            }));
+        };
+    
+        this.ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("Received game update:", data);
+            
+            // Update only the relevant player's paddle
+            if (data.action === "update") {
+                if (data.data.player === "player_one" && this.currentPlayer !== "player_one") {
+                    this.player1.y = data.data.paddle_y;  // Update player one's paddle
+                }
+                if (data.data.player === "player_two" && this.currentPlayer !== "player_two") {
+                    this.player2.y = data.data.paddle_y;  // Update player two's paddle
+                }
+                
+                if (data.data.ball) {
+                    Object.assign(this.ball, data.data.ball);  // Update ball position
+                }
+    
+                this.render();  // Re-render the game state
+            }
+        };
+    
+        this.setupControls();  // Set up the paddle controls
+        this.render();  // Initial render
+    }
+
+    render() {
+        this.ctx.clearRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
+    
+        // Draw paddles
+        this.ctx.fillStyle = this.player1.color;
+        this.ctx.fillRect(this.player1.x, this.player1.y, this.player1.width, this.player1.height);
+    
+        this.ctx.fillStyle = this.player2.color;
+        this.ctx.fillRect(this.player2.x, this.player2.y, this.player2.width, this.player2.height);
+    
+        // Draw ball
+        this.ctx.fillStyle = this.ball.color;
+        this.ctx.beginPath();
+        this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2);
+        this.ctx.fill();
+    }
+
+    setupControls() {
+        document.addEventListener('keydown', (event) => {
+            let paddleMove = false;
+            let newY = 0;
+
+            if (this.currentPlayer === 'player_one') {
+                if (event.key === "w" && this.player1.y > 0) {
+                    this.player1.y -= 10;
+                    paddleMove = true;
+                    newY = this.player1.y;
+                }
+                if (event.key === "s" && this.player1.y < this.gameCanvas.height - this.player1.height) {
+                    this.player1.y += 10;
+                    paddleMove = true;
+                    newY = this.player1.y;
+                }
+            } else if (this.currentPlayer === 'player_two') {
+                if (event.key === "ArrowUp" && this.player2.y > 0) {
+                    this.player2.y -= 10;
+                    paddleMove = true;
+                    newY = this.player2.y;
+                }
+                if (event.key === "ArrowDown" && this.player2.y < this.gameCanvas.height - this.player2.height) {
+                    this.player2.y += 10;
+                    paddleMove = true;
+                    newY = this.player2.y;
+                }
+            }
+
+            if (paddleMove) {
+                console.log('Sending paddle move to WebSocket:', newY);
+                this.ws.send(JSON.stringify({
+                    action: "paddle_move",
+                    player: this.currentPlayer,  // Ensure the correct player identifier
+                    paddle_y: newY
+                }));
+                this.render();  // Re-render game state after paddle move
+            }
         });
     }
 }
-
-
