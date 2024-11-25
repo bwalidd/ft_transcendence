@@ -225,15 +225,25 @@ export default class GameRemote extends Abstract {
         }
     }
     
-    resetBall() {
+    resetBall(randomSeed = null) {
         this.ball.x = this.gameCanvas.width / 2;
         this.ball.y = this.gameCanvas.height / 2;
         
-        // Slower ball speed on reset
-        this.ball.velocityX = (Math.random() > 0.5 ? 2 : -2); // Reduced horizontal velocity
-        this.ball.velocityY = (Math.random() > 0.5 ? 2 : -2); // Reduced vertical velocity
+        // Use provided random seed or generate one
+        const seed = randomSeed !== null ? randomSeed : Math.random();
+        
+        // Use seed to determine ball direction
+        this.ball.velocityX = (seed > 0.5 ? 2 : -2);
+        this.ball.velocityY = (seed > 0.5 ? 2 : -2);
+        
+        // If initiating reset, send to WebSocket
+        if (randomSeed === null) {
+            this.ws.send(JSON.stringify({
+                action: "reset_ball",
+                seed: seed
+            }));
+        }
     }
-    
 
     setupGameEnvironment() {
         this.gameCanvas = document.querySelector("#pong");
@@ -277,6 +287,9 @@ export default class GameRemote extends Abstract {
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Received game update:", data);
+            if (data.action === "reset_ball") {
+                this.resetBall(data.seed);
+            }
             
             // Update only the relevant player's paddle
             if (data.action === "update") {
