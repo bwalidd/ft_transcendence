@@ -229,18 +229,15 @@ export default class GameRemote extends Abstract {
         this.ball.x = this.gameCanvas.width / 2;
         this.ball.y = this.gameCanvas.height / 2;
         
-        // Use provided random seed or generate one
-        const seed = randomSeed !== null ? randomSeed : Math.random();
-        
-        // Use seed to determine ball direction
-        this.ball.velocityX = (seed > 0.5 ? 2 : -2);
-        this.ball.velocityY = (seed > 0.5 ? 2 : -2);
-        
-        // If initiating reset, send to WebSocket
-        if (randomSeed === null) {
+        // Always use server-provided seed
+        if (randomSeed !== null) {
+            // Use seed to determine ball direction
+            this.ball.velocityX = (randomSeed > 0.5 ? 2 : -2);
+            this.ball.velocityY = (randomSeed > 0.5 ? 2 : -2);
+        } else {
+            // If no seed (initial reset), request from server
             this.ws.send(JSON.stringify({
-                action: "reset_ball",
-                seed: seed
+                action: "request_ball_reset"
             }));
         }
     }
@@ -287,7 +284,7 @@ export default class GameRemote extends Abstract {
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Received game update:", data);
-            if (data.action === "reset_ball") {
+            if (data.action === "ball_reset") {
                 this.resetBall(data.seed);
             }
             

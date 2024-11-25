@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import GameSession
+import random
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -51,6 +52,18 @@ class GameConsumer(AsyncWebsocketConsumer):
                     data.get('ball_velocity_x'),
                     data.get('ball_velocity_y'),
                 )
+            elif action == 'request_ball_reset':
+                # Generate a consistent random seed
+                reset_seed = random.random()
+                
+                # Broadcast the reset seed to all players in the game session
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'ball_reset',
+                        'seed': reset_seed
+                    }
+                )
 
             # Broadcast the updated data to the group
             await self.channel_layer.group_send(
@@ -62,6 +75,18 @@ class GameConsumer(AsyncWebsocketConsumer):
             )
         except Exception as e:
             print(f"Error processing WebSocket message: {e}")
+
+    async def ball_reset(self, event):
+        """
+        Send ball reset event with a consistent seed to all clients
+        """
+        try:
+            await self.send(text_data=json.dumps({
+                'action': 'ball_reset',
+                'seed': event['seed']
+            }))
+        except Exception as e:
+            print(f"Error sending ball reset: {e}")
 
     async def game_update(self, event):
         try:
