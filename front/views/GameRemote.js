@@ -182,23 +182,83 @@ export default class GameRemote extends Abstract {
         }
     }
 
+    gameLoop() {
+        this.updateBallPosition();
+        this.render();
+        requestAnimationFrame(() => this.gameLoop());
+    }
+
+    updateBallPosition() {
+        // Move the ball
+        this.ball.x += this.ball.velocityX;
+        this.ball.y += this.ball.velocityY;
+    
+        // Ball collision with top and bottom walls
+        if (this.ball.y + this.ball.radius > this.gameCanvas.height || this.ball.y - this.ball.radius < 0) {
+            this.ball.velocityY = -this.ball.velocityY; // Reverse vertical direction
+        }
+    
+        // Ball collision with paddles
+        if (
+            this.ball.x - this.ball.radius < this.player1.x + this.player1.width && // Left paddle
+            this.ball.y > this.player1.y && this.ball.y < this.player1.y + this.player1.height
+        ) {
+            this.ball.velocityX = -this.ball.velocityX; // Reverse horizontal direction
+        }
+    
+        if (
+            this.ball.x + this.ball.radius > this.player2.x && // Right paddle
+            this.ball.y > this.player2.y && this.ball.y < this.player2.y + this.player2.height
+        ) {
+            this.ball.velocityX = -this.ball.velocityX; // Reverse horizontal direction
+        }
+    
+        // Ball out of bounds (scoring)
+        if (this.ball.x + this.ball.radius < 0) {
+            this.player2.score++; // Player 2 scores
+            this.resetBall();     // Reset ball position
+        }
+    
+        if (this.ball.x - this.ball.radius > this.gameCanvas.width) {
+            this.player1.score++; // Player 1 scores
+            this.resetBall();     // Reset ball position
+        }
+    }
+    
+    resetBall() {
+        this.ball.x = this.gameCanvas.width / 2;
+        this.ball.y = this.gameCanvas.height / 2;
+        
+        // Slower ball speed on reset
+        this.ball.velocityX = (Math.random() > 0.5 ? 2 : -2); // Reduced horizontal velocity
+        this.ball.velocityY = (Math.random() > 0.5 ? 2 : -2); // Reduced vertical velocity
+    }
+    
+
     setupGameEnvironment() {
         this.gameCanvas = document.querySelector("#pong");
         this.ctx = this.gameCanvas.getContext("2d");
-
+    
         // Game Variables
         const PLAYER_WIDTH = 10, PLAYER_HEIGHT = 100, BALL_RADIUS = 10;
-        this.player1 = { x: 0, y: this.gameCanvas.height / 2 - PLAYER_HEIGHT / 2, width: PLAYER_WIDTH, height: PLAYER_HEIGHT, color: 'white' };
-        this.player2 = { x: this.gameCanvas.width - PLAYER_WIDTH, y: this.gameCanvas.height / 2 - PLAYER_HEIGHT / 2, width: PLAYER_WIDTH, height: PLAYER_HEIGHT, color: 'white' };
-        this.ball = { x: this.gameCanvas.width / 2, y: this.gameCanvas.height / 2, radius: BALL_RADIUS, velocityX: 5, velocityY: 5, color: 'white' };
-
-        // Focus the canvas to ensure key events work
-        this.gameCanvas.addEventListener('click', () => {
-            this.gameCanvas.focus();
-        });
-
+        this.player1 = { x: 0, y: this.gameCanvas.height / 2 - PLAYER_HEIGHT / 2, width: PLAYER_WIDTH, height: PLAYER_HEIGHT, color: 'white', score: 0 };
+        this.player2 = { x: this.gameCanvas.width - PLAYER_WIDTH, y: this.gameCanvas.height / 2 - PLAYER_HEIGHT / 2, width: PLAYER_WIDTH, height: PLAYER_HEIGHT, color: 'white', score: 0 };
+        
+        // Initialize ball with slower speed
+        this.ball = { 
+            x: this.gameCanvas.width / 2, 
+            y: this.gameCanvas.height / 2, 
+            radius: BALL_RADIUS, 
+            velocityX: 2,  // Reduced horizontal velocity
+            velocityY: 2,  // Reduced vertical velocity
+            color: 'white' 
+        };
+    
         this.initializeWebSocket();
+        this.gameLoop();  // Start the game loop
     }
+    
+    
 
     initializeWebSocket() {
         const sessionId = localStorage.getItem("currentSessionId");
@@ -254,37 +314,42 @@ export default class GameRemote extends Abstract {
         this.ctx.beginPath();
         this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2);
         this.ctx.fill();
+    
+        // Draw scores
+        this.ctx.fillStyle = "white";
+        this.ctx.font = "30px Arial";
+        this.ctx.fillText(this.player1.score, this.gameCanvas.width / 4, 30);
+        this.ctx.fillText(this.player2.score, (3 * this.gameCanvas.width) / 4, 30);
     }
+    
 
     setupControls() {
-        document.addEventListener('keydown', (event) => {
+        this.gameCanvas.addEventListener('mousemove', (event) => {
+            // Get the canvas bounding rectangle
+            const canvasRect = this.gameCanvas.getBoundingClientRect();
+    
+            // Calculate the mouse position relative to the canvas
+            const mouseY = event.clientY - canvasRect.top;
+    
             let paddleMove = false;
             let newY = 0;
-
+    
             if (this.currentPlayer === 'player_one') {
-                if (event.key === "w" && this.player1.y > 0) {
-                    this.player1.y -= 10;
+                // Move player one's paddle
+                newY = Math.min(Math.max(mouseY - this.player1.height / 2, 0), this.gameCanvas.height - this.player1.height);
+                if (this.player1.y !== newY) {
+                    this.player1.y = newY;
                     paddleMove = true;
-                    newY = this.player1.y;
-                }
-                if (event.key === "s" && this.player1.y < this.gameCanvas.height - this.player1.height) {
-                    this.player1.y += 10;
-                    paddleMove = true;
-                    newY = this.player1.y;
                 }
             } else if (this.currentPlayer === 'player_two') {
-                if (event.key === "ArrowUp" && this.player2.y > 0) {
-                    this.player2.y -= 10;
+                // Move player two's paddle
+                newY = Math.min(Math.max(mouseY - this.player2.height / 2, 0), this.gameCanvas.height - this.player2.height);
+                if (this.player2.y !== newY) {
+                    this.player2.y = newY;
                     paddleMove = true;
-                    newY = this.player2.y;
-                }
-                if (event.key === "ArrowDown" && this.player2.y < this.gameCanvas.height - this.player2.height) {
-                    this.player2.y += 10;
-                    paddleMove = true;
-                    newY = this.player2.y;
                 }
             }
-
+    
             if (paddleMove) {
                 console.log('Sending paddle move to WebSocket:', newY);
                 this.ws.send(JSON.stringify({
@@ -296,4 +361,5 @@ export default class GameRemote extends Abstract {
             }
         });
     }
+    
 }
