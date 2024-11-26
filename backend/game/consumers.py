@@ -5,6 +5,7 @@ from .models import GameSession
 import random
 
 class GameConsumer(AsyncWebsocketConsumer):
+
     async def connect(self):
         # Extract session ID from the URL route
         self.session_id = self.scope['url_route']['kwargs']['session_id']
@@ -52,6 +53,17 @@ class GameConsumer(AsyncWebsocketConsumer):
                     data.get('ball_velocity_x'),
                     data.get('ball_velocity_y'),
                 )
+
+            elif action == 'score_update':
+                # Broadcast score update to all players in the game session
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'score_update',
+                        'player1_score': data.get('player1_score'),
+                        'player2_score': data.get('player2_score')
+                    }
+                )
             elif action == 'request_ball_reset':
                 # Generate a consistent random seed
                 reset_seed = random.random()
@@ -62,6 +74,16 @@ class GameConsumer(AsyncWebsocketConsumer):
                     {
                         'type': 'ball_reset',
                         'seed': reset_seed
+                    }
+                )
+            
+            elif action == 'game_over':
+                # When a game over message is received, broadcast to all players
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'game_over',
+                        'winner': data.get('winner')
                     }
                 )
 
@@ -75,6 +97,32 @@ class GameConsumer(AsyncWebsocketConsumer):
             )
         except Exception as e:
             print(f"Error processing WebSocket message: {e}")
+
+    async def score_update(self, event):
+        """
+        Send score update event to all clients
+        """
+        try:
+            await self.send(text_data=json.dumps({
+                'action': 'score_update',
+                'player1_score': event['player1_score'],
+                'player2_score': event['player2_score']
+            }))
+        except Exception as e:
+            print(f"Error sending score update: {e}")
+
+    async def game_over(self, event):
+        """
+        Send game over event to all clients
+        """
+        try:
+            await self.send(text_data=json.dumps({
+                'action': 'game_over',
+                'winner': event['winner']
+            }))
+        except Exception as e:
+            print(f"Error sending game over message: {e}")
+
 
     async def ball_reset(self, event):
         """

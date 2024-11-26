@@ -22,6 +22,8 @@ export default class GameRemote extends Abstract {
         this.player2 = null;
         this.ball = null;
         this.ws = null;
+        this.SCORE_LIMIT = 5;
+        this.gameOver = false;
     }
 
     async getHtml() {
@@ -189,6 +191,8 @@ export default class GameRemote extends Abstract {
     }
 
     updateBallPosition() {
+        if (this.gameOver) return;
+
         // Move the ball
         this.ball.x += this.ball.velocityX;
         this.ball.y += this.ball.velocityY;
@@ -216,13 +220,78 @@ export default class GameRemote extends Abstract {
         // Ball out of bounds (scoring)
         if (this.ball.x + this.ball.radius < 0) {
             this.player2.score++; // Player 2 scores
+            this.broadcastScoreUpdate(); // Synchronize score
+            this.checkGameOver();
             this.resetBall();     // Reset ball position
         }
     
         if (this.ball.x - this.ball.radius > this.gameCanvas.width) {
             this.player1.score++; // Player 1 scores
+            this.broadcastScoreUpdate(); // Synchronize score
+            this.checkGameOver();
             this.resetBall();     // Reset ball position
         }
+    }
+
+
+    broadcastScoreUpdate() {
+        // Send synchronized score update via WebSocket
+        this.ws.send(JSON.stringify({
+            action: "score_update",
+            player1_score: this.player1.score,
+            player2_score: this.player2.score
+        }));
+    }
+
+    checkGameOver() {
+        if (this.player1.score >= this.SCORE_LIMIT || this.player2.score >= this.SCORE_LIMIT) {
+            this.gameOver = true;
+            const winner = this.player1.score >= this.SCORE_LIMIT ? 
+                localStorage.getItem('my-username') : 
+                localStorage.getItem('friend-username');
+            
+            // Send game over message via WebSocket
+            this.ws.send(JSON.stringify({
+                action: "game_over",
+                winner: winner
+            }));
+            
+            // Display game over message
+            this.displayGameOverMessage(winner);
+        }
+    }
+
+    displayGameOverMessage(winner) {
+        // Create a game over overlay
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.color = 'white';
+        overlay.style.fontSize = '2rem';
+        overlay.style.zIndex = '1000';
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.innerHTML = `
+            <h1>Game Over!</h1>
+            <p>${winner} wins!</p>
+            <button id="back-to-home">Back to Home</button>
+        `;
+        
+        overlay.appendChild(messageDiv);
+        document.body.appendChild(overlay);
+        
+        // Add event listener to back to home button
+        document.getElementById('back-to-home').addEventListener('click', () => {
+            navigate('/');
+        });
     }
     
     resetBall(randomSeed = null) {
@@ -284,8 +353,21 @@ export default class GameRemote extends Abstract {
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Received game update:", data);
+            
             if (data.action === "ball_reset") {
                 this.resetBall(data.seed);
+            }
+
+            if (data.action === "score_update") {
+                this.player1.score = data.player1_score;
+                this.player2.score = data.player2_score;
+                this.render(); // Update the rendered score
+                this.checkGameOver(); // Recheck game over condition
+            }
+            
+            if (data.action === "game_over") {
+                this.gameOver = true;
+                this.displayGameOverMessage(data.winner);
             }
             
             // Update only the relevant player's paddle
@@ -308,6 +390,7 @@ export default class GameRemote extends Abstract {
         this.setupControls();  // Set up the paddle controls
         this.render();  // Initial render
     }
+
 
     render() {
         this.ctx.clearRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
