@@ -24,6 +24,7 @@ export default class GameRemote extends Abstract {
         this.ws = null;
         this.SCORE_LIMIT = 5;
         this.gameOver = false;
+        this.data_of_players = null;
     }
 
     async getHtml() {
@@ -93,12 +94,12 @@ export default class GameRemote extends Abstract {
                 throw new Error('Failed to fetch game session details');
             }
     
-            const data = await response.json();
-            console.log('Game session details:', data);
+            this.data_of_players = await response.json();
+            console.log('Game session details:', this.data_of_players);
     
             // Fetch and display user info for both players
-            await this.fetchAndDisplayUserInfo(data.player_one, "my-username");
-            await this.fetchAndDisplayUserInfo(data.player_two, "friend-username");
+            await this.fetchAndDisplayUserInfo(this.data_of_players.player_one, "my-username");
+            await this.fetchAndDisplayUserInfo(this.data_of_players.player_two, "friend-username");
     
             // Ensure the inviter (player_one) is on the left side
             const myUsername = localStorage.getItem('my-username');
@@ -338,7 +339,7 @@ export default class GameRemote extends Abstract {
 
     initializeWebSocket() {
         const sessionId = localStorage.getItem("currentSessionId");
-        this.ws = new WebSocket(`ws://localhost:8001/ws/game/${sessionId}/`);
+        this.ws = new WebSocket(`ws://localhost:8001/ws/game/${sessionId}/${this.data_of_players.player_one}/${this.data_of_players.player_two}/`);
         
         this.ws.onopen = () => {
             console.log('Connected to WebSocket');
@@ -363,6 +364,13 @@ export default class GameRemote extends Abstract {
                 this.player2.score = data.player2_score;
                 this.render(); // Update the rendered score
                 this.checkGameOver(); // Recheck game over condition
+            }
+            if (data.action === "game_over") {
+                this.gameOver = true;
+                this.displayGameOverMessage(
+                    data.winner, 
+                    data.reason === "opponent_disconnected" ? "Opponent disconnected" : null
+                );
             }
             
             if (data.action === "game_over") {

@@ -4,28 +4,84 @@ from asgiref.sync import sync_to_async
 from .models import GameSession
 import random
 
+
+active_players_for_game_session = {}
+
 class GameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        # Extract session ID from the URL route
+        # Extract session ID and players from URL
         self.session_id = self.scope['url_route']['kwargs']['session_id']
-        self.room_group_name = f'game_{self.session_id}'
+        self.inviter = self.scope['url_route']['kwargs']['inviter']
+        self.invitee = self.scope['url_route']['kwargs']['invitee']
 
-        # Add the WebSocket connection to the room group
+        print(f"-----1----> Inviter: {self.inviter}, Invitee: {self.invitee}")
+        self.room_group_name = f'game_{self.session_id}_{self.inviter}_{self.invitee}'
+
+        if self.room_group_name not in active_players_for_game_session:
+            active_players_for_game_session[self.room_group_name] = {}
+
+        # Map the channel_name to the player ID
+        if self.channel_name not in active_players_for_game_session[self.room_group_name]:
+            active_players_for_game_session[self.room_group_name][self.channel_name] = (
+                self.inviter if len(active_players_for_game_session[self.room_group_name]) == 0 else self.invitee
+            )
+
+        # Add WebSocket connection to the room group
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
         await self.accept()
+
+        # Print active players
+        print(f"-----2----> Active players for game session {self.room_group_name}: {active_players_for_game_session[self.room_group_name]}")
         print(f"WebSocket connected for session: {self.session_id}")
 
     async def disconnect(self, close_code):
-        # Remove WebSocket connection from the room group
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
-        print(f"WebSocket disconnected for session: {self.session_id}")
+        try:
+            # Identify the disconnected player
+            disconnected_player = active_players_for_game_session.get(self.room_group_name, {}).pop(self.channel_name, None)
+
+            # Debug information
+            print(f"----- Debug -----")
+            print(f"Room group: {self.room_group_name}")
+            print(f"Disconnected player channel: {self.channel_name}")
+            print(f"Player disconnected: {disconnected_player}")
+
+            # Remove WebSocket connection from the room group
+            await self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+            )
+
+            # Check if only one player remains
+            remaining_players = active_players_for_game_session.get(self.room_group_name, {})
+            if len(remaining_players) == 1:
+                winner = next(iter(remaining_players.values()), None)  # Get the remaining player
+                print(f"Game over due to disconnection. Winner: {winner}")
+
+                # Notify clients about game over
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'game_over',
+                        'winner': winner,
+                        'score': '5-0',
+                        'reason': 'opponent_disconnected'
+                    }
+                )
+
+                # Cleanup the session
+                if self.room_group_name in active_players_for_game_session:
+                    del active_players_for_game_session[self.room_group_name]
+
+            print(f"WebSocket disconnected for session: {self.session_id}")
+
+        except Exception as e:
+            print(f"Error in disconnect: {e}")
+
+    
 
     async def receive(self, text_data):
         """
@@ -138,7 +194,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def game_update(self, event):
         try:
-            print("Sending game update:", event['data'])
+            # print("Sending game update:", event['data'])
             await self.send(text_data=json.dumps({
                 'action': 'update',
                 'data': event['data']  # Send the entire game data
