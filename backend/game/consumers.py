@@ -58,6 +58,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             # Check if only one player remains
             remaining_players = active_players_for_game_session.get(self.room_group_name, {})
             if len(remaining_players) == 1:
+                # Get the remaining player's ID
                 winner = next(iter(remaining_players.values()), None)  # Get the remaining player
                 print(f"Game over due to disconnection. Winner: {winner}")
 
@@ -66,7 +67,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                     self.room_group_name,
                     {
                         'type': 'game_over',
-                        'winner': winner,
+                        'winner': winner,  # Remaining player is the winner
                         'score': '5-0',
                         'reason': 'opponent_disconnected'
                     }
@@ -81,7 +82,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print(f"Error in disconnect: {e}")
 
-    
 
     async def receive(self, text_data):
         """
