@@ -564,11 +564,13 @@ export default class GameRemote extends Abstract {
             }
             if (data.action === "game_over_disconnect") {
                 this.gameOver = true;
+                localStorage.removeItem("currentSessionId");
                 this.displayGameOverMessageDis(data.winner);
             }
             
             if (data.action === "game_over") {
                 this.gameOver = true;
+                localStorage.removeItem("currentSessionId");
                 this.displayGameOverMessage(data.winner);
             }
             

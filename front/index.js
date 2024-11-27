@@ -53,6 +53,11 @@ const loadView = async (path) => {
             alert('You need to login first');
             return navigate('/welcome');
         }
+        console.log('----------->', viewName);
+        if(viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
+            alert('You need to start a new game first');
+            return navigate('/');
+        }
         // console.log('Imported module:', module);
         const View = module.default;
 

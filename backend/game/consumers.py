@@ -41,13 +41,14 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         try:
             # Identify the disconnected player
-            disconnected_player = active_players_for_game_session.get(self.room_group_name, {}).pop(self.channel_name, None)
+            remaining_players = active_players_for_game_session.get(self.room_group_name, {})
+            disconnected_player = remaining_players.pop(self.channel_name, None)
 
             # Debug information
             print(f"----- Debug -----")
             print(f"Room group: {self.room_group_name}")
             print(f"Disconnected player channel: {self.channel_name}")
-            print(f"Player disconnected: {disconnected_player}")
+            print(f"Disconnected player: {disconnected_player}")
 
             # Remove WebSocket connection from the room group
             await self.channel_layer.group_discard(
@@ -56,18 +57,16 @@ class GameConsumer(AsyncWebsocketConsumer):
             )
 
             # Check if only one player remains
-            remaining_players = active_players_for_game_session.get(self.room_group_name, {})
             if len(remaining_players) == 1:
-                # Get the remaining player's ID
-                winner = next(iter(remaining_players.values()), None)  # Get the remaining player
-                print(f"Game over due to disconnection. Winner: {winner}")
-
-                # Notify clients about game over
+                remaining_player_channel = next(iter(remaining_players.keys()))
+                winner = remaining_players[remaining_player_channel]
+                print(f"Remaining player channel: {remaining_player_channel}")
+                print(f"Winner identified: {winner}")
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
                         'type': 'game_over_disconnect',
-                        'winner': winner,  # Remaining player is the winner
+                        'winner': winner,  # This will now be player 10
                         'score': '5-0',
                         'reason': 'opponent_disconnected'
                     }
@@ -81,6 +80,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         except Exception as e:
             print(f"Error in disconnect: {e}")
+    
 
     async def game_over_disconnect(self, event):
         """
@@ -95,6 +95,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             }))
         except Exception as e:
             print(f"Error sending game over disconnect message: {e}")
+
 
 
     async def receive(self, text_data):
