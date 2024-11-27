@@ -66,7 +66,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
-                        'type': 'game_over',
+                        'type': 'game_over_disconnect',
                         'winner': winner,  # Remaining player is the winner
                         'score': '5-0',
                         'reason': 'opponent_disconnected'
@@ -81,6 +81,20 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         except Exception as e:
             print(f"Error in disconnect: {e}")
+
+    async def game_over_disconnect(self, event):
+        """
+        Handle game over due to player disconnection and notify clients.
+        """
+        try:
+            await self.send(text_data=json.dumps({
+                'action': 'game_over_disconnect',
+                'winner': event.get('winner'),
+                'score': event.get('score'),
+                'reason': event.get('reason')
+            }))
+        except Exception as e:
+            print(f"Error sending game over disconnect message: {e}")
 
 
     async def receive(self, text_data):

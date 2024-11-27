@@ -22,7 +22,7 @@ export default class GameRemote extends Abstract {
         this.player2 = null;
         this.ball = null;
         this.ws = null;
-        this.SCORE_LIMIT = 5;
+        this.SCORE_LIMIT = 1;
         this.gameOver = false;
         this.data_of_players = null;
     }
@@ -47,6 +47,7 @@ export default class GameRemote extends Abstract {
         </div>
         `;
     }
+
 
     async getCsrfToken() {
         const name = 'csrftoken=';
@@ -259,41 +260,238 @@ export default class GameRemote extends Abstract {
             
             // Display game over message
             this.displayGameOverMessage(winner);
+
         }
     }
 
+    // Function to display game over message
     displayGameOverMessage(winner) {
-        // Create a game over overlay
+        // Remove any existing overlays first
+        const existingOverlay = document.querySelector('.game-over-overlay');
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+
+        // Create main overlay div
         const overlay = document.createElement('div');
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100%';
-        overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(0,0,0,0.7)';
-        overlay.style.display = 'flex';
-        overlay.style.flexDirection = 'column';
-        overlay.style.justifyContent = 'center';
-        overlay.style.alignItems = 'center';
-        overlay.style.color = 'white';
-        overlay.style.fontSize = '2rem';
-        overlay.style.zIndex = '1000';
+        overlay.className = 'game-over-overlay';
         
-        const messageDiv = document.createElement('div');
-        messageDiv.innerHTML = `
-            <h1>Game Over!</h1>
-            <p>${winner} wins!</p>
-            <button id="back-to-home">Back to Home</button>
+        // Styling for the overlay
+        Object.assign(overlay.style, {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '60%',
+            height: '50%',
+            background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(40, 40, 40, 0.9))',
+            color: '#FFD700', // Gold text color
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            borderRadius: '15px',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.7)',
+            fontFamily: 'Arial, sans-serif',
+            zIndex: '1000',
+            animation: 'fadeIn 0.5s ease-in-out'
+        });
+
+        // Create fade-in animation
+        const fadeInStyleSheet = document.createElement('style');
+        fadeInStyleSheet.type = 'text/css';
+        fadeInStyleSheet.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
         `;
-        
-        overlay.appendChild(messageDiv);
-        document.body.appendChild(overlay);
-        
-        // Add event listener to back to home button
-        document.getElementById('back-to-home').addEventListener('click', () => {
+        document.head.appendChild(fadeInStyleSheet);
+
+        // Create message container
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'game-over-message';
+        Object.assign(messageDiv.style, {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center'
+        });
+
+        // Set innerHTML with dynamic winner and styled elements
+        messageDiv.innerHTML = `
+            <h2 style="font-size: 2.5rem; font-weight: bold; margin: 0;">Game Over!!</h2>
+            <h1 style="font-size: 2rem; font-weight: lighter; margin: 10px 0;">${winner} wins!</h1>
+            <a id="game-over-btn" href="/" style="
+                display: inline-block;
+                padding: 15px 30px;
+                font-size: 1rem;
+                margin-top: 20px;
+                background: linear-gradient(90deg, #FF4500, #FF6347);
+                color: white;
+                text-decoration: none;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background 0.3s, transform 0.2s;
+            ">Back to Home</a>
+        `;
+
+        // Create hover effect for the button
+        const buttonHoverStyle = document.createElement('style');
+        buttonHoverStyle.type = 'text/css';
+        buttonHoverStyle.innerHTML = `
+            #game-over-btn:hover {
+                background: linear-gradient(90deg, #FF6347, #FF4500);
+                transform: scale(1.05);
+            }
+        `;
+        document.head.appendChild(buttonHoverStyle);
+
+        // Add event listener to handle navigation
+        const homeButton = messageDiv.querySelector('#game-over-btn');
+        homeButton.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior
+            
+            // Remove the overlay
+            overlay.remove();
+            
+            // Remove the added style elements
+            fadeInStyleSheet.remove();
+            buttonHoverStyle.remove();
+            
+            // Navigate to home page
             navigate('/');
         });
+
+        // Append message to overlay and overlay to body
+        overlay.appendChild(messageDiv);
+        document.body.appendChild(overlay);
+
+        // Optional: Add a way to close the overlay by clicking outside
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.remove();
+                fadeInStyleSheet.remove();
+                buttonHoverStyle.remove();
+            }
+        });
     }
+
+    displayGameOverMessageDis(winner) {
+         // Remove any existing overlays first
+         const existingOverlay = document.querySelector('.game-over-overlay');
+         if (existingOverlay) {
+             existingOverlay.remove();
+         }
+ 
+         // Create main overlay div
+         const overlay = document.createElement('div');
+         overlay.className = 'game-over-overlay';
+         
+         // Styling for the overlay
+         Object.assign(overlay.style, {
+             position: 'fixed',
+             top: '50%',
+             left: '50%',
+             transform: 'translate(-50%, -50%)',
+             width: '60%',
+             height: '50%',
+             background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(40, 40, 40, 0.9))',
+             color: '#FFD700', // Gold text color
+             display: 'flex',
+             flexDirection: 'column',
+             justifyContent: 'center',
+             alignItems: 'center',
+             textAlign: 'center',
+             borderRadius: '15px',
+             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.7)',
+             fontFamily: 'Arial, sans-serif',
+             zIndex: '1000',
+             animation: 'fadeIn 0.5s ease-in-out'
+         });
+ 
+         // Create fade-in animation
+         const fadeInStyleSheet = document.createElement('style');
+         fadeInStyleSheet.type = 'text/css';
+         fadeInStyleSheet.innerHTML = `
+             @keyframes fadeIn {
+                 from { opacity: 0; }
+                 to { opacity: 1; }
+             }
+         `;
+         document.head.appendChild(fadeInStyleSheet);
+ 
+         // Create message container
+         const messageDiv = document.createElement('div');
+         messageDiv.className = 'game-over-message';
+         Object.assign(messageDiv.style, {
+             display: 'flex',
+             flexDirection: 'column',
+             justifyContent: 'center'
+         });
+ 
+         // Set innerHTML with dynamic winner and styled elements
+         messageDiv.innerHTML = `
+             <h2 style="font-size: 2.5rem; font-weight: bold; margin: 0;">Game Over!!, Opponent disconnect</h2>
+             <h1 style="font-size: 2rem; font-weight: lighter; margin: 10px 0;">${winner} wins!</h1>
+             <a id="game-over-btn" href="/" style="
+                 display: inline-block;
+                 padding: 15px 30px;
+                 font-size: 1rem;
+                 margin-top: 20px;
+                 background: linear-gradient(90deg, #FF4500, #FF6347);
+                 color: white;
+                 text-decoration: none;
+                 border: none;
+                 border-radius: 8px;
+                 cursor: pointer;
+                 transition: background 0.3s, transform 0.2s;
+             ">Back to Home</a>
+         `;
+ 
+         // Create hover effect for the button
+         const buttonHoverStyle = document.createElement('style');
+         buttonHoverStyle.type = 'text/css';
+         buttonHoverStyle.innerHTML = `
+             #game-over-btn:hover {
+                 background: linear-gradient(90deg, #FF6347, #FF4500);
+                 transform: scale(1.05);
+             }
+         `;
+         document.head.appendChild(buttonHoverStyle);
+ 
+         // Add event listener to handle navigation
+         const homeButton = messageDiv.querySelector('#game-over-btn');
+         homeButton.addEventListener('click', (e) => {
+             e.preventDefault(); // Prevent default link behavior
+             
+             // Remove the overlay
+             overlay.remove();
+             
+             // Remove the added style elements
+             fadeInStyleSheet.remove();
+             buttonHoverStyle.remove();
+             
+             // Navigate to home page
+             navigate('/');
+         });
+ 
+         // Append message to overlay and overlay to body
+         overlay.appendChild(messageDiv);
+         document.body.appendChild(overlay);
+ 
+         // Optional: Add a way to close the overlay by clicking outside
+         overlay.addEventListener('click', (e) => {
+             if (e.target === overlay) {
+                 overlay.remove();
+                 fadeInStyleSheet.remove();
+                 buttonHoverStyle.remove();
+             }
+         });
+    }
+
+
     
     resetBall(randomSeed = null) {
         this.ball.x = this.gameCanvas.width / 2;
@@ -353,7 +551,6 @@ export default class GameRemote extends Abstract {
     
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log("Received game update:", data);
             
             if (data.action === "ball_reset") {
                 this.resetBall(data.seed);
@@ -365,12 +562,9 @@ export default class GameRemote extends Abstract {
                 this.render(); // Update the rendered score
                 this.checkGameOver(); // Recheck game over condition
             }
-            if (data.action === "game_over") {
+            if (data.action === "game_over_disconnect") {
                 this.gameOver = true;
-                this.displayGameOverMessage(
-                    data.winner, 
-                    data.reason === "opponent_disconnected" ? "Opponent disconnected" : null
-                );
+                this.displayGameOverMessageDis(data.winner);
             }
             
             if (data.action === "game_over") {
@@ -452,7 +646,6 @@ export default class GameRemote extends Abstract {
             }
     
             if (paddleMove) {
-                console.log('Sending paddle move to WebSocket:', newY);
                 this.ws.send(JSON.stringify({
                     action: "paddle_move",
                     player: this.currentPlayer,  // Ensure the correct player identifier
