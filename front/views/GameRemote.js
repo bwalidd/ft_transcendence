@@ -22,6 +22,7 @@ export default class GameRemote extends Abstract {
         this.player2 = null;
         this.ball = null;
         this.ws = null;
+        this.checkDisconnectionStatus();
         this.SCORE_LIMIT = 1;
         this.gameOver = false;
         this.data_of_players = null;
@@ -60,6 +61,138 @@ export default class GameRemote extends Abstract {
         }
         return null;
     }
+
+    checkDisconnectionStatus() {
+        const disconnectionInfo = JSON.parse(localStorage.getItem('gameDisconnectionInfo') || '{}');
+        
+        // Check if there's a disconnection flag for this session
+        if (disconnectionInfo.sessionId === localStorage.getItem('currentSessionId')) {
+            // Clear the flag after processing
+            localStorage.removeItem('gameDisconnectionInfo');
+            
+            // Display disconnection message
+            // this.displayGameOverMessageDis(disconnectionInfo.winner);
+            this.alreadyDisconnected();
+
+            // Remove current session ID
+            localStorage.removeItem('currentSessionId');
+            
+            // Prevent further game interactions
+            this.gameOver = true;
+        }
+    }
+
+    alreadyDisconnected() {
+        const existingOverlay = document.querySelector('.game-over-overlay');
+         if (existingOverlay) {
+             existingOverlay.remove();
+         }
+ 
+         // Create main overlay div
+         const overlay = document.createElement('div');
+         overlay.className = 'game-over-overlay';
+         
+         // Styling for the overlay
+         Object.assign(overlay.style, {
+             position: 'fixed',
+             top: '50%',
+             left: '50%',
+             transform: 'translate(-50%, -50%)',
+             width: '60%',
+             height: '50%',
+             background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(40, 40, 40, 0.9))',
+             color: '#FFD700', // Gold text color
+             display: 'flex',
+             flexDirection: 'column',
+             justifyContent: 'center',
+             alignItems: 'center',
+             textAlign: 'center',
+             borderRadius: '15px',
+             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.7)',
+             fontFamily: 'Arial, sans-serif',
+             zIndex: '1000',
+             animation: 'fadeIn 0.5s ease-in-out'
+         });
+ 
+         // Create fade-in animation
+         const fadeInStyleSheet = document.createElement('style');
+         fadeInStyleSheet.type = 'text/css';
+         fadeInStyleSheet.innerHTML = `
+             @keyframes fadeIn {
+                 from { opacity: 0; }
+                 to { opacity: 1; }
+             }
+         `;
+         document.head.appendChild(fadeInStyleSheet);
+ 
+         // Create message container
+         const messageDiv = document.createElement('div');
+         messageDiv.className = 'game-over-message';
+         Object.assign(messageDiv.style, {
+             display: 'flex',
+             flexDirection: 'column',
+             justifyContent: 'center'
+         });
+ 
+         // Set innerHTML with dynamic winner and styled elements
+         messageDiv.innerHTML = `
+             <h2 style="font-size: 1.5rem; font-weight: bold; margin: 0;">You Lost the Match because You Disconnect</h2>
+             <a id="game-over-btn" href="/" style="
+                 display: inline-block;
+                 padding: 15px 30px;
+                 font-size: 1rem;
+                 margin-top: 20px;
+                 background: linear-gradient(90deg, #FF4500, #FF6347);
+                 color: white;
+                 text-decoration: none;
+                 border: none;
+                 border-radius: 8px;
+                 cursor: pointer;
+                 transition: background 0.3s, transform 0.2s;
+             ">Back to Home</a>
+         `;
+ 
+         // Create hover effect for the button
+         const buttonHoverStyle = document.createElement('style');
+         buttonHoverStyle.type = 'text/css';
+         buttonHoverStyle.innerHTML = `
+             #game-over-btn:hover {
+                 background: linear-gradient(90deg, #FF6347, #FF4500);
+                 transform: scale(1.05);
+             }
+         `;
+         document.head.appendChild(buttonHoverStyle);
+ 
+         // Add event listener to handle navigation
+         const homeButton = messageDiv.querySelector('#game-over-btn');
+         homeButton.addEventListener('click', (e) => {
+             e.preventDefault(); // Prevent default link behavior
+             
+             // Remove the overlay
+             overlay.remove();
+             
+             // Remove the added style elements
+             fadeInStyleSheet.remove();
+             buttonHoverStyle.remove();
+             
+             // Navigate to home page
+             navigate('/');
+         });
+ 
+         // Append message to overlay and overlay to body
+         overlay.appendChild(messageDiv);
+         document.body.appendChild(overlay);
+ 
+         // Optional: Add a way to close the overlay by clicking outside
+         overlay.addEventListener('click', (e) => {
+             if (e.target === overlay) {
+                 overlay.remove();
+                 fadeInStyleSheet.remove();
+                 buttonHoverStyle.remove();
+             }
+         });
+    }
+
 
     async initialize() {
         this.leftuser = null;
@@ -433,8 +566,8 @@ export default class GameRemote extends Abstract {
  
          // Set innerHTML with dynamic winner and styled elements
          messageDiv.innerHTML = `
-             <h2 style="font-size: 2.5rem; font-weight: bold; margin: 0;">Game Over!!, Opponent disconnect</h2>
-             <h1 style="font-size: 2rem; font-weight: lighter; margin: 10px 0;">${winner} wins!</h1>
+             <h2 style="font-size: 2.5rem; font-weight: bold; margin: 0;">Your Opponent disconnect</h2>
+             <h1 style="font-size: 2rem; font-weight: lighter; margin: 10px 0;">You win!!!</h1>
              <a id="game-over-btn" href="/" style="
                  display: inline-block;
                  padding: 15px 30px;
@@ -537,11 +670,24 @@ export default class GameRemote extends Abstract {
 
     initializeWebSocket() {
         const sessionId = localStorage.getItem("currentSessionId");
+        
+        // Set up beforeunload listener to handle potential disconnections
+        window.addEventListener('beforeunload', () => {
+            // Store disconnection information in localStorage
+            localStorage.setItem('gameDisconnectionInfo', JSON.stringify({
+                sessionId: sessionId,
+                players: {
+                    player_one: this.data_of_players.player_one,
+                    player_two: this.data_of_players.player_two
+                },
+                currentPlayer: this.currentPlayer
+            }));
+        });
+
         this.ws = new WebSocket(`ws://localhost:8001/ws/game/${sessionId}/${this.data_of_players.player_one}/${this.data_of_players.player_two}/`);
         
         this.ws.onopen = () => {
             console.log('Connected to WebSocket');
-            // Send initial state with player identification
             this.ws.send(JSON.stringify({
                 action: "initial_state",
                 player: this.currentPlayer,
@@ -552,39 +698,40 @@ export default class GameRemote extends Abstract {
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             
-            // Ignore messages if game is already over
             if (this.gameOver) return;
         
             switch(data.action) {
                 case "ball_reset":
-                    // Reset ball with received seed
                     this.resetBall(data.seed);
                     break;
         
                 case "score_update":
-                    // Update scores
                     this.player1.score = data.player1_score;
                     this.player2.score = data.player2_score;
-                    this.render(); // Update rendered score
-                    this.checkGameOver(); // Check game over condition
+                    this.render();
+                    this.checkGameOver();
                     break;
         
                 case "game_over_disconnect":
-                    // Handle disconnection game over
                     this.gameOver = true;
+                    
+                    // Remove any stored disconnection info
+                    localStorage.removeItem('gameDisconnectionInfo');
+                    
+                    // Remove current session ID
                     localStorage.removeItem("currentSessionId");
+                    
+                    // Display game over message for the winner
                     this.displayGameOverMessageDis(data.winner);
                     break;
         
                 case "game_over":
-                    // Handle normal game over
                     this.gameOver = true;
                     localStorage.removeItem("currentSessionId");
                     this.displayGameOverMessage(data.winner);
                     break;
         
                 case "update":
-                    // Update game state for non-current player
                     if (data.data.player === "player_one" && this.currentPlayer !== "player_one") {
                         this.player1.y = data.data.paddle_y;
                     }
@@ -592,18 +739,17 @@ export default class GameRemote extends Abstract {
                         this.player2.y = data.data.paddle_y;
                     }
                     
-                    // Update ball position if ball data exists
                     if (data.data.ball) {
                         Object.assign(this.ball, data.data.ball);
                     }
         
-                    this.render(); // Re-render game state
+                    this.render();
                     break;
             }
         };
     
-        this.setupControls();  // Set up the paddle controls
-        this.render();  // Initial render
+        this.setupControls();
+        this.render();
     }
 
 

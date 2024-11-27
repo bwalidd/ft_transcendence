@@ -63,7 +63,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                             'type': 'game_over_disconnect',
                             'winner': winner,
                             'score': '5-0',
-                            'reason': 'opponent_disconnected'
+                            'reason': 'opponent_disconnected',
+                            'disconnected_player': disconnected_player
                         }
                     )
 
@@ -87,7 +88,9 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'action': 'game_over_disconnect',
                 'winner': event.get('winner'),
                 'score': event.get('score'),
-                'reason': event.get('reason')
+                'reason': event.get('reason'),
+                'sessionId': event.get('sessionId'),  # Include session ID in the sent message
+                'disconnectedPlayer': event.get('disconnectedPlayer')
             }))
         except Exception as e:
             print(f"Error sending game over disconnect message: {e}")
