@@ -392,6 +392,7 @@ export default class GameRemote extends Abstract {
             }));
             
             // Display game over message
+            localStorage.removeItem('currentSessionId');
             this.displayGameOverMessage(winner);
 
         }
@@ -633,8 +634,8 @@ export default class GameRemote extends Abstract {
         // Always use server-provided seed
         if (randomSeed !== null) {
             // Use seed to determine ball direction
-            this.ball.velocityX = (randomSeed > 0.5 ? 2 : -2);
-            this.ball.velocityY = (randomSeed > 0.5 ? 2 : -2);
+            this.ball.velocityX = (randomSeed > 0.5 ? 3 : -3);
+            this.ball.velocityY = (randomSeed > 0.5 ? 3 : -3);
         } else {
             // If no seed (initial reset), request from server
             this.ws.send(JSON.stringify({
@@ -657,8 +658,8 @@ export default class GameRemote extends Abstract {
             x: this.gameCanvas.width / 2, 
             y: this.gameCanvas.height / 2, 
             radius: BALL_RADIUS, 
-            velocityX: 2,  // Reduced horizontal velocity
-            velocityY: 2,  // Reduced vertical velocity
+            velocityX: 3,  // Reduced horizontal velocity
+            velocityY: 3,  // Reduced vertical velocity
             color: 'white' 
         };
     
@@ -727,6 +728,7 @@ export default class GameRemote extends Abstract {
         
                 case "game_over":
                     this.gameOver = true;
+                    console.log('Game Over:', data);
                     localStorage.removeItem("currentSessionId");
                     this.displayGameOverMessage(data.winner);
                     break;

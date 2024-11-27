@@ -287,7 +287,7 @@ export default class Chat extends Abstract {
                         if (alertBox) {
                             alertBox.remove();
                         }
-                    }, 7000);
+                    }, 60000);
                 }
         
                 else if (data.type === "game_response") {
