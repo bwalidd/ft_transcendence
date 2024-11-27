@@ -44,43 +44,39 @@ class GameConsumer(AsyncWebsocketConsumer):
             remaining_players = active_players_for_game_session.get(self.room_group_name, {})
             disconnected_player = remaining_players.pop(self.channel_name, None)
 
-            # Debug information
-            print(f"----- Debug -----")
-            print(f"Room group: {self.room_group_name}")
-            print(f"Disconnected player channel: {self.channel_name}")
-            print(f"Disconnected player: {disconnected_player}")
-
             # Remove WebSocket connection from the room group
             await self.channel_layer.group_discard(
                 self.room_group_name,
                 self.channel_name
             )
 
-            # Check if only one player remains
+            # Check if only one player remains AND the game is not already over
             if len(remaining_players) == 1:
-                remaining_player_channel = next(iter(remaining_players.keys()))
-                winner = remaining_players[remaining_player_channel]
-                print(f"Remaining player channel: {remaining_player_channel}")
-                print(f"Winner identified: {winner}")
-                await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {
-                        'type': 'game_over_disconnect',
-                        'winner': winner,  # This will now be player 10
-                        'score': '5-0',
-                        'reason': 'opponent_disconnected'
-                    }
-                )
+                # Check if a game over message has not already been sent
+                if not hasattr(self, 'game_already_over'):
+                    remaining_player_channel = next(iter(remaining_players.keys()))
+                    winner = remaining_players[remaining_player_channel]
+                    
+                    await self.channel_layer.group_send(
+                        self.room_group_name,
+                        {
+                            'type': 'game_over_disconnect',
+                            'winner': winner,
+                            'score': '5-0',
+                            'reason': 'opponent_disconnected'
+                        }
+                    )
 
-                # Cleanup the session
-                if self.room_group_name in active_players_for_game_session:
-                    del active_players_for_game_session[self.room_group_name]
+                    # Mark the game as over to prevent multiple game over messages
+                    self.game_already_over = True
 
-            print(f"WebSocket disconnected for session: {self.session_id}")
+                    # Cleanup the session
+                    if self.room_group_name in active_players_for_game_session:
+                        del active_players_for_game_session[self.room_group_name]
 
         except Exception as e:
             print(f"Error in disconnect: {e}")
-    
+
 
     async def game_over_disconnect(self, event):
         """

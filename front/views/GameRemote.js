@@ -552,42 +552,53 @@ export default class GameRemote extends Abstract {
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             
-            if (data.action === "ball_reset") {
-                this.resetBall(data.seed);
-            }
-
-            if (data.action === "score_update") {
-                this.player1.score = data.player1_score;
-                this.player2.score = data.player2_score;
-                this.render(); // Update the rendered score
-                this.checkGameOver(); // Recheck game over condition
-            }
-            if (data.action === "game_over_disconnect") {
-                this.gameOver = true;
-                localStorage.removeItem("currentSessionId");
-                this.displayGameOverMessageDis(data.winner);
-            }
-            
-            if (data.action === "game_over") {
-                this.gameOver = true;
-                localStorage.removeItem("currentSessionId");
-                this.displayGameOverMessage(data.winner);
-            }
-            
-            // Update only the relevant player's paddle
-            if (data.action === "update") {
-                if (data.data.player === "player_one" && this.currentPlayer !== "player_one") {
-                    this.player1.y = data.data.paddle_y;  // Update player one's paddle
-                }
-                if (data.data.player === "player_two" && this.currentPlayer !== "player_two") {
-                    this.player2.y = data.data.paddle_y;  // Update player two's paddle
-                }
-                
-                if (data.data.ball) {
-                    Object.assign(this.ball, data.data.ball);  // Update ball position
-                }
-    
-                this.render();  // Re-render the game state
+            // Ignore messages if game is already over
+            if (this.gameOver) return;
+        
+            switch(data.action) {
+                case "ball_reset":
+                    // Reset ball with received seed
+                    this.resetBall(data.seed);
+                    break;
+        
+                case "score_update":
+                    // Update scores
+                    this.player1.score = data.player1_score;
+                    this.player2.score = data.player2_score;
+                    this.render(); // Update rendered score
+                    this.checkGameOver(); // Check game over condition
+                    break;
+        
+                case "game_over_disconnect":
+                    // Handle disconnection game over
+                    this.gameOver = true;
+                    localStorage.removeItem("currentSessionId");
+                    this.displayGameOverMessageDis(data.winner);
+                    break;
+        
+                case "game_over":
+                    // Handle normal game over
+                    this.gameOver = true;
+                    localStorage.removeItem("currentSessionId");
+                    this.displayGameOverMessage(data.winner);
+                    break;
+        
+                case "update":
+                    // Update game state for non-current player
+                    if (data.data.player === "player_one" && this.currentPlayer !== "player_one") {
+                        this.player1.y = data.data.paddle_y;
+                    }
+                    if (data.data.player === "player_two" && this.currentPlayer !== "player_two") {
+                        this.player2.y = data.data.paddle_y;
+                    }
+                    
+                    // Update ball position if ball data exists
+                    if (data.data.ball) {
+                        Object.assign(this.ball, data.data.ball);
+                    }
+        
+                    this.render(); // Re-render game state
+                    break;
             }
         };
     
