@@ -155,6 +155,10 @@ export default class Settings extends Abstract {
             alert('Passwords do not match');
             return;
         }
+        if (username.length < 2 || username.length > 10) {
+            alert('Username must be between 2 and 10 characters');
+            return;
+        }
 
         const formData = new FormData();
 
