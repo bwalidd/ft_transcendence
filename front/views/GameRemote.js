@@ -23,7 +23,7 @@ export default class GameRemote extends Abstract {
         this.ball = null;
         this.ws = null;
         this.checkDisconnectionStatus();
-        this.SCORE_LIMIT = 1;
+        this.SCORE_LIMIT = 2;
         this.gameOver = false;
         this.data_of_players = null;
     }
@@ -75,6 +75,7 @@ export default class GameRemote extends Abstract {
             this.alreadyDisconnected();
 
             // Remove current session ID
+            console.log('Session ID removed from here');
             localStorage.removeItem('currentSessionId');
             
             // Prevent further game interactions
@@ -392,10 +393,72 @@ export default class GameRemote extends Abstract {
             }));
             
             // Display game over message
-            localStorage.removeItem('currentSessionId');
+            if (this.leftuser === this.currentUsername) {
+                console.log('i will store data ----->',this.leftuser);
+                this.collectdataToSave(winner);
+            }
             this.displayGameOverMessage(winner);
+            localStorage.removeItem('currentSessionId');
 
         }
+    }
+
+    async sendToStoreData(winner) {
+        try {
+            const csrfToken = await this.getCsrfToken(); // Ensure this method retrieves the CSRF token properly
+            const new_session = localStorage.getItem('newSession'); // Use the correct session key
+            
+            console.log('new_session---->', new_session);
+            console.log('csrfToken--->', csrfToken);
+    
+            if (!new_session) { // Check new_session instead of session
+                console.error("No current session ID found in local storage.");
+                return;
+            }
+    
+            const response = await fetch(`http://localhost:8001/api/game/result/${new_session}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    winner: winner,
+                    score_player_1: this.player1.score,
+                    score_player_2: this.player2.score
+                }),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Failed to post game result:", errorData);
+            } else {
+                const result = await response.json();
+                console.log("Game result successfully posted:", result);
+                localStorage.removeItem('newSession');
+            }
+        } catch (error) {
+            console.error("An error occurred while posting game result:", error);
+        }
+    }
+    
+    
+
+    collectdataToSave(winner) {
+        console.log('-----------------------------------------');
+        console.log('session id', localStorage.getItem('currentSessionId'));
+        const newSession = localStorage.getItem('currentSessionId');
+        localStorage.setItem('newSession', newSession);
+        console.log('Winner is: ', winner);
+        console.log('Player one is: ', this.data_of_players.player_one);
+        console.log('Player two is: ', this.data_of_players.player_two);
+        console.log('score of player one is: ', this.player1.score);
+        console.log('score of player two is: ', this.player2.score);
+        console.log('-----------------------------------------');
+
+        this.sendToStoreData(winner);
     }
 
     // Function to display game over message

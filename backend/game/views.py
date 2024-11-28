@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from .models import GameSession
 from .serializers import GameSessionSerializer ,GameSessionSerializerDetail
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -82,3 +83,61 @@ def game_session_detail(request, session_id):
             {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def postResult(request, session_id):
+    """
+    Post the result of a game session.
+    """
+    # Get the game session based on the session_id
+    game_session = get_object_or_404(GameSession, session_id=session_id)
+
+    if not game_session.is_active:
+        return Response(
+            {"error": "Game session is already finalized."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Validate request data
+    data = request.data
+    winner_username = data.get('winner')
+    score_player_1 = data.get('score_player_1')
+    score_player_2 = data.get('score_player_2')
+
+    if not winner_username or score_player_1 is None or score_player_2 is None:
+        return Response(
+            {"error": "Incomplete data provided."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Identify the winner and loser
+    try:
+        winner = User.objects.get(username=winner_username)
+    except User.DoesNotExist:
+        return Response(
+            {"error": "Winner user does not exist."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    loser = game_session.player_one if winner == game_session.player_two else game_session.player_two
+
+    # Update the game session
+    game_session.score_player_1 = score_player_1
+    game_session.score_player_2 = score_player_2
+    game_session.winner = winner
+    game_session.loser = loser
+    game_session.is_active = False
+    game_session.save()
+
+    return Response(
+        {
+            "message": "Game session result saved successfully.",
+            "session_id": game_session.session_id,
+            "winner": winner.username,
+            "score_player_1": game_session.score_player_1,
+            "score_player_2": game_session.score_player_2,
+        },
+        status=status.HTTP_200_OK,
+    )
