@@ -133,22 +133,22 @@ export default class Home extends Abstract {
             <div class="user-stats">
                 <div class="stat">
                     <h3>Wins</h3>
-                    <p>10</p>
+                    <p id="number-of-match-wins">10</p>
                 </div>
                 <div class="stat">
                     <h3>Losses</h3>
-                    <p>5</p>
+                    <p id="number-of-match-losses">5</p>
                 </div>
                 <div class="stat">
                     <h3>Win Rate</h3>
-                    <p>66%</p>
+                    <p id="win-rate">66%</p>
                 </div>
             </div>
             <h2 class="popup-title">Latest Matches</h2>
             <div class="latest-matches">
                 <h2 class="no-match">No Matche Played</h2>
-                <div class="match">
-                    <ul>
+                <div class="match" id="matches-card">
+                    <ul id="all-match-cards">
                         <li>
                             <div class="match-avatar"></div>
                             <p class="match-username">User123</p>
@@ -476,14 +476,104 @@ export default class Home extends Abstract {
             document.getElementById('popup-close').addEventListener('click', () => {
                 this.closeUserPopup();
             });
-    
+            await this.collectmatchesofUser(userId.id);
         } catch (error) {
             console.error('Error loading user profile:', error);
         }
     }
     
+    async collectmatchesofUser(userId) {
+        try {
+            const response = await fetch(`http://localhost:8001/api/game/allmygames/${userId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json'
+                },
+            });
+            const data = await response.json();
+            console.log('Data length:', data.length);
     
+            if (data.length === 0) {
+                console.log('No matches played wa do it');
+                document.querySelector('.no-match').style.display = 'block';
+                document.querySelector('.no-match').style.marginTop = '120px';
+                document.querySelector('.no-match').style.textAlign = 'center';
+                document.getElementById('matches-card').style.display = 'none';
+                document.getElementById('win-rate').textContent = '0%';
+                document.getElementById('number-of-match-wins').textContent = '0';
+                document.getElementById('number-of-match-losses').textContent = '0';
+            } else {
+                console.log('Matches played');
+                document.querySelector('.no-match').style.display = 'none';
+                document.getElementById('matches-card').style.display = 'block';
+                document.getElementById('win-rate').textContent = '66%';
+                document.getElementById('number-of-match-wins').textContent = '10';
+                document.getElementById('number-of-match-losses').textContent = '5';
     
+                const allMatchCards = document.getElementById('all-match-cards');
+                allMatchCards.innerHTML = '';
+    
+                for (let i = 0; i < data.length; i++) {
+                    const match = data[i];
+                    console.log('---> userId ', userId, 'match.player_one ', match.player_one);
+    
+                    // Declare `dataofOpponent` here
+                    let dataofOpponent;
+    
+                    if (userId === match.player_one) {
+                        console.log('match ', i, ' i am Player one');
+                        dataofOpponent = await this.fetchOpponentPic(match.player_two);
+                        console.log('Opponent data: of player two', dataofOpponent);
+                    } else {
+                        console.log('match ', i, ' i am Player two');
+                        dataofOpponent = await this.fetchOpponentPic(match.player_one);
+                        console.log('Opponent data: of player one', dataofOpponent);
+                    }
+    
+                    const matchCard = document.createElement('li');
+                    const matchAvatar = document.createElement('div');
+                    matchAvatar.className = 'match-avatar';
+    
+                    const matchUsername = document.createElement('p');
+                    matchUsername.className = 'match-username';
+                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataofOpponent.avatar}')`;
+                    matchUsername.textContent = dataofOpponent.username;
+    
+                    const matchResult = document.createElement('p');
+                    matchResult.className = 'match-result';
+                    matchResult.textContent = `${match.score_player_1}-${match.score_player_2}`;
+    
+                    matchCard.appendChild(matchAvatar);
+                    matchCard.appendChild(matchUsername);
+                    matchCard.appendChild(matchResult);
+                    allMatchCards.appendChild(matchCard);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user matches:', error);
+        }
+    }
+    
+
+    
+    async fetchOpponentPic(userId) {
+        try {
+            const response = await fetch(`http://localhost:8001/api/auth/user/${userId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json'
+
+                }}
+            );
+            const res = await response.json();
+            return res;
+        }catch (error) {
+            console.error('Error fetching opponent pic:', error);
+
+        }
+    }
     
     closeUserPopup() {
         const popup = document.getElementById('user-info-popup');
