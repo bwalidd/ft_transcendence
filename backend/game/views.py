@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from .models import GameSession
 from .serializers import GameSessionSerializer ,GameSessionSerializerDetail
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
+
 
 User = get_user_model()
 
@@ -141,3 +143,29 @@ def postResult(request, session_id):
         },
         status=status.HTTP_200_OK,
     )
+
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def getAllMatchById(request, user_id):
+    """
+    Get all game sessions for a user by user ID.
+    """
+    try:
+        user = User.objects.get(id=user_id)
+        game_sessions = GameSession.objects.filter(
+            Q(player_one=user) | Q(player_two=user),
+            is_active=False
+        )
+
+        serializer = GameSessionSerializer(game_sessions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response(
+            {"error": "User not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    except Exception as e:
+        return Response(
+            {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
