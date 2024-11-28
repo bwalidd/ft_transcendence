@@ -16,6 +16,10 @@ export default class Abstract {
         // shared initialize logic 
     }
 
+    async cleanup() {
+        // shared cleanup logic (to be overridden in subclasses if needed)
+    }   
+
     redirect(path) {
         window.location = path;
     }

@@ -26,6 +26,7 @@ export default class GameRemote extends Abstract {
         this.SCORE_LIMIT = 2;
         this.gameOver = false;
         this.data_of_players = null;
+        this.cssSelector = '../styles/GameRemote.css';
     }
 
     async getHtml() {
@@ -444,7 +445,21 @@ export default class GameRemote extends Abstract {
         }
     }
     
-    
+    async cleanup() {
+        console.log('Cleaning up Welcome view');
+
+        // Remove the dynamically added CSS
+        const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);
+        if (cssLink) {
+            cssLink.remove();
+        }
+
+        // If you had event listeners or timers, clear them here
+        // Example: Remove event listener
+        // document.querySelector('.login-link')?.removeEventListener('click', this.someHandler);
+
+        // Clear any temporary DOM elements or states
+    }    
 
     collectdataToSave(winner) {
         console.log('-----------------------------------------');

@@ -13,6 +13,7 @@ export default class Login extends Abstract {
         loadCSS('../styles/Login.css');
         super(params);
         this.setTitle("Login");
+        this.cssSelector = '../styles/Login.css';
     }
 
     async getHtml() {
@@ -88,6 +89,22 @@ export default class Login extends Abstract {
                 document.getElementById('error-message').innerText = 'Login failed. Please try again.';
             }
         });
+    }
+
+    async cleanup() {
+        console.log('Cleaning up Welcome view');
+
+        // Remove the dynamically added CSS
+        const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);
+        if (cssLink) {
+            cssLink.remove();
+        }
+
+        // If you had event listeners or timers, clear them here
+        // Example: Remove event listener
+        // document.querySelector('.login-link')?.removeEventListener('click', this.someHandler);
+
+        // Clear any temporary DOM elements or states
     }
     
 }

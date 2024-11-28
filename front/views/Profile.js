@@ -14,6 +14,7 @@ export default class Profile extends Abstract {
         loadCSS('../styles/Profile.css');
         super(params);
         this.setTitle("Profile");
+        this.cssSelector = '../styles/Profile.css';
     }
 
     async getHtml() {
@@ -242,6 +243,21 @@ export default class Profile extends Abstract {
         
     }
 
+    async cleanup() {
+        console.log('Cleaning up Welcome view');
+
+        // Remove the dynamically added CSS
+        const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);
+        if (cssLink) {
+            cssLink.remove();
+        }
+
+        // If you had event listeners or timers, clear them here
+        // Example: Remove event listener
+        // document.querySelector('.login-link')?.removeEventListener('click', this.someHandler);
+
+        // Clear any temporary DOM elements or states
+    }
 
     async  getCsrfToken() {
         const name = 'csrftoken=';

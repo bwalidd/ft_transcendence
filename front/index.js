@@ -42,31 +42,37 @@ const unloadCSS = () => {
 
 const loadedCSS = new Set();
 
+let currentViewInstance = null;
+
 const loadView = async (path) => {
     const route = routes.find(route => route.path === path);
     const viewName = route ? route.view : "NotFound";
 
     try {
-        // console.log(`Attempting to import ../views/${viewName}.js`);
+        // Call cleanup on the current view instance if it exists
+        if (currentViewInstance && typeof currentViewInstance.cleanup === 'function') {
+            await currentViewInstance.cleanup();
+        }
+
+        // Import the new view module
         const module = await import(`../views/${viewName}.js`);
         if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
             alert('You need to login first');
             return navigate('/welcome');
         }
-        console.log('----------->', viewName);
-        if(viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
+        if (viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
             alert('You need to start a new game first');
             return navigate('/');
         }
-        // console.log('Imported module:', module);
-        const View = module.default;
 
+        const View = module.default;
         if (typeof View !== 'function') {
             throw new TypeError(`${viewName} is not a constructor`);
         }
 
+        // Create a new instance of the view
         const viewInstance = new View();
-        
+
         // Unload previously loaded CSS
         unloadCSS();
 
@@ -76,17 +82,25 @@ const loadView = async (path) => {
             loadedCSS.add(viewInstance.cssUrl);
         }
 
+        // Update the #app container with the new view's HTML
         const html = await viewInstance.getHtml();
         document.querySelector('#app').innerHTML = html;
 
+        // Initialize the new view
         if (typeof viewInstance.initialize === 'function') {
             viewInstance.initialize();
         }
+
+        // Store the current view instance for cleanup during the next navigation
+        currentViewInstance = viewInstance;
+
     } catch (error) {
         console.error('Error loading view:', error);
         document.querySelector('#app').innerHTML = 'Error loading view';
     }
 };
+
+
 
 export const navigate = (path) => {
     history.pushState({}, "", path);

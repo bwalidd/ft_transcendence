@@ -13,6 +13,7 @@ export default class GameAi extends Abstract {
         loadCSS('../styles/LocalMatch.css');
         super(params);
         this.setTitle("Friendly Match");
+        this.cssSelector = '../styles/LocalMatch.css';
     }
 
     async getHtml() {
@@ -212,6 +213,22 @@ export default class GameAi extends Abstract {
         document.getElementById("game-instruction").addEventListener("click", function () {
             navigate('/home');
         });
+    }
+
+    async cleanup() {
+        console.log('Cleaning up Welcome view');
+
+        // Remove the dynamically added CSS
+        const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);
+        if (cssLink) {
+            cssLink.remove();
+        }
+
+        // If you had event listeners or timers, clear them here
+        // Example: Remove event listener
+        // document.querySelector('.login-link')?.removeEventListener('click', this.someHandler);
+
+        // Clear any temporary DOM elements or states
     }
 
 }
