@@ -701,15 +701,22 @@ popup
 }
 
 .latest-matches .match li .match-username{
-  font-family: 'Diablo';
-  font-size: 15px;
+  font-family: 'Montserrat';
+  font-size: 13px;
   color: antiquewhite;
 }
 
 
 .latest-matches .match li .match-result{
-  font-family: 'Diablo';
-  font-size: 15px;
+  font-family: 'Montserrat';
+  font-size: 13px;
+  color: antiquewhite;
+}
+
+#popup-username{
+  margin-left: 20px;
+  font-family: 'Montserrat';
+  font-size: 30px;
   color: antiquewhite;
 }
 

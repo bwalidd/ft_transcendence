@@ -513,6 +513,8 @@ export default class Home extends Abstract {
     
                 const allMatchCards = document.getElementById('all-match-cards');
                 allMatchCards.innerHTML = '';
+                let winningmatches = 0;
+                let losingmatches = 0;
     
                 for (let i = 0; i < data.length; i++) {
                     const match = data[i];
@@ -542,13 +544,25 @@ export default class Home extends Abstract {
     
                     const matchResult = document.createElement('p');
                     matchResult.className = 'match-result';
-                    matchResult.textContent = `${match.score_player_1}-${match.score_player_2}`;
+                    matchResult.textContent = `${match.score_player_1}  -  ${match.score_player_2}`;
     
                     matchCard.appendChild(matchAvatar);
                     matchCard.appendChild(matchUsername);
                     matchCard.appendChild(matchResult);
                     allMatchCards.appendChild(matchCard);
+                    if ((userId === match.player_one && match.score_player_1 > match.score_player_2) ||
+                        (userId === match.player_two && match.score_player_2 > match.score_player_1)) {
+                        matchCard.style.border   = '2px solid green';
+                        winningmatches++;
+                    }else{
+                        matchCard.style.border   = '2px solid red';
+                        losingmatches++;
+                    }
                 }
+                document.getElementById('number-of-match-wins').textContent = winningmatches;
+                document.getElementById('number-of-match-losses').textContent = losingmatches;
+                const winRate = (winningmatches / (winningmatches + losingmatches)) * 100;
+                document.getElementById('win-rate').textContent = `${winRate.toFixed(2)}%`;
             }
         } catch (error) {
             console.error('Error fetching user matches:', error);
