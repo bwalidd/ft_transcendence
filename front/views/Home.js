@@ -508,7 +508,6 @@ export default class Home extends Abstract {
                 console.log('Matches played');
                 document.querySelector('.no-match').style.display = 'none';
                 document.getElementById('matches-card').style.display = 'block';
-                document.getElementById('win-rate').textContent = '66%';
                 document.getElementById('number-of-match-wins').textContent = '10';
                 document.getElementById('number-of-match-losses').textContent = '5';
     
@@ -516,6 +515,7 @@ export default class Home extends Abstract {
                 allMatchCards.innerHTML = '';
                 let winningmatches = 0;
                 let losingmatches = 0;
+                let totalMatches = 0;
     
                 for (let i = 0; i < data.length; i++) {
                     const match = data[i];
@@ -555,12 +555,15 @@ export default class Home extends Abstract {
                         (userId === match.player_two && match.score_player_2 > match.score_player_1)) {
                         matchCard.style.border   = '2px solid green';
                         winningmatches++;
+                        totalMatches++;
                     }else{
                         matchCard.style.border   = '2px solid red';
                         losingmatches++;
+                        totalMatches++;
                     }
                 }
                 document.getElementById('number-of-match-wins').textContent = winningmatches;
+                document.getElementById('total-match-played').textContent = data.length;
                 document.getElementById('number-of-match-losses').textContent = losingmatches;
                 const winRate = (winningmatches / (winningmatches + losingmatches)) * 100;
                 document.getElementById('win-rate').textContent = `${winRate.toFixed(2)}%`;

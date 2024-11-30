@@ -15,205 +15,114 @@ export default class Profile extends Abstract {
         super(params);
         this.setTitle("Profile");
         this.cssSelector = '../styles/Profile.css';
+        this.user = null;
+        this.winRate = 0;
     }
 
     async getHtml() {
-        const user = await fetchUserData('http://localhost:8001/api/auth/user/');
-        const avatarUrl = `http://localhost:8001${user.avatar}`;
+        this.user = await fetchUserData('http://localhost:8001/api/auth/user/');
+        const avatarUrl = `http://localhost:8001${this.user.avatar}`;
         console.log('Avatar URL:', avatarUrl);
+    
         return `
         <div class="first-container">
-                <nav class="navbar navbar-expand-lg " style="height:100px;">
-                   <div class="navbar-nav">
-                        
+            <nav class="navbar navbar-expand-lg" style="height:100px;">
+                <div class="navbar-nav"></div>
+            </nav>
+            <div class="containerr">
+                <div class="overlay"></div>
+                <div class="side-nav">
+                    <div class="logo"></div>
+                    <ul>
+                        <li>
+                            <a href="/"> <img src="../images/sidenav-img/home.png" class="home">
+                                <p>Home</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/leaderboard"> <img src="../images/sidenav-img/leaderboard.png" class="home">
+                                <p>Leaderboard</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a> <img src="../images/sidenav-img/trophy.png" class="home">
+                                <p>Tournament</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/chat"> <img src="../images/sidenav-img/messages.png" class="home">
+                                <p>Messages</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/settings"> <img src="../images/sidenav-img/settings.png" class="home">
+                                <p>Setting</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <a href="#" id="logout-link"> <img src="../images/sidenav-img/logout.png">
+                                <p>Logout</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="center-rectangle">
+                    <div id="first-container">
+                        <div id="right-part">
+                            <div class="profile-img"></div>
+                            <div class="profile-name">${this.user.username}</div>
+                        </div>
+                        <div id="left-part">
+                            <div class="wrapper">
+                                <div class="c100 red over50" style="--p:80;">
+                                    <span id="win-rate-percentage">80%</span>
+                                    <div class="slice">
+                                        <div class="bar"></div>
+                                        <div class="fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </nav>
-
-                <div class="containerr">
-                    <div class="side-nav">
-                        <div class="logo"></div>
-                        <ul>
-                            <li>
-                                <a href="/">
-                                    <img src="../images/sidenav-img/home.png" class="home">
-                                    <p>Home</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/leaderboard">
-                                    <img src="../images/sidenav-img/leaderboard.png" class="home">
-                                    <p>Leaderboard</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a>
-                                    <img src="../images/sidenav-img/trophy.png" class="home">
-                                    <p>Tournament</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/chat">
-                                    <img src="../images/sidenav-img/messages.png" class="home">
-                                    <p>Messages</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a>
-                                    <img src="../images/sidenav-img/settings.png" class="home">
-                                    <p>Setting</p>
-                                </a>
-                            </li>
-                        </ul>
-                        
-                        <ul>
-                            <li>
-                                <a href="#" id="logout-link">
-                                    <img src="../images/sidenav-img/logout.png">
-                                    <p>Logout</p>
-                                </a>
-                            </li>
-                        </ul>
-                        
-                    </div> 
-
-
-                    <div class="profile d-flex">
-                        <div class="container left d-flex flex-column" style="width:60%; height: 80vh">
-                            <div class="profilestate d-flex align-items-center flex-column gap-4" style="height:45%">
-                                <div class="upper-div d-flex" style="width:100%">
-                                    <img src="${avatarUrl}" style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%; margin-left: 20px">
-                                    <div class="name-rank d-flex align-items-start flex-column justify-content-center">
-                                        <h2>${user.username}</h2>
-                                        <h4>#100</h4>
-                                    </div>
-                                    <div class="message d-flex align-items-start flex-column justify-content-center" style="margin-right: 2em; gap:1rem">
-                                        <a href="#" class="add-friend d-flex align-items-center justify-content-start" style="gap:0.25rem; text-decoration: none; color: inherit;">
-                                            <img src="../images/addfriend.png" style="width: 30px; height: 30px;">
-                                            <h4 style="position:relative; top:8px">Add friend</h4>
-                                        </a>
-                                        <a href="#" class="send-message d-flex align-items-center justify-content-start" style="gap:0.25rem; text-decoration: none; color: inherit;">
-                                            <img src="../images/message.png" style="width: 30px; height: 30px;">
-                                            <h4 style="position:relative; top:5px">Send message</h4>
-                                        </a>
-                                    </div>
-                                    <div class="progress-circle" style="--i:85%;--clr:#5f0909;">
-                                        <h3>85<span>%</span></h3>
-                                    </div>
-                                </div>
-                                <div class="lower-div d-flex justify-content-center align-items-center flex-wrap gap-5" style="width:100%">
-                                    <div class="stat-content d-flex justify-content-center align-items-center flex-column">
-                                        <h2>matches</h2>
-                                        <h4>30</h4>
-                                    </div>
-                                    <div class="stat-content d-flex justify-content-center align-items-center flex-column">
-                                        <h2>Wins</h2>
-                                        <h4>2</h4>
-                                    </div>
-                                    <div class="stat-content d-flex justify-content-center align-items-center flex-column">
-                                        <h2>collectibales</h2>
-                                        <h4>5</h4>
-                                    </div>
-                                </div>
-                            </div>
-
-                            
-                            <div class="collectibale d-flex align-items-center mt-5" style="height:55%; width:100%; position: relative;">
-                                <div class="carousel d-flex align-items-center mt-5">
-                                    <div class="first-collectibale" style="width:250px; height:400px">
-                                        <img src="../images/collectibale.png">
-                                    </div>
-                                    <div class="second-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="third-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                    <div class="fourth-collectibale">
-                                        <img src="../images/collectibaleblur.png">
-                                    </div>
-                                </div>
-                            </div>
+                    <div id="second-container">
+                        <div id="first-part">
+                            <h1>Total Matches</h1>
+                            <h2 id="total-match-played">0</h2> <!-- Added -->
                         </div>
-
-                        <div class="container right d-flex flex-column " style="width:40%; height: 80vh">
-                            <div class="scroll">
-                                <table>
-                                    <thead>
-                                        <h1>Recent Matches</h1>
-                                        <tr>
-                                            <th class="name">Name</th>
-                                            <th class="score">Score</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${this.generateRows()}
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div id="second-part">
+                            <h1>total Wins</h1>
+                            <h2 id="total-match-wins">0</h2> <!-- Added -->
                         </div>
+                        <div id="third-part">
+                            <h1>total Losses</h1>
+                            <h2 id="total-match-losses">0</h2> <!-- Added -->
+                        </div>
+                    </div>
+                    <div id="third-container">
+                        <div class="match" id="matches-card">
+                            <ul id="all-match-cards">
+                                <li>
+                                    <div class="match-avatar"></div>
+                                    <p class="match-username">User123</p>
+                                    <p class="match-result">2-0</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="no-matches-message" style="display: none;">No matches found.</div>
                     </div>
                 </div>
+            </div>
         </div>
         `;
     }
-
-    generateRows() {
-        const rows = [];
-        const matches = [
-            { name: "Alice", score: "2-1" },
-            { name: "Bob", score: "2-1" },
-            { name: "wbouuuuuwach", score: "2-1" },
-            { name: "Charlie", score: "2-1" },
-            { name: "Charlie", score: "2-1" },
-            { name: "Charlie", score: "2-1" },
-            { name: "Charlie", score: "2-1" },
-            { name: "Charlie", score: "2-1" },
-        ];
-
-        matches.forEach(player => {
-            rows.push(`
-                <tr class="blurred-content">
-                    <td class="name d-flex align-items-center gap-2">
-                        <div class="profile-img m-2"></div>
-                        ${player.name}
-                    </td>
-                    <td class="score">${player.score}</td>
-                </tr>
-            `);
-        });
-
-        return rows.join('');
-    }
+    
     
 
-
-
     initialize() {
-        
+        this.putProfileImage();
+        this.getDataofProfile(this.user.id);
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
@@ -222,26 +131,159 @@ export default class Profile extends Abstract {
             navigate('/welcome');
         });
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const carousel = document.querySelector('.carousel');
-            const nxtBtn = document.querySelector('.nxt-btn');
-            const preBtn = document.querySelector('.pre-btn');
-            
-            if (carousel && nxtBtn && preBtn) {
-                const containerWidth = carousel.getBoundingClientRect().width;
-
-                nxtBtn.addEventListener('click', () => {
-                    carousel.scrollLeft += containerWidth - 60; // Adjust scroll amount
-                });
-
-                preBtn.addEventListener('click', () => {
-                    carousel.scrollLeft -= containerWidth - 60; // Adjust scroll amount
-                });
-            }
-        });
-
-        
+        // this.animateWinRate(this.winRate);
     }
+
+   /**
+ * Animate the win rate percentage from 0 to the target value.
+ * @param {number} targetPercentage - The final win rate percentage.
+ */
+animateWinRate(targetPercentage) {
+    const element = document.getElementById('win-rate-percentage');
+    let currentPercentage = 0;
+    const duration = 4000; // 4 seconds total animation time
+    const startTime = performance.now();
+
+    const animate = (currentTime) => {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+
+        // Use an easing function for smooth acceleration and deceleration
+        const easeInOutQuad = progress < 0.5 
+            ? 2 * progress * progress 
+            : -1 + (4 - 2 * progress) * progress;
+
+        currentPercentage = targetPercentage * easeInOutQuad;
+
+        element.textContent = `${currentPercentage.toFixed(1)}%`;
+
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            // Ensure we end exactly at the target percentage
+            element.textContent = `${targetPercentage}%`;
+        }
+    };
+
+    requestAnimationFrame(animate);
+}
+
+
+    putProfileImage() {
+        const profileImage = document.querySelector('.profile-img');
+        profileImage.style.backgroundImage = `url('http://localhost:8001${this.user.avatar}')`;
+    }
+
+    async fetchOpponentPic(userId) {
+        try {
+            const response = await fetch(`http://localhost:8001/api/auth/user/${userId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json'
+
+                }}
+            );
+            const res = await response.json();
+            return res;
+        }catch (error) {
+            console.error('Error fetching opponent pic:', error);
+
+        }
+    }
+
+    async getDataofProfile(userId) {
+        console.log('Fetching user matches of user:', userId);
+        try {
+            const response = await fetch(`http://localhost:8001/api/game/allmygames/${userId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+            const data = await response.json();
+            console.log('Data length:', data.length);
+    
+            const noMatchesMessage = document.querySelector('.no-matches-message');
+            const matchesCard = document.getElementById('matches-card');
+            const allMatchCards = document.getElementById('all-match-cards');
+    
+            if (data.length === 0) {
+                console.log('No matches played');
+                noMatchesMessage.style.display = 'block';
+                noMatchesMessage.style.marginTop = '120px';
+                noMatchesMessage.style.textAlign = 'center';
+                noMatchesMessage.style.fontSize = '40px';
+                noMatchesMessage.style.fontfamily = 'Diablo';
+                matchesCard.style.display = 'none';
+            } else {
+                console.log('Matches played');
+                noMatchesMessage.style.display = 'none';
+                matchesCard.style.display = 'block';
+    
+                // Clear existing match cards
+                allMatchCards.innerHTML = '';
+                let winningMatches = 0;
+                let losingMatches = 0;
+    
+                for (let i = 0; i < data.length; i++) {
+                    const match = data[i];
+                    console.log('---> userId ', userId, 'match.player_one ', match.player_one);
+    
+                    let dataOfOpponent;
+    
+                    if (userId === match.player_one) {
+                        console.log('Match ', i, ' I am Player One');
+                        dataOfOpponent = await this.fetchOpponentPic(match.player_two);
+                        console.log('Opponent data of Player Two:', dataOfOpponent);
+                    } else {
+                        console.log('Match ', i, ' I am Player Two');
+                        dataOfOpponent = await this.fetchOpponentPic(match.player_one);
+                        console.log('Opponent data of Player One:', dataOfOpponent);
+                    }
+    
+                    const matchCard = document.createElement('li');
+    
+                    const matchAvatar = document.createElement('div');
+                    matchAvatar.className = 'match-avatar';
+                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataOfOpponent.avatar}')`;
+    
+                    const matchUsername = document.createElement('p');
+                    matchUsername.className = 'match-username';
+                    matchUsername.textContent = dataOfOpponent.username;
+    
+                    const matchResult = document.createElement('p');
+                    matchResult.className = 'match-result';
+                    matchResult.textContent = `${match.score_player_1}  -  ${match.score_player_2}`;
+    
+                    matchCard.appendChild(matchAvatar);
+                    matchCard.appendChild(matchUsername);
+                    matchCard.appendChild(matchResult);
+                    allMatchCards.appendChild(matchCard);
+    
+                    if ((userId === match.player_one && match.score_player_1 > match.score_player_2) ||
+                        (userId === match.player_two && match.score_player_2 > match.score_player_1)) {
+                        matchCard.style.border = '2px solid green';
+                        winningMatches++;
+                    } else {
+                        matchCard.style.border = '2px solid red';
+                        losingMatches++;
+                    }
+                }
+                document.getElementById('total-match-played').textContent = data.length;
+                document.getElementById('total-match-wins').textContent = winningMatches;
+                document.getElementById('total-match-losses').textContent = losingMatches;
+                this.winRate = Math.round((winningMatches / data.length) * 100);
+                this.animateWinRate(this.winRate);
+                // document.getElementById('win-rate-percentage').textContent = `${Math.round((winningMatches / data.length) * 100)}%`;
+            }
+        } catch (error) {
+            console.error('Error fetching user matches:', error);
+        }
+    }
+    
+
 
     async cleanup() {
         console.log('Cleaning up Welcome view');
@@ -251,12 +293,6 @@ export default class Profile extends Abstract {
         if (cssLink) {
             cssLink.remove();
         }
-
-        // If you had event listeners or timers, clear them here
-        // Example: Remove event listener
-        // document.querySelector('.login-link')?.removeEventListener('click', this.someHandler);
-
-        // Clear any temporary DOM elements or states
     }
 
     async  getCsrfToken() {
