@@ -341,7 +341,7 @@ export default class Home extends Abstract {
             if (response.ok) {
                 alert('Friend request accepted successfully');
                 const friendButtonContainer = document.querySelector('.user-actions');
-                friendButtonContainer.innerHTML = '<button class="btn btn-outline-light unfriend-btn">Unfriend</button>';
+                friendButtonContainer.innerHTML = '<label class="">Already Friends</label>';
             } else {
                 const errorText = await response.text();
                 console.error('Error accepting friend request:', errorText);
@@ -398,25 +398,15 @@ export default class Home extends Abstract {
     
             // Clear any existing friend button content
             friendButtonContainer.innerHTML = '';
-    
-            
-
-
-            
-    
-            
-
-
-            // Create the friend button based on friendship status
             
             if (statusRes.status === 'friends') {
                 // User is already a friend, show "Unfriend" button
-                const unfriendButton = document.createElement('button');
-                unfriendButton.className = 'btn btn-outline-light unfriend-btn';
-                unfriendButton.textContent = 'Unfriend';
+                const alreadyFriendLbl = document.createElement('label');
+                alreadyFriendLbl.className = '';
+                alreadyFriendLbl.textContent = 'Already Friends';
     
                 // Add unfriend functionality (optional: add event listener for unfriend)
-                friendButtonContainer.appendChild(unfriendButton);
+                friendButtonContainer.appendChild(alreadyFriendLbl);
             }else if (statusRes.status === 'request_sent'){ 
                 // Friend request is already sent, show "Requested" text
                 const requestText = document.createElement('h2');
