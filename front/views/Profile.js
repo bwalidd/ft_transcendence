@@ -36,34 +36,34 @@ export default class Profile extends Abstract {
                     <ul>
                         <li>
                             <a href="/"> <img src="../images/sidenav-img/home.png" class="home">
-                                <p>Home</p>
+                                <p></p>
                             </a>
                         </li>
                         <li>
                             <a href="/leaderboard"> <img src="../images/sidenav-img/leaderboard.png" class="home">
-                                <p>Leaderboard</p>
+                                <p></p>
                             </a>
                         </li>
                         <li>
                             <a> <img src="../images/sidenav-img/trophy.png" class="home">
-                                <p>Tournament</p>
+                                <p></p>
                             </a>
                         </li>
                         <li>
                             <a href="/chat"> <img src="../images/sidenav-img/messages.png" class="home">
-                                <p>Messages</p>
+                                <p></p>
                             </a>
                         </li>
                         <li>
                             <a href="/settings"> <img src="../images/sidenav-img/settings.png" class="home">
-                                <p>Setting</p>
+                                <p></p>
                             </a>
                         </li>
                     </ul>
                     <ul>
                         <li>
-                            <a href="#" id="logout-link"> <img src="../images/sidenav-img/logout.png">
-                                <p>Logout</p>
+                            <a id="logout-link"> <img src="../images/sidenav-img/logout.png">
+                                <p></p>
                             </a>
                         </li>
                     </ul>
@@ -118,11 +118,7 @@ export default class Profile extends Abstract {
         `;
     }
     
-    
-
-    initialize() {
-        this.putProfileImage();
-        this.getDataofProfile(this.user.id);
+    async loggingOut() {
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
@@ -130,6 +126,13 @@ export default class Profile extends Abstract {
             localStorage.removeItem('refresh_token');
             navigate('/welcome');
         });
+    }
+    
+
+    initialize() {
+        this.putProfileImage();
+        this.getDataofProfile(this.user.id);
+        this.loggingOut();
 
         // this.animateWinRate(this.winRate);
     }

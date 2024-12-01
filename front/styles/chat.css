@@ -167,9 +167,6 @@ body {
 	border-right: solid rgba(255, 255, 255, 0.39) 1px;
 }
 
-.side-nav:hover {
-	width: 250px;
-}
 
 .sep {
 	border: solid rgba(255, 255, 255, 0.219) 1px;
@@ -186,13 +183,7 @@ body {
 	transition: width 0.3s, max-height 0.3s;
   }
   
-.side-nav:hover .logo {
-	width: 230px;
-	height: 200px;
-	margin-top: 10px;
-	background: url('../images/llogo.png') no-repeat center center;
-	background-size: cover;
-}
+
 
 .notification {
     position: fixed;
@@ -228,16 +219,8 @@ body {
 	display: none;
 }
 
-.side-nav:hover li p {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 5px 0;
-}
-
-.side-nav:hover ul li img {
-	margin-right: 10px;
-	width: 40px;
+.side-nav ul li:hover {
+    transform: translateX(10px);
 }
 
 

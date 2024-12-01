@@ -71,45 +71,24 @@
     z-index: 10;
 }
 
-.side-nav:hover {
-	width: 250px;
-}
+
 
 .logo {
-	width: 100px;
-	height: 90px;
-	margin-top: -20px;
-	background: url('../images/mini\ pongx.png');
-	background-position: center;
-	background-size: cover;
-	padding-left: 50px;
-	transition: width 0.3s, max-height 0.3s;
-}
-
-.side-nav:hover .logo {
-    width: 100%;
+    width: 100px;
     height: 100px;
-	max-height: 100px;
-    background: url('../images/pongx.png') no-repeat center center;
+    margin-top: 10px;
+    margin-right: 10px;
+    background: url('../images/llogo.png') no-repeat center center;
     background-size: cover;
 }
+
+
 
 .side-nav li p {
 	white-space: nowrap;
 	display: none;
 }
 
-.side-nav:hover li p {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 5px 0;
-}
-
-.side-nav:hover ul li img {
-	margin-right: 10px;
-	width: 40px;
-}
 
 ul {
     list-style: none;
@@ -196,27 +175,7 @@ ul li img {
     }
 }
 
-@media (max-width: 1000px) {
-    .side-nav:hover {
-        width: 110px; /* Keeps the width the same on hover */
-    }
 
-    .side-nav:hover .logo {
-        width: 100px;
-        height: 90px;
-        margin-top: -20px;
-        background: url('../images/mini\ pongx.png');
-        background-position: center;
-        background-size: cover;
-        padding-left: 50px;
-        transition: width 0.3s, max-height 0.3s;
-    }
-
-    .side-nav:hover li p {
-        white-space: nowrap;
-        display: none;
-    }
-}
 
 .overlay {
     position: absolute;
@@ -224,7 +183,7 @@ ul li img {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 1;
     animation: fadeIn 1s ease forwards;
 }
@@ -238,8 +197,8 @@ ul li img {
     transform: translate(-50%, -50%);
     width: 75%;
     height: 80%;
-    background: linear-gradient(rgba(111, 4, 4, 0.3) 20%, rgba(0, 0, 0, 0.6) 80%);
-    border-radius: 15px;
+    background: linear-gradient(rgba(111, 4, 4, 0.066) 10%, rgba(0, 0, 0, 0.7) 80%);
+    border-radius: 120px;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -570,7 +529,6 @@ ul li img {
 
     .side-nav ul li a:hover {
         transform: scale(1.1);
-        color: #007bff;
     }
 
     /* Subtle Pulse Animation for Win Rate */
