@@ -40,7 +40,7 @@ export default class Chat extends Abstract {
 
                     <div class="chat-container">
                         <div class="leftSide">
-                            <div class="header">
+                            <div class="headerr">
                                 <nav>
                                     <ul class="nav-list">
                                         <li class="nav-item"><button id="friendsTab" class="active">Friends</button></li>
@@ -54,6 +54,8 @@ export default class Chat extends Abstract {
                             </div>
                         </div>
                         <div class="rightSide">
+                            <h2 id="click-chat-message" style="display:none;">Select Friend To Chat With !!</h2>
+                            
                             <div class="header d-flex align-items-center justify-content-between">
                                 <div class="opened-chat-usename-profile" style="background: url(../images/bhazzout.jpeg); background-position: center; background-size: cover;"></div>
                                 <div class="button-wrapper">
@@ -72,6 +74,7 @@ export default class Chat extends Abstract {
                                 <input type="text" id="messageInput" placeholder="Type a message..." disabled>
                                 <button id="sendMsgBtn" class="send-msg-btn" disabled>Send</button>
                             </div>
+                        
                         </div>
                     </div>
                 </div>
@@ -457,6 +460,7 @@ export default class Chat extends Abstract {
 
     async displaySelectedFriend(friend) {
         // console.log('Selected friend:', friend);
+        this.initChat('clicked');
         const username = document.querySelector('.opened-chat-username h4');
         username.textContent = friend.username;
         const profile = document.querySelector('.opened-chat-usename-profile');
@@ -545,16 +549,40 @@ export default class Chat extends Abstract {
             navigate('/welcome');
         });
     
-        const chatContainer = document.querySelector('.chat-container');
-        chatContainer.addEventListener('click', (e) => {
-            if (e.target.id === 'friendsTab') {
-                this.setActiveTab(e.target, document.getElementById('friendsContent'));
-            }
-        });
+        this.initChat('notClicked');
     
         this.fetchUserData();
         this.sendMessages(); // Make sure to call sendMessages
         this.inviteToGame();
+    }
+
+    initChat(status) {
+        const headerElement = document.querySelector('.header');
+        const chatBoxElement = document.querySelector('.chat-box');
+        const messageInputElement = document.querySelector('.message-input');
+        const clickChatMessageElement = document.getElementById('click-chat-message');
+    
+        if (status === 'notClicked') {
+            // Add a CSS class to hide the header
+            headerElement.classList.add('hidden');
+    
+            // Hide the chat box and message input
+            chatBoxElement.style.display = 'none';
+            messageInputElement.style.display = 'none';
+    
+            // Show the "click a Chat to Start" message
+            clickChatMessageElement.style.display = 'block';
+        } else if (status === 'clicked') {
+            // Remove the CSS class to show the header
+            headerElement.classList.remove('hidden');
+    
+            // Show the chat box and message input
+            chatBoxElement.style.display = 'block';
+            messageInputElement.style.display = 'flex';
+    
+            // Hide the "click a Chat to Start" message
+            clickChatMessageElement.style.display = 'none';
+        }
     }
     
 
