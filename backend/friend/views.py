@@ -78,11 +78,24 @@ def check_friend_status(request, user_id):
 # Decline or cancel a friend request
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
-def decline_friend_request(request, request_id):
-    friend_request = get_object_or_404(friendRequest, id=request_id)
+def decline_friend_request(request, sender_id):
+    try:
+        # Get the friend request where the authenticated user is the receiver
+        friend_request = get_object_or_404(friendRequest, sender_id=sender_id, receiver=request.user)
 
-    if friend_request.receiver == request.user or friend_request.sender == request.user:
-        friend_request.delete()
-        return response.Response({'detail': 'Friend request declined.'}, status=status.HTTP_200_OK)
-    else:
-        return response.Response({'detail': 'Not authorized to decline this request.'}, status=status.HTTP_403_FORBIDDEN)
+        # Debugging logs
+        print(f"Authenticated user: {request.user}")
+        print(f"Friend Request Sender: {friend_request.sender}")
+        print(f"Friend Request Receiver: {friend_request.receiver}")
+        print(f"Friend Request Data: {friend_request.__dict__}")
+
+        # Decline the friend request
+        if friend_request.is_active:
+            friend_request.is_active = False
+            friend_request.delete()
+            return response.Response({'detail': 'Friend request declined.'}, status=status.HTTP_200_OK)
+        else:
+            return response.Response({'detail': 'This request is no longer active.'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return response.Response({'detail': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

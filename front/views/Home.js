@@ -563,6 +563,34 @@ export default class Home extends Abstract {
         }
     }
     
+    async rejectFriendRequest(senderId) {
+        alert('Rejecting friend request...');
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch(`http://localhost:8001/api/friend/decline-request/${senderId}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                alert('Friend request rejected successfully');
+                document.querySelector('.user-actions').innerHTML = '<button class="btn btn-outline-light friend-btn">Add Friend</button>';
+                
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.detail}`);
+                console.error('Error rejecting friend request:', errorData);
+            }
+        } catch (error) {
+            console.error('Error during rejecting friend request:', error);
+        }
+    }
+    
 
     
     async fetchOpponentPic(userId) {
