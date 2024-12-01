@@ -43,30 +43,12 @@ export default class Chat extends Abstract {
                             <div class="header">
                                 <nav>
                                     <ul class="nav-list">
-                                        <li class="nav-item"><button id="discussionTab" class="active">Discussion</button></li>
-                                        <li class="nav-item"><button id="friendsTab">Friends</button></li>
+                                        <li class="nav-item"><button id="friendsTab" class="active">Friends</button></li>
                                     </ul>
                                 </nav>
                             </div>
                             <div class="content">
-                                <div id="discussionContent" class="tab-content active">
-                                    <div class="search-chat">
-                                        <input type="text" class="search search-icon" placeholder="Search or start new chat">
-                                    </div>
-                                    <div class="chatlist">
-                                        <div class="block active">
-                                            <div class="cover" style="background: url(../images/bhazzout.jpeg); background-position: center; background-size: cover;"></div>
-                                            <div class="details d-flex flex-column justify-content-between">
-                                                <div class="listHead">
-                                                    <h5>Wbouwach</h5>
-                                                    <p class="time">10:45</p>
-                                                </div>
-                                                <div class="message"><p>Hello</p></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="friendsContent" class="tab-content">
+                                <div id="friendsContent" class="tab-content active">
                                     <div class="friend-l"></div>
                                 </div>
                             </div>
@@ -95,6 +77,7 @@ export default class Chat extends Abstract {
                 </div>
             </div>
         `;
+
     }
 
     connectWebSocket(friendId) {
@@ -209,10 +192,6 @@ export default class Chat extends Abstract {
                 const responseData = await response.json();
                 console.log("Game session created:", responseData);
         
-                // Navigate to the game page or perform additional actions
-                // alert(`Game session created successfully with ID: ${responseData.session_id}`);
-                // Example: Navigate to the play page
-                // this.navigate('/play', { sessionId: responseData.session_id });
             } catch (error) {
                 console.error('Error in saveMatchData:', error);
                 alert('An error occurred while starting the game.');
@@ -548,7 +527,7 @@ export default class Chat extends Abstract {
     initialize() {
         this.inviter = null;
         this.invitee = null;
-        
+    
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
@@ -558,26 +537,26 @@ export default class Chat extends Abstract {
             alertBox.className = 'custom-alert';
             alertBox.innerText = 'Logout Done!';
             document.body.appendChild(alertBox);
-
+    
             // Remove the alert after 3 seconds
             setTimeout(() => {
                 alertBox.remove();
             }, 3000);
             navigate('/welcome');
         });
-
+    
         const chatContainer = document.querySelector('.chat-container');
         chatContainer.addEventListener('click', (e) => {
-            if (e.target.id === 'discussionTab') {
-                this.setActiveTab(e.target, document.getElementById('discussionContent'));
-            } else if (e.target.id === 'friendsTab') {
+            if (e.target.id === 'friendsTab') {
                 this.setActiveTab(e.target, document.getElementById('friendsContent'));
             }
         });
+    
         this.fetchUserData();
         this.sendMessages(); // Make sure to call sendMessages
         this.inviteToGame();
     }
+    
 
     async inviteToGame() {
         const gameButton = document.getElementById("gameButton");
