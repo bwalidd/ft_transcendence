@@ -20,7 +20,7 @@ export default class Home extends Abstract {
     async getHtml() {
         const user = await fetchUserData('http://localhost:8001/api/auth/user/');
         const avatarUrl = `http://localhost:8001${user.avatar}`;
-        console.log('Avatar URL:', avatarUrl);
+        // console.log('Avatar URL:', avatarUrl);
 
         
         
@@ -351,10 +351,25 @@ export default class Home extends Abstract {
         }
     }
     
-    
+    async getIdOfUser() {
+        try{
+
+            const response = await fetch('http://localhost:8001/api/auth/user/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
+                    'Content-Type': 'application/json'
+                }}
+            );
+            const res = await response.json();
+            return res;
+        }catch(error){
+            console.error('Error fetching user id:', error);
+        }
+    }
+
     async showUserPopup(userId) {
-        console.log('Showing user popup:', userId);
-        console.log('---------------', userId.id);
+        
         try {
             // Fetch the user's profile information from the backend
             const response = await fetch(`http://localhost:8001/api/auth/user/${userId.id}/`, {
@@ -398,8 +413,17 @@ export default class Home extends Abstract {
     
             // Clear any existing friend button content
             friendButtonContainer.innerHTML = '';
-            
-            if (statusRes.status === 'friends') {
+            const loggedUser = await this.getIdOfUser();
+            if (userId.id === loggedUser.id) {
+               
+                const myProfile = document.createElement('label');
+                myProfile.className = '';
+                myProfile.textContent = 'My Profile';
+    
+                // Add unfriend functionality (optional: add event listener for unfriend)
+                friendButtonContainer.appendChild(myProfile);
+                
+            }else if (statusRes.status === 'friends') {
                 // User is already a friend, show "Unfriend" button
                 const alreadyFriendLbl = document.createElement('label');
                 alreadyFriendLbl.className = '';
@@ -458,7 +482,7 @@ export default class Home extends Abstract {
             }
 
 
-            console.log('status: --->', statusRes.status);
+            // console.log('status: --->', statusRes.status);
 
     
             popup.classList.add('show'); // Show the popup
@@ -467,7 +491,7 @@ export default class Home extends Abstract {
             document.getElementById('popup-close').addEventListener('click', () => {
                 this.closeUserPopup();
             });
-            await this.collectmatchesofUser(userId.id);
+            this.collectmatchesofUser(userId.id);
         } catch (error) {
             console.error('Error loading user profile:', error);
         }
@@ -483,7 +507,13 @@ export default class Home extends Abstract {
                 },
             });
             const data = await response.json();
-            console.log('Data length:', data.length);
+            // console.log('Data length:', data.length);
+
+            const matchesCard = document.getElementById('matches-card');
+            if (!matchesCard) {
+                console.error('Matches card element not found in the DOM.');
+                return;
+            }
     
             if (data.length === 0) {
                 console.log('No matches played wa do it');
@@ -509,19 +539,17 @@ export default class Home extends Abstract {
     
                 for (let i = 0; i < data.length; i++) {
                     const match = data[i];
-                    console.log('---> userId ', userId, 'match.player_one ', match.player_one);
-    
-                    // Declare `dataofOpponent` here
+                    
                     let dataofOpponent;
     
                     if (userId === match.player_one) {
-                        console.log('match ', i, ' i am Player one');
+                        // console.log('match ', i, ' i am Player one');
                         dataofOpponent = await this.fetchOpponentPic(match.player_two);
                         console.log('Opponent data: of player two', dataofOpponent);
                     } else {
-                        console.log('match ', i, ' i am Player two');
+                        // console.log('match ', i, ' i am Player two');
                         dataofOpponent = await this.fetchOpponentPic(match.player_one);
-                        console.log('Opponent data: of player one', dataofOpponent);
+                        // console.log('Opponent data: of player one', dataofOpponent);
                     }
     
                     const matchCard = document.createElement('li');
@@ -553,7 +581,6 @@ export default class Home extends Abstract {
                     }
                 }
                 document.getElementById('number-of-match-wins').textContent = winningmatches;
-                document.getElementById('total-match-played').textContent = data.length;
                 document.getElementById('number-of-match-losses').textContent = losingmatches;
                 const winRate = (winningmatches / (winningmatches + losingmatches)) * 100;
                 document.getElementById('win-rate').textContent = `${winRate.toFixed(2)}%`;
