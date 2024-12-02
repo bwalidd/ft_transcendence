@@ -102,7 +102,7 @@ export default class Chat extends Abstract {
     
         this.socket = new WebSocket(`ws://localhost:8001/ws/wsc/${this.userData.id}/${friendId}/`);
         this.socket.onopen = () => {
-            console.log(`WebSocket connected with friend ID ${friendId}.`);
+            // console.log(`WebSocket connected with friend ID ${friendId}.`);
             this.enableChatInput(true);
         };
     
@@ -116,7 +116,7 @@ export default class Chat extends Abstract {
         };
     
         this.socket.onclose = () => {
-            console.log(`WebSocket connection closed for friend ID ${friendId}.`);
+            // console.log(`WebSocket connection closed for friend ID ${friendId}.`);
             this.enableChatInput(false);
         };
     }
@@ -226,7 +226,7 @@ export default class Chat extends Abstract {
             this.gameSocket = new WebSocket(`ws://localhost:8001/ws/game-invite/${userId}/${friendId}/`);
         
             this.gameSocket.onopen = () => {
-                console.log(`Game WebSocket connected for friend ID: ${friendId}`);
+                // console.log(`Game WebSocket connected for friend ID: ${friendId}`);
             };
         
             this.gameSocket.onmessage = (event) => {
@@ -312,7 +312,7 @@ export default class Chat extends Abstract {
             };
         
             this.gameSocket.onclose = () => {
-                console.log("Game WebSocket connection closed.");
+                // console.log("Game WebSocket connection closed.");
             };
         
             this.gameSocket.onerror = (error) => {
@@ -488,7 +488,45 @@ export default class Chat extends Abstract {
         await this.loadChatHistory(friend.id); // Load chat history before connecting WebSocket
         this.connectWebSocket(friend.id); // Assuming friend has an id property
         this.connectGameInviteSocket(friend.id);
+        this.checkChatStatus(friend.id);
     }
+
+    // websocket to check if the friend blocking status
+    async checkChatStatus(friendId) {
+        const userId = this.userData.id;
+        const ws = new WebSocket(`ws://localhost:8001/ws/chat-status/${userId}/${friendId}/`);
+        ws.onopen = () => {
+            console.log(`Chat statusWebSocket connected for friend ID ${friendId}`);
+        };
+    
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log('Chat status:', data);
+            if (data.status === 'blocked' || 1) {
+                console.log('Chat is blocked by you');
+                // Disable the chat input
+                document.getElementById('messageInput').disabled = true;
+            } else if (data.status === 'blocked_by_friend') {
+                console.log('Chat is blocked by the friend');
+                // Disable the chat input
+                document.getElementById('messageInput').disabled = true;
+            } else {
+                console.log('Chat is enabled');
+                // Enable the chat input
+                document.getElementById('messageInput').disabled = false;
+            }
+        };
+    
+        ws.onclose = () => {
+            console.log(`Chat status WebSocket closed for friend ID ${friendId}`);
+        };
+    
+        ws.onerror = (error) => {
+            console.error('Chat status WebSocket error:', error);
+        };
+    }
+
+
     
     async loadChatHistory(friendId) {
         try {

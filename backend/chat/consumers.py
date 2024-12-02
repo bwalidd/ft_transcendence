@@ -1,11 +1,12 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from .models import MychatModel
+from .models import MychatModel , UserBlocking
 from django.contrib.auth import get_user_model
 import uuid
 from asgiref.sync import sync_to_async
-
+from game.models import GameSession
+from django.contrib.auth.models import User
 
 User = get_user_model()
 
@@ -145,12 +146,88 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 
 
+class ChatStatusConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.user_id = int(self.scope['url_route']['kwargs']['user_id'])
+        self.friend_id = int(self.scope['url_route']['kwargs']['friend_id'])
+        
+        # Create a unique room group for chat status
+        self.room_group_name = f'chat_status_{min(self.user_id, self.friend_id)}_{max(self.user_id, self.friend_id)}'
+        
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
 
-import json
-import uuid
-from channels.generic.websocket import AsyncWebsocketConsumer
-from game.models import GameSession
-from django.contrib.auth.models import User
+        await self.accept()
+        
+        # Check initial chat status
+        status = await self.get_chat_status()
+        await self.send(text_data=json.dumps({
+            'status': status
+        }))
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def receive(self, text_data):
+        # Optional: Handle any incoming messages if needed
+        pass
+
+    @database_sync_to_async
+    def get_chat_status(self):
+        """
+        Determine the chat status between two users.
+        Possible statuses:
+        - 'enabled': Chat is allowed
+        - 'blocked': User has blocked the friend
+        - 'blocked_by_friend': Friend has blocked the user
+        """
+        try:
+            # Find the user and friend using the custom User model
+            user = User.objects.get(id=self.user_id)
+            friend = User.objects.get(id=self.friend_id)
+            
+            # Check if the current user has blocked the friend
+            is_user_blocked = UserBlocking.objects.filter(
+                blocker=user, 
+                blocked=friend
+            ).exists()
+            
+            if is_user_blocked:
+                return 'blocked'
+            
+            # Check if the friend has blocked the current user
+            is_friend_blocked = UserBlocking.objects.filter(
+                blocker=friend, 
+                blocked=user
+            ).exists()
+            
+            if is_friend_blocked:
+                return 'blocked_by_friend'
+            
+            # If no blocking is detected, chat is enabled
+            return 'enabled'
+        
+        except User.DoesNotExist:
+            # Handle case where user or friend doesn't exist
+            return 'error'
+
+    async def send_status_update(self, event):
+        """
+        Send status update to the WebSocket
+        """
+        status = event['status']
+        await self.send(text_data=json.dumps({
+            'status': status
+        }))
+
+
 
 class GameConsumer(AsyncWebsocketConsumer):
 
