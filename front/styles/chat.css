@@ -555,7 +555,7 @@ ul li img {
 	display: inline-block;
 }
 
-.game-button {
+.game-button , .chat-enabled , .chat-blocked, .chat-blocked-by-friend {
 	background-color: #860606;
 	border: none;
 	color: white;
@@ -570,6 +570,7 @@ ul li img {
 	transition: background-color 0.3s;
 }
 
+
 .game-button:hover {
 	background-color: #b80909;
 }
@@ -581,6 +582,27 @@ ul li img {
 	background-position: center;
 	background-size: cover;
 }
+
+
+
+.chat-ico{
+	width: 24px;
+	height: 24px;
+	background: url('../images/chatEnabled.png');
+	background-position: center;
+	background-size: cover;
+}
+
+.block-ico , .block-by-friend-ico{
+	width: 24px;
+	height: 24px;
+	background: url('../images/blockedicon.png');
+	background-position: center;
+	background-size: cover;
+}
+
+
+
 .tooltip {
 	visibility: hidden;
 	width: 120px;

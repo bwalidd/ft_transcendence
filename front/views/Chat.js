@@ -59,8 +59,20 @@ export default class Chat extends Abstract {
                             <div class="header d-flex align-items-center justify-content-between">
                                 <div class="opened-chat-usename-profile" style="background: url(../images/bhazzout.jpeg); background-position: center; background-size: cover;"></div>
                                 <div class="button-wrapper">
-                                    <button class="game-button" id="gameButton"><div class="game-ico"></div></button>
-                                    <span class="tooltip">Invite to game</span>
+
+                                        <button class="game-button" id="gameButton">
+                                            <div class="game-ico"></div>
+                                        </button>
+                                        <button class="chat-enabled" id="chatEnabled" style="display:none;">
+                                            <div class="chat-ico"></div>
+                                        </button>
+                                        <button class="chat-blocked" id="chatBlocked" style="display:none;">
+                                            <div class="block-ico"></div>
+                                        </button>
+                                        <button class="chat-blocked-by-friend" id="chatBlockedByFriend">
+                                            <div class="block-by-friend-ico"></div>
+                                        </button>
+
                                 </div>
                                 <div class="opened-chat-username d-flex flex-column justify-content-center" style="position:absolute; left:80px;"><h4>Wbouwach</h4></div>
                                 <div class="online d-flex align-items-center" style="position:absolute; right:0; margin:5px; gap:5px"><div class="circle m-1"></div><b>Online</b></div>
