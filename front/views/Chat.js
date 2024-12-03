@@ -91,8 +91,219 @@ export default class Chat extends Abstract {
                     </div>
                 </div>
             </div>
+
+            <!-- User Info Popup -->
+            <div id="user-info-popup" class="user-info-popup-chat hidden">
+                <div class="user-info-content">
+                    <span id="popup-close" class="popup-close">&times;</span>
+                    <div class="user-card">
+                        <div class="user-avatar" id="popup-avatar"></div>
+                        <h2 id="popup-username"></h2>
+                    </div>
+                    <div class="user-actions">
+                        <!-- Friend button will be inserted here --> 
+                    </div>
+                </div>
+                <h2 class="popup-title">Stats</h2>
+                <div class="user-stats">
+                    <div class="stat">
+                        <h3>Wins</h3>
+                        <p id="number-of-match-wins">10</p>
+                    </div>
+                    <div class="stat">
+                        <h3>Losses</h3>
+                        <p id="number-of-match-losses">5</p>
+                    </div>
+                    <div class="stat">
+                        <h3>Win Rate</h3>
+                        <p id="win-rate">66%</p>
+                    </div>
+                </div>
+                <h2 class="popup-title">Latest Matches</h2>
+                <div class="latest-matches">
+                    <h2 class="no-match">No Matche Played</h2>
+                    <div class="match" id="matches-card">
+                        <ul id="all-match-cards">
+                            <li>
+                                <div class="match-avatar"></div>
+                                <p class="match-username">User123</p>
+                                <p class="match-result">2-0</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
         `;
 
+    }
+
+    
+    async showUserPopup(userId) {
+        
+        try {
+            // Fetch the user's profile information from the backend
+            const response = await fetch(`http://localhost:8001/api/auth/user/${userId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!response.ok) {
+                console.error('Error fetching user profile:', await response.text());
+                return;
+            }
+
+            const user = await response.json(); // Get user data including friend status
+    
+            const popup = document.getElementById('user-info-popup');
+            const avatarDiv = document.getElementById('popup-avatar');
+            const username = document.getElementById('popup-username');
+            const friendButtonContainer = document.querySelector('.user-actions');
+            
+            // Set avatar and username in popup
+            avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
+            username.textContent = user.username;
+            friendButtonContainer.innerHTML = 'Already Friends';
+            popup.classList.add('show'); 
+    
+            // Close popup when the close button is clicked
+            document.getElementById('popup-close').addEventListener('click', () => {
+                this.closeUserPopup();
+            });
+            this.collectmatchesofUser(userId);
+        } catch (error) {
+            console.error('Error loading user profile:', error);
+        }
+    }
+
+    closeUserPopup() {
+        const popup = document.getElementById('user-info-popup');
+        popup.classList.remove('show');
+    }
+
+    async fetchOpponentPic(userId) {
+        try {
+            const response = await fetch(`http://localhost:8001/api/auth/user/${userId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json'
+
+                }}
+            );
+            const res = await response.json();
+            return res;
+        }catch (error) {
+            console.error('Error fetching opponent pic:', error);
+
+        }
+    }
+    
+    async collectmatchesofUser(userId) {
+        try {
+            const response = await fetch(`http://localhost:8001/api/game/allmygames/${userId}/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
+                    'Content-Type': 'application/json'
+                },
+            });
+            const data = await response.json();
+            // console.log('Data length:', data.length);
+
+            const matchesCard = document.getElementById('matches-card');
+            if (!matchesCard) {
+                console.error('Matches card element not found in the DOM.');
+                return;
+            }
+            console.log('matches played ==>', data.length, '===> ', userId);
+            if (data.length === 0) {
+                document.querySelector('.no-match').style.display = 'block';
+                document.querySelector('.no-match').style.marginTop = '120px';
+                document.querySelector('.no-match').style.textAlign = 'center';
+                document.getElementById('matches-card').style.display = 'none';
+                document.getElementById('win-rate').textContent = '0%';
+                document.getElementById('number-of-match-wins').textContent = '0';
+                document.getElementById('number-of-match-losses').textContent = '0';
+            } else {
+                document.querySelector('.no-match').style.display = 'none';
+                document.getElementById('matches-card').style.display = 'block';
+                document.getElementById('number-of-match-wins').textContent = '10';
+                document.getElementById('number-of-match-losses').textContent = '5';
+    
+                const allMatchCards = document.getElementById('all-match-cards');
+                allMatchCards.innerHTML = '';
+                let winningmatches = 0;
+                let losingmatches = 0;
+                let totalMatches = 0;
+    
+                for (let i = 0; i < data.length; i++) {
+                    const match = data[i];
+                    
+                    let dataofOpponent;
+    
+                    if (userId === match.player_one) {
+                        // console.log('match ', i, ' i am Player one');
+                        dataofOpponent = await this.fetchOpponentPic(match.player_two);
+                        // console.log('Opponent data: of player two', dataofOpponent);
+                    } else {
+                        // console.log('match ', i, ' i am Player two');
+                        dataofOpponent = await this.fetchOpponentPic(match.player_one);
+                        // console.log('Opponent data: of player one', dataofOpponent);
+                    }
+    
+                    const matchCard = document.createElement('li');
+                    const matchAvatar = document.createElement('div');
+                    matchAvatar.className = 'match-avatar';
+    
+                    const matchUsername = document.createElement('p');
+                    matchUsername.className = 'match-username';
+                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataofOpponent.avatar}')`;
+                    matchUsername.textContent = dataofOpponent.username;
+    
+                    const matchResult = document.createElement('p');
+                    matchResult.className = 'match-result';
+                    matchResult.textContent = `${match.score_player_1}  -  ${match.score_player_2}`;
+    
+                    matchCard.appendChild(matchAvatar);
+                    matchCard.appendChild(matchUsername);
+                    matchCard.appendChild(matchResult);
+                    allMatchCards.appendChild(matchCard);
+                    if ((userId === match.player_one && match.score_player_1 > match.score_player_2) ||
+                        (userId === match.player_two && match.score_player_2 > match.score_player_1)) {
+                        matchCard.style.border   = '2px solid green';
+                        winningmatches++;
+                        totalMatches++;
+                    }else{
+                        matchCard.style.border   = '2px solid red';
+                        losingmatches++;
+                        totalMatches++;
+                    }
+                }
+                document.getElementById('number-of-match-wins').textContent = winningmatches;
+                document.getElementById('number-of-match-losses').textContent = losingmatches;
+                const winRate = (winningmatches / (winningmatches + losingmatches)) * 100;
+                document.getElementById('win-rate').textContent = `${winRate.toFixed(2)}%`;
+            }
+        } catch (error) {
+            console.error('Error fetching user matches:', error);
+        }
+    }
+
+    openProfileClicked(friendId) {
+        const usernameElement = document.querySelector('.opened-chat-username');
+        
+        // Remove any existing event listeners
+        usernameElement.onclick = null;
+        
+        // Add a single event listener using onclick
+        usernameElement.onclick = async () => {
+            console.log('User clicked on the profile');
+            await this.showUserPopup(friendId);
+        };
     }
 
     connectWebSocket(friendId) {
@@ -482,6 +693,7 @@ export default class Chat extends Abstract {
         this.connectWebSocket(friend.id); // Assuming friend has an id property
         this.connectGameInviteSocket(friend.id);
         this.checkChatStatus(friend.id);
+        this.openProfileClicked(friend.id);
     }
 
     // websocket to check if the friend blocking status
@@ -506,11 +718,11 @@ export default class Chat extends Abstract {
 
                 document.addEventListener('click', (event) => {
                     if (event.target.id === 'chatEnabled') {
-                        console.log('Unblocking the chat');
+                        // console.log('Unblocking the chat');
                         this.UnBlockYourFriend(friendId);
                         document.getElementById('gameButton').style.display = 'block';
                     }
-                    console.log('----->Unblocking the chat');
+                    // console.log('----->Unblocking the chat');
                 });
             } else if (data.status === 'blocked_by_friend') {
                 console.log('Chat is blocked by the friend');
@@ -534,7 +746,7 @@ export default class Chat extends Abstract {
                         this.blockYourFriend(friendId);
                         document.getElementById('gameButton').style.display = 'none';
                     }
-                    console.log('----->blocking the chat');
+                    // console.log('----->blocking the chat');
                 });
             }
         };

@@ -158,7 +158,7 @@ export default class Home extends Abstract {
                     </ul>
                 </div>
             </div>
-    </div>
+        </div>
         `;
     }
 

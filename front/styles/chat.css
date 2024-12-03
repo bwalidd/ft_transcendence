@@ -574,6 +574,10 @@ ul li img {
 	background-color: #ffffff20;
 }
 
+.opened-chat-username:hover{
+	cursor: pointer;
+
+}
 
 .game-button:hover {
 	background-color: #b80909;
@@ -802,4 +806,208 @@ ul li img {
 	margin-right: 70px;
 	width: 35px;
 	height: 35px;
+}
+
+
+
+/* profile pop css */
+
+
+
+.user-info-popup-chat {
+    position: fixed; /* Ensure fixed positioning relative to the viewport */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Offset by 50% to center */
+    background: linear-gradient(rgba(111, 4, 4, 0.5) 30%, rgba(0, 0, 0, 0.6) 80%);
+    border-radius: 15px;
+    padding: 30px;
+    width: 790px;
+    height: 590px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
+    z-index: 1050; /* Ensure it stays on top */
+    box-sizing: border-box; /* Prevent padding/border issues */
+    display: none; /* Hidden by default */
+}
+
+.user-info-popup-chat.show {
+    display: block; /* Make visible when the 'show' class is added */
+}
+
+
+.user-info-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+
+.no-match{
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Diablo';
+  font-size: 20px;
+  color: antiquewhite;
+  text-shadow: 1px 1px 2px #666, /* Initial shadow with a slight blur */
+  2px 2px 4px #333, /* Darker shadow for more depth */
+  3px 3px 6px #000; /* Heavier shadow to intensify the effect */
+}
+
+.user-card{
+  width: 40%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.user-card h2 {
+  font-size: 30px;
+  font-family: 'Diablo';
+  text-shadow: 1px 1px 2px #666, /* Initial shadow with a slight blur */
+  2px 2px 4px #333, /* Darker shadow for more depth */
+  3px 3px 6px #000; /* Heavier shadow to intensify the effect */
+  color: antiquewhite;
+}
+
+.user-actions{
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.user-actions h2{
+  font-size: 10px;
+  font-family: 'Montserrat';
+}
+
+
+.user-actions button{
+  font-family: 'Diablo';
+  color: antiquewhite;
+  background-color: rgba(82, 77, 77, 0.603);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.836);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+}
+
+.request-text{
+  font-size: x-large;
+  color: #ffffff;
+  font-weight: bolder;
+}
+
+.user-avatar {
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.user-details h2 {
+  margin: 0;
+}
+
+.user-details p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.popup-title{
+  font-family: 'Diablo';
+  font-size: 20px;
+  color: rgba(196, 196, 196, 0.803);
+  text-align: center;
+  margin-top: 20px;
+}
+.user-stats{
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.user-stats .stat h3{
+  font-family: 'Diablo';
+  font-size: 25px;
+  color: antiquewhite;
+}
+
+.user-stats .stat p{
+  font-family: 'Diablo';
+  font-size: 25px;
+  color: antiquewhite;
+}
+
+.stat{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* .latest-matches .match{
+  display: none;
+} */
+
+
+.latest-matches .match{
+  margin: 10px;
+  display: flex;
+  width: 100%;
+  height: 200px;
+}
+
+.latest-matches .match ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.latest-matches .match li{
+  padding: 10px;
+  margin: 10px;
+  width: 120px;
+  height: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px;
+}
+
+.latest-matches .match li .match-avatar{
+  background-image: url('../images/bhazzout.jpeg');
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.latest-matches .match li .match-username{
+  font-family: 'Montserrat';
+  font-size: 13px;
+  color: antiquewhite;
+}
+
+
+.latest-matches .match li .match-result{
+  font-family: 'Montserrat';
+  font-size: 13px;
+  color: antiquewhite;
 }
