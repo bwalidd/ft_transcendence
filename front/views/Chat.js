@@ -60,7 +60,7 @@ export default class Chat extends Abstract {
                                 <div class="opened-chat-usename-profile" style="background: url(../images/bhazzout.jpeg); background-position: center; background-size: cover;"></div>
                                 <div class="button-wrapper">
 
-                                        <button class="game-button" id="gameButton">
+                                        <button class="game-button" id="gameButton" style="display : none;">
                                             <div class="game-ico"></div>
                                         </button>
                                         <button class="chat-enabled" id="chatEnabled" style="display:none;">
@@ -500,12 +500,15 @@ export default class Chat extends Abstract {
                 // Disable the chat input
                 document.getElementById('messageInput').disabled = true;
                 document.getElementById('chatBlocked').style.display = 'none';
+                document.getElementById('gameButton').style.display = 'none';
                 document.getElementById('chatEnabled').style.display = 'block';
                 document.getElementById('chatEnabled').style.marginLeft = '10px';
+
                 document.addEventListener('click', (event) => {
                     if (event.target.id === 'chatEnabled') {
                         console.log('Unblocking the chat');
                         this.UnBlockYourFriend(friendId);
+                        document.getElementById('gameButton').style.display = 'block';
                     }
                     console.log('----->Unblocking the chat');
                 });
@@ -515,11 +518,13 @@ export default class Chat extends Abstract {
                 document.getElementById('messageInput').disabled = true;
                 document.getElementById('chatBlocked').style.display = 'none';
                 document.getElementById('chatBlockedByFriend').style.display = 'block';
+                document.getElementById('gameButton').style.display = 'none';
                 document.getElementById('chatBlockedByFriend').style.marginLeft = '10px';
             } else {
                 console.log('Chat is enabled');
                 document.getElementById('messageInput').disabled = false;
                 document.getElementById('chatBlocked').style.display = 'block';
+                document.getElementById('gameButton').style.display = 'block';
                 document.getElementById('chatEnabled').style.display = 'none';
                 document.getElementById('chatBlockedByFriend').style.display = 'none';
                 document.getElementById('chatBlocked').style.marginLeft = '10px';
@@ -527,6 +532,7 @@ export default class Chat extends Abstract {
                     if (event.target.id === 'chatBlocked') {
                         
                         this.blockYourFriend(friendId);
+                        document.getElementById('gameButton').style.display = 'none';
                     }
                     console.log('----->blocking the chat');
                 });
