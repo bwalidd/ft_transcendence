@@ -387,38 +387,36 @@ export default class Chat extends Abstract {
 
  
     async saveMatchData(data) {
-            console.log("Match data:", data);
-            const csrfToken = await this.getCsrfToken();
-        
-            try {
-                const response = await fetch('http://localhost:8001/api/game/start/', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        player_one: data.to, // Inviter's ID
-                        player_two: data.from,   // Invitee's ID
-                        session_id: data.session_id // Session ID from the WebSocket message
-                    }),
-                });
-        
-                if (!response.ok) {
-                    console.error('Error starting the game:', await response.text());
-                    alert('Failed to start the game. Please try again.');
-                    return;
-                }
-        
-                const responseData = await response.json();
-                console.log("Game session created:", responseData);
-        
-            } catch (error) {
-                console.error('Error in saveMatchData:', error);
-                alert('An error occurred while starting the game.');
-            }
+        console.log("Match data:", data);
+        const csrfToken = await this.getCsrfToken();
+    
+        try {
+            const response = await fetch('http://localhost:8001/api/game/start/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    player_one: data.to, // Inviter's ID
+                    player_two: data.from,   // Invitee's ID
+                    session_id: data.session_id // Session ID from the WebSocket message
+                }),
+            });
+    
+            // if (!response.ok) {
+            //     console.error('Error starting the game:', await response.text());
+            //     return;
+            // }
+    
+            const responseData = await response.json();
+            console.log("Game session created:", responseData);
+    
+        } catch (error) {
+            console.error('Error in saveMatchData:', error);
+        }
     }
         
     connectGameInviteSocket(friendId) {
