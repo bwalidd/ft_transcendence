@@ -17,6 +17,7 @@ const routes = [
 ];
 
 const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard","GameRemote","Settings","GameAi","LocalMatch","Tournaments"];
+const shouldNotAuthpages = ["Login", "Signup", "Welcome"];
 
 const loadCSS = (url) => {
     return new Promise((resolve, reject) => {
@@ -62,6 +63,10 @@ const loadView = async (path) => {
         }
         if (viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
             alert('You need to start a new game first');
+            return navigate('/');
+        }
+        if (shouldNotAuthpages.includes(viewName) && localStorage.getItem('access_token')) {
+            alert('You are already logged in');
             return navigate('/');
         }
 
