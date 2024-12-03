@@ -333,9 +333,17 @@ export default class Chat extends Abstract {
     }
 
     enableChatInput(enable) {
-        document.getElementById('messageInput').disabled = !enable;
-        document.getElementById('sendMsgBtn').disabled = !enable;
+        const messageInput = document.getElementById('messageInput');
+        const sendMsgBtn = document.getElementById('sendMsgBtn');
+    
+        if (!messageInput || !sendMsgBtn) {
+            return;
+        }
+    
+        messageInput.disabled = !enable;
+        sendMsgBtn.disabled = !enable;
     }
+    
     
     
     async fetchUserIds(userID , dest){
@@ -530,6 +538,11 @@ export default class Chat extends Abstract {
     updateOnlineStatus(isOnline) {
         const onlineIndicator = document.querySelector('.online b');
         const statusCircle = document.querySelector('.online .circle');
+    
+        if (!onlineIndicator || !statusCircle) {
+            return;
+        }
+    
         if (isOnline) {
             onlineIndicator.textContent = 'Online';
             statusCircle.style.backgroundColor = 'green';
@@ -538,6 +551,7 @@ export default class Chat extends Abstract {
             statusCircle.style.backgroundColor = 'gray';
         }
     }
+    
 
     handleIncomingMessage(data, friendId) {
         const { msg, sender } = data; // Ensure 'sender' and 'msg' are included in the message data
