@@ -69,7 +69,7 @@ export default class Chat extends Abstract {
                                         <button class="chat-blocked" id="chatBlocked" style="display:none;">
                                             <div class="block-ico"></div>
                                         </button>
-                                        <button class="chat-blocked-by-friend" id="chatBlockedByFriend">
+                                        <button class="chat-blocked-by-friend" id="chatBlockedByFriend" style="display:none;">
                                             <div class="block-by-friend-ico"></div>
                                         </button>
 
@@ -126,10 +126,7 @@ export default class Chat extends Abstract {
         document.getElementById('sendMsgBtn').disabled = !enable;
     }
     
-                    
     
-    
-
     async fetchUserIds(userID , dest){
         const csrfToken = await this.getCsrfToken();
         const response = await fetch(`http://localhost:8001/api/auth/user/${userID}/`, {
@@ -211,118 +208,114 @@ export default class Chat extends Abstract {
                 console.error('Error in saveMatchData:', error);
                 alert('An error occurred while starting the game.');
             }
+    }
+        
+    connectGameInviteSocket(friendId) {
+        const userId = this.userData.id;
+        const userName = this.userData.username; // Get the current user's name
+    
+        // Close any existing socket
+        if (this.gameSocket) {
+            this.gameSocket.close();
         }
-        
-        connectGameInviteSocket(friendId) {
-            const userId = this.userData.id;
-            const userName = this.userData.username; // Get the current user's name
-        
-            // Close any existing socket
-            if (this.gameSocket) {
-                this.gameSocket.close();
+    
+        // Establish a new WebSocket connection
+        this.gameSocket = new WebSocket(`ws://localhost:8001/ws/game-invite/${userId}/${friendId}/`);
+    
+        this.gameSocket.onopen = () => {
+            // console.log(`Game WebSocket connected for friend ID: ${friendId}`);
+        };
+    
+        this.gameSocket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+    
+            // Handle game invitation message
+            if (data.type === "game_invitation") {
+                const alertBox = document.createElement("div");
+                alertBox.className = "invite-alert";
+                console.log("data from invite", data);
+                alertBox.innerHTML = `
+                    <p>${data.message}</p>
+                    <div class="alert-buttons">
+                        <button class="accept-btn">Accept</button>
+                        <button class="decline-btn">Decline</button>
+                    </div>
+                `;
+                document.body.appendChild(alertBox);
+    
+                const acceptButton = alertBox.querySelector(".accept-btn");
+                const declineButton = alertBox.querySelector(".decline-btn");
+    
+                acceptButton.addEventListener("click", () => {
+                    // Send game response with player names and session ID
+                    this.gameSocket.send(
+                        JSON.stringify({
+                            type: "game_response",
+                            from: this.userData.id,
+                            to: data.from,
+                            response: "accepted",
+                            session_id: data.session_id,
+                            player1_name: userName, // Include the player's name
+                            player2_name: data.from_username, // Include the friend's name
+                        })
+                    );
+                    alertBox.remove();
+                });
+    
+                declineButton.addEventListener("click", () => {
+                    // Handle game decline logic
+                    this.gameSocket.send(
+                        JSON.stringify({
+                            type: "game_response",
+                            from: this.userData.id,
+                            to: data.from,
+                            response: "declined",
+                        })
+                    );
+                    alertBox.remove();
+                });
+    
+                setTimeout(() => {
+                    if (alertBox) {
+                        alertBox.remove();
+                    }
+                }, 60000);
             }
-        
-            // Establish a new WebSocket connection
-            this.gameSocket = new WebSocket(`ws://localhost:8001/ws/game-invite/${userId}/${friendId}/`);
-        
-            this.gameSocket.onopen = () => {
-                // console.log(`Game WebSocket connected for friend ID: ${friendId}`);
-            };
-        
-            this.gameSocket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-        
-                // Handle game invitation message
-                if (data.type === "game_invitation") {
-                    const alertBox = document.createElement("div");
-                    alertBox.className = "invite-alert";
-                    console.log("data from invite", data);
-                    alertBox.innerHTML = `
-                        <p>${data.message}</p>
-                        <div class="alert-buttons">
-                            <button class="accept-btn">Accept</button>
-                            <button class="decline-btn">Decline</button>
-                        </div>
-                    `;
-                    document.body.appendChild(alertBox);
-        
-                    const acceptButton = alertBox.querySelector(".accept-btn");
-                    const declineButton = alertBox.querySelector(".decline-btn");
-        
-                    acceptButton.addEventListener("click", () => {
-                        // Send game response with player names and session ID
-                        this.gameSocket.send(
-                            JSON.stringify({
-                                type: "game_response",
-                                from: this.userData.id,
-                                to: data.from,
-                                response: "accepted",
-                                session_id: data.session_id,
-                                player1_name: userName, // Include the player's name
-                                player2_name: data.from_username, // Include the friend's name
-                            })
-                        );
-                        alertBox.remove();
-                    });
-        
-                    declineButton.addEventListener("click", () => {
-                        // Handle game decline logic
-                        this.gameSocket.send(
-                            JSON.stringify({
-                                type: "game_response",
-                                from: this.userData.id,
-                                to: data.from,
-                                response: "declined",
-                            })
-                        );
-                        alertBox.remove();
-                    });
-        
-                    setTimeout(() => {
-                        if (alertBox) {
-                            alertBox.remove();
-                        }
-                    }, 60000);
+    
+            else if (data.type === "game_response") {
+                console.log(`Game response from ${data.from}: ${data.response}`);
+                if (data.response === "accepted") {
+                    alert("Game Accepted!");
+                } else if (data.response === "declined") {
+                    alert("Game Declined!");
                 }
-        
-                else if (data.type === "game_response") {
-                    console.log(`Game response from ${data.from}: ${data.response}`);
-                    if (data.response === "accepted") {
-                        alert("Game Accepted!");
-                    } else if (data.response === "declined") {
-                        alert("Game Declined!");
-                    }
-                }
-        
-                else if (data.type === "navigate_to_play") {
-                    const sessionId = data.session_id; // Extract the session ID
-                    console.log("Navigating to /play with session ID:", sessionId);
+            }
+    
+            else if (data.type === "navigate_to_play") {
+                const sessionId = data.session_id; // Extract the session ID
+                console.log("Navigating to /play with session ID:", sessionId);
 
-                    // Option 2: Store sessionId in localStorage (optional for simplicity)
-                    localStorage.setItem("currentSessionId", sessionId);
+                // Option 2: Store sessionId in localStorage (optional for simplicity)
+                localStorage.setItem("currentSessionId", sessionId);
 
-                    if (data.from === this.userData.id) {
-                        console.log("User is the inviter. Saving match data...");
-                        this.saveMatchData(data);
-                    }
-                    navigate('/play');
-                } else {
-                    console.log("Unhandled WebSocket message:", data);
+                if (data.from === this.userData.id) {
+                    console.log("User is the inviter. Saving match data...");
+                    this.saveMatchData(data);
                 }
-            };
-        
-            this.gameSocket.onclose = () => {
-                // console.log("Game WebSocket connection closed.");
-            };
-        
-            this.gameSocket.onerror = (error) => {
-                console.error("Game WebSocket error:", error);
-            };
-        }
+                navigate('/play');
+            } else {
+                console.log("Unhandled WebSocket message:", data);
+            }
+        };
     
+        this.gameSocket.onclose = () => {
+            // console.log("Game WebSocket connection closed.");
+        };
     
-    
-    
+        this.gameSocket.onerror = (error) => {
+            console.error("Game WebSocket error:", error);
+        };
+    }
     
 
     updateOnlineStatus(isOnline) {
@@ -502,18 +495,41 @@ export default class Chat extends Abstract {
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log('Chat status:', data);
-            if (data.status === 'blocked' || 1) {
+            if (data.status === 'blocked') {
                 console.log('Chat is blocked by you');
                 // Disable the chat input
                 document.getElementById('messageInput').disabled = true;
+                document.getElementById('chatBlocked').style.display = 'none';
+                document.getElementById('chatEnabled').style.display = 'block';
+                document.getElementById('chatEnabled').style.marginLeft = '10px';
+                document.addEventListener('click', (event) => {
+                    if (event.target.id === 'chatEnabled') {
+                        console.log('Unblocking the chat');
+                        this.UnBlockYourFriend(friendId);
+                    }
+                    console.log('----->Unblocking the chat');
+                });
             } else if (data.status === 'blocked_by_friend') {
                 console.log('Chat is blocked by the friend');
                 // Disable the chat input
                 document.getElementById('messageInput').disabled = true;
+                document.getElementById('chatBlocked').style.display = 'none';
+                document.getElementById('chatBlockedByFriend').style.display = 'block';
+                document.getElementById('chatBlockedByFriend').style.marginLeft = '10px';
             } else {
                 console.log('Chat is enabled');
-                // Enable the chat input
                 document.getElementById('messageInput').disabled = false;
+                document.getElementById('chatBlocked').style.display = 'block';
+                document.getElementById('chatEnabled').style.display = 'none';
+                document.getElementById('chatBlockedByFriend').style.display = 'none';
+                document.getElementById('chatBlocked').style.marginLeft = '10px';
+                document.addEventListener('click', (event) => {
+                    if (event.target.id === 'chatBlocked') {
+                        
+                        this.blockYourFriend(friendId);
+                    }
+                    console.log('----->blocking the chat');
+                });
             }
         };
     
@@ -526,6 +542,75 @@ export default class Chat extends Abstract {
         };
     }
 
+    async blockYourFriend(friendId) {
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch(`http://localhost:8001/api/chats/block/${this.userData.id}/${friendId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include',
+                
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Failed to block friend:', errorData);
+                alert('Failed to block friend. Please try again.');
+                return;
+            }
+    
+            const data = await response.json();
+            console.log('Successfully blocked friend:', data);
+    
+            alert('Friend successfully blocked!');
+            document.getElementById('messageInput').disabled = true;
+            document.getElementById('chatBlocked').style.display = 'none';
+            document.getElementById('chatEnabled').style.display = 'block';
+
+        } catch (error) {
+            console.error('Error blocking friend:', error);
+            alert('An error occurred while blocking the friend. Please try again.');
+        }
+    }
+    
+    async UnBlockYourFriend(friendId) {
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch(`http://localhost:8001/api/chats/unblock/${this.userData.id}/${friendId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include',
+                
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Failed to unblock friend:', errorData);
+                alert('Failed to unblock friend. Please try again.');
+                return;
+            }
+    
+            const data = await response.json();
+            console.log('Successfully unblocked friend:', data);
+    
+            alert('Friend successfully unblocked!');
+            document.getElementById('messageInput').disabled = false;
+            document.getElementById('chatBlocked').style.display = 'block';
+            document.getElementById('chatEnabled').style.display = 'none';
+
+        } catch (error) {
+            console.error('Error unblocking friend:', error);
+            alert('An error occurred while unblocking the friend. Please try again.');
+        }
+    }
 
     
     async loadChatHistory(friendId) {

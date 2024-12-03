@@ -550,24 +550,28 @@ ul li img {
 }
 
 .button-wrapper {
+	display: flex;
+
+	justify-content: space-around;
 	position: absolute;
-	right: 50%;
-	display: inline-block;
+	right: 45%;
 }
 
-.game-button , .chat-enabled , .chat-blocked, .chat-blocked-by-friend {
+.game-button , .chat-enabled , .chat-blocked{
 	background-color: #860606;
 	border: none;
 	color: white;
 	padding: 15px;
 	text-align: center;
 	text-decoration: none;
-	display: inline-block;
 	font-size: 16px;
 	margin: 4px 2px;
 	cursor: pointer;
 	border-radius: 50%;
 	transition: background-color 0.3s;
+}
+.chat-enabled{
+	background-color: #ffffff20;
 }
 
 
@@ -601,6 +605,9 @@ ul li img {
 	background-size: cover;
 }
 
+.chat-blocked-by-friend{
+	background-color: #ffffff5a;
+}
 
 
 .tooltip {
