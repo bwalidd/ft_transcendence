@@ -36,27 +36,27 @@ export default class Profile extends Abstract {
                     <ul>
                         <li>
                             <a href="/"> <img src="../images/sidenav-img/home.png" class="home">
-                                <p></p>
+                                <p>Home</p>
                             </a>
                         </li>
                         <li>
                             <a href="/leaderboard"> <img src="../images/sidenav-img/leaderboard.png" class="home">
-                                <p></p>
+                                <p>Leaderboard</p>
                             </a>
                         </li>
                         <li>
                             <a> <img src="../images/sidenav-img/trophy.png" class="home">
-                                <p></p>
+                                <p>Tournaments</p>
                             </a>
                         </li>
                         <li>
                             <a href="/chat"> <img src="../images/sidenav-img/messages.png" class="home">
-                                <p></p>
+                                <p>Chats</p>
                             </a>
                         </li>
                         <li>
                             <a href="/settings"> <img src="../images/sidenav-img/settings.png" class="home">
-                                <p></p>
+                                <p>Settings</p>
                             </a>
                         </li>
                     </ul>
@@ -232,18 +232,18 @@ animateWinRate(targetPercentage) {
     
                 for (let i = 0; i < data.length; i++) {
                     const match = data[i];
-                    console.log('---> userId ', userId, 'match.player_one ', match.player_one);
+                    
     
                     let dataOfOpponent;
     
                     if (userId === match.player_one) {
                         console.log('Match ', i, ' I am Player One');
                         dataOfOpponent = await this.fetchOpponentPic(match.player_two);
-                        console.log('Opponent data of Player Two:', dataOfOpponent);
+                       
                     } else {
                         console.log('Match ', i, ' I am Player Two');
                         dataOfOpponent = await this.fetchOpponentPic(match.player_one);
-                        console.log('Opponent data of Player One:', dataOfOpponent);
+                        
                     }
     
                     const matchCard = document.createElement('li');

@@ -23,8 +23,8 @@ export default class GameRemote extends Abstract {
         this.ball = null;
         this.ws = null;
         this.checkDisconnectionStatus();
-        this.SCORE_LIMIT = 8;
-        this.gameOver = false;
+        this.SCORE_LIMIT = 4;
+        this.gameOver = false;  
         this.data_of_players = null;    
         this.cssSelector = '../styles/GameRemote.css';
     }
@@ -221,7 +221,7 @@ export default class GameRemote extends Abstract {
             this.showTemporaryNotification("Getting ready... Please wait!");
     
             // Introduce a delay (e.g., 1 seconds)
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 1500));
     
             const csrfToken = await this.getCsrfToken();
             const response = await fetch(`http://localhost:8001/api/game/details/${sessionId}/`, {
@@ -359,7 +359,7 @@ export default class GameRemote extends Abstract {
         setTimeout(() => {
             overlay.remove();
             notification.remove();
-        }, 1000);
+        }, 1500);
     }
     
 
@@ -523,6 +523,51 @@ export default class GameRemote extends Abstract {
             }
     
             const response = await fetch(`http://localhost:8001/api/game/result/${new_session}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    winner: winner,
+                    score_player_1: this.player1.score,
+                    score_player_2: this.player2.score
+                }),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Failed to post game result:", errorData);
+            } else {
+                const result = await response.json();
+                console.log("Game result successfully posted:", result);
+                localStorage.removeItem('newSession');
+            }
+        } catch (error) {
+            console.error("An error occurred while posting game result:", error);
+        }
+    }
+
+    async sendToStoreDataDis(winner, player, session) {
+        try {
+            const csrfToken = await this.getCsrfToken(); // Ensure this method retrieves the CSRF token properly
+            if (!session) { // Check new_session instead of session
+                console.error("No current session ID found in local storage.");
+                return;
+            }
+    
+            if (player === 'player_one') {
+                this.player1.score = 4;
+                this.player2.score = 0;
+            }else if(player === 'player_two'){
+                this.player1.score = 0;
+                this.player2.score = 4;
+            }
+
+
+            const response = await fetch(`http://localhost:8001/api/game/result/${session}/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -901,12 +946,17 @@ export default class GameRemote extends Abstract {
     
                 case "game_over_disconnect":
                     this.gameOver = true;
-    
+                    console.log('--------------------------------------');
+                    console.log('Game Over due to disconnection:', data);
+                    console.log('currenst_session ', localStorage.getItem('currentSessionId'));
+                    const session = localStorage.getItem('currentSessionId');
+                    this.collectdataToSaveWhenDisconnect(data.winner , session);
+                    console.log('--------------------------------------');
                     localStorage.removeItem('gameDisconnectionInfo');
                     localStorage.removeItem("currentSessionId");
-    
                     this.displayGameOverMessageDis(data.winner);
-                    console.log('Game Over due to disconnection:', data);
+    
+                    
                     break;
     
                 case "game_over":
@@ -937,6 +987,18 @@ export default class GameRemote extends Abstract {
         this.render();
     }
     
+
+    collectdataToSaveWhenDisconnect(winner, session) {
+        const username = localStorage.getItem('my-username');
+        if (winner === this.data_of_players.player_one) {
+           console.log('Player one is winner');
+           this.sendToStoreDataDis(username , 'player_one', session);
+        }
+        if (winner === this.data_of_players.player_two) {
+            console.log('Player two is winner');
+            this.sendToStoreDataDis(username , 'player_two', session);
+        }
+    }
 
 
     render() {
