@@ -26,11 +26,11 @@ export default class Chat extends Abstract {
                     <div class="side-nav">
                         <div class="logo"></div>
                         <ul>
-                            <li><a href="/"><img src="../images/sidenav-img/home.png" class="home"><p></p></a></li>
-                            <li><a href="/leaderboard"><img src="../images/sidenav-img/leaderboard.png" class="home"><p></p></a></li>
-                            <li><a href="/tournaments"><img src="../images/sidenav-img/trophy.png" class="home"><p></p></a></li>
-                            <li><a href="/chat"><img src="../images/sidenav-img/messages.png" class="home"><p></p></a></li>
-                            <li><a href="/settings"><img src="../images/sidenav-img/settings.png" class="home"><p></p></a></li>
+                            <li><a href="/"><img src="../images/sidenav-img/home.png" class="home"><p>Home</p></a></li>
+                            <li><a href="/leaderboard"><img src="../images/sidenav-img/leaderboard.png" class="home"><p>Leaderboard</p></a></li>
+                            <li><a href="/tournaments"><img src="../images/sidenav-img/trophy.png" class="home"><p>Tournaments</p></a></li>
+                            <li><a href="/chat"><img src="../images/sidenav-img/messages.png" class="home"><p>Chat</p></a></li>
+                            <li><a href="/settings"><img src="../images/sidenav-img/settings.png" class="home"><p>Settings</p></a></li>
                         </ul>
                         <div class="sep"></div>
                         <ul>
@@ -496,7 +496,7 @@ export default class Chat extends Abstract {
                     if (alertBox) {
                         alertBox.remove();
                     }
-                }, 60000);
+                }, 4000);
             }
     
             else if (data.type === "game_response") {

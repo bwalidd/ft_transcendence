@@ -23,9 +23,9 @@ export default class GameRemote extends Abstract {
         this.ball = null;
         this.ws = null;
         this.checkDisconnectionStatus();
-        this.SCORE_LIMIT = 2;
+        this.SCORE_LIMIT = 8;
         this.gameOver = false;
-        this.data_of_players = null;
+        this.data_of_players = null;    
         this.cssSelector = '../styles/GameRemote.css';
     }
 
@@ -201,25 +201,27 @@ export default class GameRemote extends Abstract {
         try {
             const sessionId = localStorage.getItem("currentSessionId");
             console.log("Session ID from localStorage:", sessionId);
-
+    
             if (sessionId) {
-                await this.initializeGameSession(sessionId);
+                await this.initializeGameSession(sessionId); // Ensure game session is fully initialized
+                this.setupGameEnvironment();
             } else {
                 console.error("No sessionId found in localStorage.");
             }
-            this.setupGameEnvironment();
         } catch (error) {
             console.error("Error during initialization:", error);
         }
     }
+    
 
+    // new
     async initializeGameSession(sessionId) {
         try {
             // Show a temporary notification
             this.showTemporaryNotification("Getting ready... Please wait!");
     
-            // Introduce a delay (e.g., 3 seconds)
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            // Introduce a delay (e.g., 1 seconds)
+            await new Promise(resolve => setTimeout(resolve, 1000));
     
             const csrfToken = await this.getCsrfToken();
             const response = await fetch(`http://localhost:8001/api/game/details/${sessionId}/`, {
@@ -248,8 +250,17 @@ export default class GameRemote extends Abstract {
             this.leftuser = document.getElementById('my-username').textContent;
             this.currentUsername = await this.checkWhoLoggedIn();
     
-            this.currentPlayer = this.currentUsername === this.leftuser ? 'player_one' : 'player_two';
-            console.log('Current player is:', this.currentPlayer);
+            this.currentUsername = await this.checkWhoLoggedIn();
+            console.log('Current user is:------->', this.currentUsername);
+            console.log('Left user is:------->', this.leftuser);
+    
+            if (this.currentUsername === this.leftuser) {
+                this.currentPlayer = 'player_one';
+                console.log('Current player is player_one');
+            } else {
+                this.currentPlayer = 'player_two';
+                console.log('Current player is player_two');
+            }
     
         } catch (error) {
             console.error("Error in initializeGameSession:", error);
@@ -257,8 +268,62 @@ export default class GameRemote extends Abstract {
         }
     }
     
+
+
+
     // Function to show a temporary notification
     // Function to show a temporary notification
+   
+    // old
+    // async initializeGameSession(sessionId) {
+    //     try {
+    //         const csrfToken = await this.getCsrfToken();
+    //         const response = await fetch(`http://localhost:8001/api/game/details/${sessionId}/`, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    //                 'Content-Type': 'application/json',
+    //                 'X-CSRFToken': csrfToken
+    //             },
+    //             credentials: 'include'
+    //         });
+    
+    //         if (!response.ok) {
+    //             throw new Error('Failed to fetch game session details');
+    //         }
+    
+    //         this.data_of_players = await response.json();
+    //         console.log('Game session details:', this.data_of_players);
+    
+    //         // Fetch and display user info for both players
+    //         await this.fetchAndDisplayUserInfo(this.data_of_players.player_one, "my-username");
+    //         await this.fetchAndDisplayUserInfo(this.data_of_players.player_two, "friend-username");
+    
+           
+    
+    //         this.leftuser = document.getElementById('my-username').textContent;
+    
+    //         // Ensure checkWhoLoggedIn finishes before setting currentPlayer
+    //         this.currentUsername = await this.checkWhoLoggedIn();
+    //         console.log('Current user is:------->', this.currentUsername);
+    //         console.log('Left user is:------->', this.leftuser);
+    
+    //         if (this.currentUsername === this.leftuser) {
+    //             this.currentPlayer = 'player_one';
+    //             console.log('Current player is player_one');
+    //         } else {
+    //             this.currentPlayer = 'player_two';
+    //             console.log('Current player is player_two');
+    //         }
+            
+    //     } catch (error) {
+    //         console.error("Error in initializeGameSession:", error);
+    //         throw error;
+    //     }
+    // }
+
+
+   
     showTemporaryNotification(message) {
         // Create the overlay
         const overlay = document.createElement("div");
@@ -294,7 +359,7 @@ export default class GameRemote extends Abstract {
         setTimeout(() => {
             overlay.remove();
             notification.remove();
-        }, 3000);
+        }, 1000);
     }
     
 
@@ -788,11 +853,14 @@ export default class GameRemote extends Abstract {
     
 
     initializeWebSocket() {
+        if (!this.data_of_players) {
+            console.error("Cannot initialize WebSocket: data_of_players is null.");
+            return;
+        }
+    
         const sessionId = localStorage.getItem("currentSessionId");
-        
-        // Set up beforeunload listener to handle potential disconnections
+    
         window.addEventListener('beforeunload', () => {
-            // Store disconnection information in localStorage
             localStorage.setItem('gameDisconnectionInfo', JSON.stringify({
                 sessionId: sessionId,
                 players: {
@@ -802,9 +870,9 @@ export default class GameRemote extends Abstract {
                 currentPlayer: this.currentPlayer
             }));
         });
-
+    
         this.ws = new WebSocket(`ws://localhost:8001/ws/game/${sessionId}/${this.data_of_players.player_one}/${this.data_of_players.player_two}/`);
-        
+    
         this.ws.onopen = () => {
             console.log('Connected to WebSocket');
             this.ws.send(JSON.stringify({
@@ -816,44 +884,38 @@ export default class GameRemote extends Abstract {
     
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            
+    
             if (this.gameOver) return;
-        
-            switch(data.action) {
+    
+            switch (data.action) {
                 case "ball_reset":
                     this.resetBall(data.seed);
                     break;
-        
+    
                 case "score_update":
                     this.player1.score = data.player1_score;
                     this.player2.score = data.player2_score;
                     this.render();
                     this.checkGameOver();
                     break;
-        
+    
                 case "game_over_disconnect":
                     this.gameOver = true;
-                    
-                    // Remove any stored disconnection info
+    
                     localStorage.removeItem('gameDisconnectionInfo');
-                    
-                    // Remove current session ID
                     localStorage.removeItem("currentSessionId");
-                    
-                    // Display game over message for the winner
+    
                     this.displayGameOverMessageDis(data.winner);
-                    console.log('--------------------------------------');
                     console.log('Game Over due to disconnection:', data);
-                    console.log('--------------------------------------');
                     break;
-        
+    
                 case "game_over":
                     this.gameOver = true;
                     console.log('Game Over:', data);
                     localStorage.removeItem("currentSessionId");
                     this.displayGameOverMessage(data.winner);
                     break;
-        
+    
                 case "update":
                     if (data.data.player === "player_one" && this.currentPlayer !== "player_one") {
                         this.player1.y = data.data.paddle_y;
@@ -861,11 +923,11 @@ export default class GameRemote extends Abstract {
                     if (data.data.player === "player_two" && this.currentPlayer !== "player_two") {
                         this.player2.y = data.data.paddle_y;
                     }
-                    
+    
                     if (data.data.ball) {
                         Object.assign(this.ball, data.data.ball);
                     }
-        
+    
                     this.render();
                     break;
             }
@@ -874,6 +936,7 @@ export default class GameRemote extends Abstract {
         this.setupControls();
         this.render();
     }
+    
 
 
     render() {
