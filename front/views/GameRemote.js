@@ -215,6 +215,12 @@ export default class GameRemote extends Abstract {
 
     async initializeGameSession(sessionId) {
         try {
+            // Show a temporary notification
+            this.showTemporaryNotification("Getting ready... Please wait!");
+    
+            // Introduce a delay (e.g., 3 seconds)
+            await new Promise(resolve => setTimeout(resolve, 3000));
+    
             const csrfToken = await this.getCsrfToken();
             const response = await fetch(`http://localhost:8001/api/game/details/${sessionId}/`, {
                 method: 'GET',
@@ -233,34 +239,68 @@ export default class GameRemote extends Abstract {
             this.data_of_players = await response.json();
             console.log('Game session details:', this.data_of_players);
     
-            // Fetch and display user info for both players
-            await this.fetchAndDisplayUserInfo(this.data_of_players.player_one, "my-username");
-            await this.fetchAndDisplayUserInfo(this.data_of_players.player_two, "friend-username");
-    
-            // Ensure the inviter (player_one) is on the left side
-            const myUsername = localStorage.getItem('my-username');
-            const friendUsername = localStorage.getItem('friend-username');
+            // Proceed with other operations
+            await Promise.all([
+                this.fetchAndDisplayUserInfo(this.data_of_players.player_one, "my-username"),
+                this.fetchAndDisplayUserInfo(this.data_of_players.player_two, "friend-username")
+            ]);
     
             this.leftuser = document.getElementById('my-username').textContent;
-    
-            // Ensure checkWhoLoggedIn finishes before setting currentPlayer
             this.currentUsername = await this.checkWhoLoggedIn();
-            console.log('Current user is:------->', this.currentUsername);
-            console.log('Left user is:------->', this.leftuser);
     
-            if (this.currentUsername === this.leftuser) {
-                this.currentPlayer = 'player_one';
-                console.log('Current player is player_one');
-            } else {
-                this.currentPlayer = 'player_two';
-                console.log('Current player is player_two');
-            }
-            
+            this.currentPlayer = this.currentUsername === this.leftuser ? 'player_one' : 'player_two';
+            console.log('Current player is:', this.currentPlayer);
+    
         } catch (error) {
             console.error("Error in initializeGameSession:", error);
             throw error;
         }
     }
+    
+    // Function to show a temporary notification
+    // Function to show a temporary notification
+    showTemporaryNotification(message) {
+        // Create the overlay
+        const overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100%";
+        overlay.style.height = "100%";
+        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)"; // Semi-transparent black
+        overlay.style.zIndex = "999"; // Behind the notification
+        document.body.appendChild(overlay);
+    
+        // Create the notification
+        const notification = document.createElement("div");
+        notification.textContent = message;
+    
+        // Apply styles for the notification
+        notification.style.position = "fixed";
+        notification.style.top = "50%";
+        notification.style.left = "50%";
+        notification.style.transform = "translate(-50%, -50%)";
+        notification.style.padding = "20px 30px";
+        notification.style.background = "linear-gradient(270deg, darkred, black)";
+        notification.style.color = "antiquewhite";
+        notification.style.fontFamily = "'diablo', sans-serif";
+        notification.style.fontSize = "18px";
+        notification.style.borderRadius = "5px";
+        notification.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+        notification.style.zIndex = "1000"; // Above the overlay
+        document.body.appendChild(notification);
+    
+        // Remove the overlay and notification after 3 seconds
+        setTimeout(() => {
+            overlay.remove();
+            notification.remove();
+        }, 3000);
+    }
+    
+
+
+   
+    
     
     
     async checkWhoLoggedIn() {
@@ -802,6 +842,9 @@ export default class GameRemote extends Abstract {
                     
                     // Display game over message for the winner
                     this.displayGameOverMessageDis(data.winner);
+                    console.log('--------------------------------------');
+                    console.log('Game Over due to disconnection:', data);
+                    console.log('--------------------------------------');
                     break;
         
                 case "game_over":
