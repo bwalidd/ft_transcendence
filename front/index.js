@@ -60,13 +60,12 @@ const loadView = async (path) => {
         if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
             alert('You need to login first');
             return navigate('/welcome');
+        } else if (shouldNotAuthpages.includes(viewName) && localStorage.getItem('access_token')) {
+            alert('You are already logged in');
+            return navigate('/');
         }
         if (viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
             alert('You need to start a new game first');
-            return navigate('/');
-        }
-        if (shouldNotAuthpages.includes(viewName) && localStorage.getItem('access_token')) {
-            alert('You are already logged in');
             return navigate('/');
         }
 
