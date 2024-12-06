@@ -116,7 +116,7 @@ form .computer-match{
   /* flex: 1; */
   width: 70%;
   height: 50%;
-  background: url('../images/boyplaying.png');
+  background: url('../images/teestng.png');
   background-size: cover;
   background-position: center;
 }
@@ -124,10 +124,10 @@ form .computer-match{
 
 
 .avatar-match.ai{
-  background: url('../images/aimatch.png');
+  background: url('../images/aiai.png');
   background-size: cover;
   background-position: center;
-  width: 95%;
+  width: 60%;
 }
 
 .match button{

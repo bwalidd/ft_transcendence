@@ -159,24 +159,30 @@ export default class Home extends Abstract {
         `;
     }
 
+
+    
     initialize() {
+        // Attach event listener for logout
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
+            
             const alertBox = document.createElement('div');
             alertBox.className = 'custom-alert';
             alertBox.innerText = 'Logout Done!';
             document.body.appendChild(alertBox);
-    
+            
             // Remove the alert after 3 seconds
             setTimeout(() => {
                 alertBox.remove();
             }, 3000);
+            
             navigate('/welcome');
         });
     
+        // Handle search input
         const searchInput = document.getElementById('search-input');
         searchInput.addEventListener('input', async (event) => {
             const searchString = event.target.value;
@@ -193,58 +199,74 @@ export default class Home extends Abstract {
         if (playButton) {
             playButton.addEventListener('click', this.localOrComputer);
         }
-        document.getElementById('close-button').addEventListener('click', () => {
-            // alert('Close button clicked');
-            const playFormContainer = document.getElementById('play-form-container');
-            playFormContainer.classList.add('hidden');
-        });
-
-        document.getElementById('play-computer').addEventListener('click', () => {
-            navigate('/training');
-        });
-
-        document.getElementById('local-match').addEventListener('click', () => {
-            navigate('/friendly');
-        });
+    
+        // Handle close button
+        const closeButton = document.getElementById('close-button');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                const playFormContainer = document.getElementById('play-form-container');
+                if (playFormContainer) {
+                    playFormContainer.classList.add('hidden');
+                }
+            });
+        }
+    
+        // Handle play options
+        const playComputerButton = document.getElementById('play-computer');
+        if (playComputerButton) {
+            playComputerButton.addEventListener('click', () => {
+                navigate('/training');
+            });
+        }
+    
+        const localMatchButton = document.getElementById('local-match');
+        if (localMatchButton) {
+            localMatchButton.addEventListener('click', () => {
+                navigate('/friendly');
+            });
+        }
     }
     
     localOrComputer = () => {
-        // console.log('Play button clicked');
         const playFormContainer = document.getElementById('play-form-container');
         const cancelButton = document.getElementById('cancel-button');
     
         if (!playFormContainer) {
             console.error('Play form container not found');
             return;
-        }else{
+        } else {
             console.log('Play form container found');
         }
     
         // Show the form
         playFormContainer.classList.remove('hidden');
     
-        // Cancel button hides the form
-        cancelButton.addEventListener('click', () => {
-            playFormContainer.classList.add('hidden');
-        });
+        // Ensure cancel button exists before adding event listener
+        if (cancelButton) {
+            cancelButton.addEventListener('click', () => {
+                playFormContainer.classList.add('hidden');
+            });
+        } else {
+            // console.error('Cancel button not found');
+        }
     
         // Handle form submission
-        playFormContainer.querySelector('form').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const selectedOption = document.querySelector('input[name="opponent"]:checked').value;
-            alert(`You selected: ${selectedOption}`);
-            playFormContainer.classList.add('hidden');
-        });
-
-        // document.getElementById('close-button').addEventListener('click', () => {
-        //     alert('Close button clicked');
-        //     const playFormContainer = document.getElementById('play-form-container');
-        //     playFormContainer.classList.add('hidden');
-        // });
-        
+        const form = playFormContainer.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const selectedOption = document.querySelector('input[name="opponent"]:checked')?.value;
+                if (selectedOption) {
+                    // alert(`You selected: ${selectedOption}`);
+                    playFormContainer.classList.add('hidden');
+                } else {
+                    // alert('Please select an opponent');
+                }
+            });
+        } else {
+            console.error('Form not found');
+        }
     };
-    
-    
     
     
 
