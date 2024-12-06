@@ -993,22 +993,52 @@ export default class Chat extends Abstract {
     async logoutUser() {
         try {
             const csrfToken = await this.getCsrfToken();
+            const accessToken = localStorage.getItem('access_token');
+    
             const response = await fetch('http://localhost:8001/api/auth/logout/', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                     'Content-Type': 'application/json',
+                    ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}),
                     'X-CSRFToken': csrfToken
                 },
                 credentials: 'include'
             });
-
+    
+            const data = await response.json();
+    
             if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Logout failed: ${errorText}`);
+                throw new Error(data.detail || 'Logout failed');
             }
+    
+            // Clear tokens and navigate
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+    
+            const alertBox = document.createElement('div');
+            alertBox.className = 'custom-alert';
+            alertBox.innerText = 'Logout Done!';
+            document.body.appendChild(alertBox);
+    
+            // Remove the alert after 3 seconds
+            setTimeout(() => {
+                alertBox.remove();
+            }, 3000);
+    
+            navigate('/welcome');
+    
         } catch (error) {
             console.error('Error during logout:', error);
+            
+            // Create error alert
+            const alertBox = document.createElement('div');
+            alertBox.className = 'custom-alert error';
+            alertBox.innerText = error.message || 'Logout failed. Please try again.';
+            document.body.appendChild(alertBox);
+    
+            setTimeout(() => {
+                alertBox.remove();
+            }, 3000);
         }
     }
 

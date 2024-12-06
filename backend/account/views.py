@@ -8,6 +8,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from .serializers import UserUpdateSerializer
+import logging
+
 
 
 def get_user_tokens(user):
@@ -49,7 +51,7 @@ def loginView(request):
             expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
             secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
             httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            samesite='None'
         )
 
         res.set_cookie(
@@ -58,7 +60,7 @@ def loginView(request):
             expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
             secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
             httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            samesite='None'
         )
 
         # Add user data to the response, including avatar
@@ -77,45 +79,58 @@ def loginView(request):
     )
 
 
+
+logger = logging.getLogger(__name__)
+
 @rest_decorators.api_view(['POST'])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def logoutView(request):
+    """
+    Handles user logout by clearing cookies. Blacklisting is optional.
+    """
     try:
-        # Try to get the refresh token from cookies
-        refreshToken = request.COOKIES.get(
-            settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-        
-        # If no refresh token is found, return a meaningful response
-        if not refreshToken:
-            res = response.Response({"detail": "No refresh token found"}, status=status.HTTP_400_BAD_REQUEST)
-            res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
-            res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-            res.delete_cookie("X-CSRFToken")
-            res.delete_cookie("csrftoken")
+        refresh_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        if not refresh_token:
+            logger.warning("Logout attempted without a refresh token.")
+            res = response.Response(
+                {"detail": "No refresh token found."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            clear_auth_cookies(res)
             return res
 
-        # Try to blacklist the token
+        # Remove token.blacklist() if blacklisting is not needed
         try:
-            token = tokens.RefreshToken(refreshToken)
-            token.blacklist()
-        except Exception as e:
-            # Log the specific exception for debugging
-            print(f"Token blacklisting error: {str(e)}")
-            # If token is already blacklisted or invalid, we can still proceed with logout
+            token = tokens.RefreshToken(refresh_token)
+            # Uncomment if blacklist functionality is enabled
+            # token.blacklist()  
+            logger.info("Refresh token processed.")
+        except tokens.TokenError as e:
+            logger.error(f"Token processing error: {str(e)}")
 
-        # Create response and clear cookies
-        res = response.Response({"detail": "Successfully logged out"})
-        res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
-        res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-        res.delete_cookie("X-CSRFToken")
-        res.delete_cookie("csrftoken")
-        
+        res = response.Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+        clear_auth_cookies(res)
         return res
 
     except Exception as e:
-        # Log the full exception for server-side debugging
-        print(f"Logout error: {str(e)}")
-        raise rest_exceptions.ParseError("Logout failed")
+        logger.exception("Unexpected error during logout.")
+        raise rest_exceptions.ParseError("An unexpected error occurred during logout.")
+
+
+def clear_auth_cookies(response):
+    """
+    Utility function to clear authentication-related cookies.
+    """
+    cookies_to_clear = [
+        settings.SIMPLE_JWT['AUTH_COOKIE'], 
+        settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH']
+    ]
+    for cookie in cookies_to_clear:
+        response.delete_cookie(cookie, samesite='None')
+    response.delete_cookie("X-CSRFToken", samesite='None')
+    response.delete_cookie("csrftoken", samesite='None')
+
+
 
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([])
