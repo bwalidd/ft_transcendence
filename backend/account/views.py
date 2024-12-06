@@ -77,6 +77,46 @@ def loginView(request):
     )
 
 
+@rest_decorators.api_view(['POST'])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def logoutView(request):
+    try:
+        # Try to get the refresh token from cookies
+        refreshToken = request.COOKIES.get(
+            settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        
+        # If no refresh token is found, return a meaningful response
+        if not refreshToken:
+            res = response.Response({"detail": "No refresh token found"}, status=status.HTTP_400_BAD_REQUEST)
+            res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
+            res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+            res.delete_cookie("X-CSRFToken")
+            res.delete_cookie("csrftoken")
+            return res
+
+        # Try to blacklist the token
+        try:
+            token = tokens.RefreshToken(refreshToken)
+            token.blacklist()
+        except Exception as e:
+            # Log the specific exception for debugging
+            print(f"Token blacklisting error: {str(e)}")
+            # If token is already blacklisted or invalid, we can still proceed with logout
+
+        # Create response and clear cookies
+        res = response.Response({"detail": "Successfully logged out"})
+        res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
+        res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        res.delete_cookie("X-CSRFToken")
+        res.delete_cookie("csrftoken")
+        
+        return res
+
+    except Exception as e:
+        # Log the full exception for server-side debugging
+        print(f"Logout error: {str(e)}")
+        raise rest_exceptions.ParseError("Logout failed")
+
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([])
 def registerView(request):
@@ -88,29 +128,6 @@ def registerView(request):
     if user is not None:
         return response.Response("Registered!")
     return rest_exceptions.AuthenticationFailed("Invalid credentials!")
-
-
-@rest_decorators.api_view(['POST'])
-@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
-def logoutView(request):
-    try:
-        refreshToken = request.COOKIES.get(
-            settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-        token = tokens.RefreshToken(refreshToken)
-        token.blacklist()
-
-        res = response.Response()
-        res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
-        res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-        res.delete_cookie("X-CSRFToken")
-        res.delete_cookie("csrftoken")
-        
-        # Set CSRF token in the response
-        set_csrf_token(res, request)
-
-        return res
-    except:
-        raise rest_exceptions.ParseError("Invalid token")
 
 
 class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):

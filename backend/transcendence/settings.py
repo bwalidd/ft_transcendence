@@ -20,11 +20,9 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'account.apps.AccountConfig',
 
-
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -34,24 +32,28 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-
+# Updated CORS and Cookie Settings
+CORS_ALLOW_ALL_ORIGINS = False  # More secure
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8004',
+    # Add other specific origins here
+]
 CORS_ALLOW_CREDENTIALS = True
+
+# Explicit CSRF Cookie Settings
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTP_ONLY = True
-CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = 'None'  # Explicitly set to None
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
-
+# Session Cookie Settings
 SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SAMESITE = 'None'  # Explicitly set to None
 
-
-
+# Middleware with explicit CORS handling
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Ensure this is before CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -80,7 +82,6 @@ TEMPLATES = [
 ASGI_APPLICATION = 'transcendence.asgi.application'
 WSGI_APPLICATION = 'transcendence.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -94,10 +95,8 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication', # TODO: For now
         'account.authenticate.CustomAuthentication',
     ],
-
     "DEFAULT_PERMISSION_CLASSES": [
         'rest_framework.permissions.AllowAny',
     ]
@@ -109,6 +108,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 AUTH_USER_MODEL = "account.Account"
 
+# Updated SIMPLE_JWT configuration to explicitly handle cookies
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=2),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
@@ -140,21 +140,15 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 
-    # custom
+    # Explicit cookie settings
     'AUTH_COOKIE': 'access',
-    # Cookie name. Enables cookies if value is set.
     'AUTH_COOKIE_REFRESH': 'refresh',
-    # A string like "example.com", or None for standard domain cookie.
     'AUTH_COOKIE_DOMAIN': None,
-    # Whether the auth cookies should be secure (https:// only).
     'AUTH_COOKIE_SECURE': True, 
-    # Http only cookie flag.It's not fetch by javascript.
     'AUTH_COOKIE_HTTP_ONLY': True,
-    'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
-    # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
-    'AUTH_COOKIE_SAMESITE': "None", # TODO: Modify to Lax
+    'AUTH_COOKIE_PATH': '/',
+    'AUTH_COOKIE_SAMESITE': 'None',  # Explicitly set to None
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -171,18 +165,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Channels settings
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('redis', 6379)],  # Redis should be running
+            "hosts": [('redis', 6379)],
         },
     },
 }
-
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -198,5 +189,3 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
