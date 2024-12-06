@@ -52,17 +52,16 @@ export default class Signup extends Abstract {
     }
 
     initialize() {
-        
         const form = document.getElementById('signup-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-
+    
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
             const avatar = document.getElementById('avatar').files[0];
-
+    
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
                 return;
@@ -70,40 +69,46 @@ export default class Signup extends Abstract {
             if (username.length < 2 || username.length > 10) {
                 alert('Username must be between 2 and 10 characters');
                 return;
-
             }
-
+    
             const formData = new FormData();
             formData.append('username', username);
             formData.append('email', email);
             formData.append('password', password);
             formData.append('password2', confirmPassword);
+            
+            // Check if the user has selected an avatar, if not, add the default one
             if (avatar) {
                 formData.append('avatar', avatar);
+            } else {
+                // Default avatar when none is selected
+                const defaultAvatar = new File([await fetch('../images/default.jpeg').then(res => res.blob())], 'default.jpeg', { type: 'image/jpeg' });
+                formData.append('avatar', defaultAvatar);
             }
-
+    
             try {
                 const response = await fetch('http://localhost:8001/api/auth/register/', {
                     method: 'POST',
                     body: formData,
                     credentials: 'include',
                 });
-
+    
                 if (!response.ok) {
                     throw new Error('Registration failed');
                 }
-
+    
                 const data = await response.json();
                 // Create custom alert
-                    const alertBox = document.createElement('div');
-                    alertBox.className = 'custom-alert';
-                    alertBox.innerText = 'Login successful!';
-                    document.body.appendChild(alertBox);
-
-                    // Remove the alert after 3 seconds
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 3000);
+                const alertBox = document.createElement('div');
+                alertBox.className = 'custom-alert';
+                alertBox.innerText = 'Login successful!';
+                document.body.appendChild(alertBox);
+    
+                // Remove the alert after 3 seconds
+                setTimeout(() => {
+                    alertBox.remove();
+                }, 3000);
+    
                 navigate('/login');
             } catch (error) {
                 console.error('Error:', error);
@@ -111,6 +116,7 @@ export default class Signup extends Abstract {
             }
         });
     }
+    
 
     async cleanup() {
         
