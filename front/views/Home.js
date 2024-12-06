@@ -20,9 +20,6 @@ export default class Home extends Abstract {
     async getHtml() {
         const user = await fetchUserData('http://localhost:8001/api/auth/user/');
         const avatarUrl = `http://localhost:8001${user.avatar}`;
-        // console.log('Avatar URL:', avatarUrl);
-
-        
         
 
         return `
@@ -83,7 +80,7 @@ export default class Home extends Abstract {
                         <div class="sep"></div>
                         <ul>
                             <li>
-                                <a href="#" id="logout-link">
+                                <a id="logout-link">
                                     <img src="../images/sidenav-img/logout.png">
                                     <p>Logout</p>
                                 </a>
@@ -212,7 +209,7 @@ export default class Home extends Abstract {
     }
     
     localOrComputer = () => {
-        console.log('Play button clicked');
+        // console.log('Play button clicked');
         const playFormContainer = document.getElementById('play-form-container');
         const cancelButton = document.getElementById('cancel-button');
     
@@ -272,7 +269,7 @@ export default class Home extends Abstract {
 
 
                 li.addEventListener('click', () => {
-                    console.log('User clicked:', user.id);
+                    // console.log('User clicked:', user.id);
                     this.showUserPopup(user);
                 });
                 ul.appendChild(li);
@@ -325,7 +322,7 @@ export default class Home extends Abstract {
     }
     
     async acceptFriendRequest(requestId) {
-        console.log('Accepting friend request with ID:', requestId);
+        // console.log('Accepting friend request with ID:', requestId);
         try {
             const csrfToken = await this.getCsrfToken();
             const response = await fetch(`http://localhost:8001/api/friend/accept-request/${requestId}/`, {
@@ -516,7 +513,7 @@ export default class Home extends Abstract {
             }
     
             if (data.length === 0) {
-                console.log('No matches played wa do it');
+                // console.log('No matches played wa do it');
                 document.querySelector('.no-match').style.display = 'block';
                 document.querySelector('.no-match').style.marginTop = '120px';
                 document.querySelector('.no-match').style.textAlign = 'center';
@@ -525,7 +522,7 @@ export default class Home extends Abstract {
                 document.getElementById('number-of-match-wins').textContent = '0';
                 document.getElementById('number-of-match-losses').textContent = '0';
             } else {
-                console.log('Matches played');
+                // console.log('Matches played');
                 document.querySelector('.no-match').style.display = 'none';
                 document.getElementById('matches-card').style.display = 'block';
                 document.getElementById('number-of-match-wins').textContent = '10';
@@ -545,7 +542,7 @@ export default class Home extends Abstract {
                     if (userId === match.player_one) {
                         // console.log('match ', i, ' i am Player one');
                         dataofOpponent = await this.fetchOpponentPic(match.player_two);
-                        console.log('Opponent data: of player two', dataofOpponent);
+                        // console.log('Opponent data: of player two', dataofOpponent);
                     } else {
                         // console.log('match ', i, ' i am Player two');
                         dataofOpponent = await this.fetchOpponentPic(match.player_one);
@@ -644,7 +641,7 @@ export default class Home extends Abstract {
     }
 
     async cleanup() {
-        console.log('Cleaning up Welcome view');
+        
 
         // Remove the dynamically added CSS
         const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);

@@ -22,7 +22,7 @@ export default class Profile extends Abstract {
     async getHtml() {
         this.user = await fetchUserData('http://localhost:8001/api/auth/user/');
         const avatarUrl = `http://localhost:8001${this.user.avatar}`;
-        console.log('Avatar URL:', avatarUrl);
+        // console.log('Avatar URL:', avatarUrl);
     
         return `
         <div class="first-container">
@@ -196,7 +196,7 @@ animateWinRate(targetPercentage) {
     }
 
     async getDataofProfile(userId) {
-        console.log('Fetching user matches of user:', userId);
+        // console.log('Fetching user matches of user:', userId);
         try {
             const response = await fetch(`http://localhost:8001/api/game/allmygames/${userId}/`, {
                 method: 'GET',
@@ -206,14 +206,14 @@ animateWinRate(targetPercentage) {
                 },
             });
             const data = await response.json();
-            console.log('Data length:', data.length);
+            
     
             const noMatchesMessage = document.querySelector('.no-matches-message');
             const matchesCard = document.getElementById('matches-card');
             const allMatchCards = document.getElementById('all-match-cards');
     
             if (data.length === 0) {
-                console.log('No matches played');
+                
                 noMatchesMessage.style.display = 'block';
                 noMatchesMessage.style.marginTop = '120px';
                 noMatchesMessage.style.textAlign = 'center';
@@ -221,7 +221,7 @@ animateWinRate(targetPercentage) {
                 noMatchesMessage.style.fontfamily = 'Diablo';
                 matchesCard.style.display = 'none';
             } else {
-                console.log('Matches played');
+                
                 noMatchesMessage.style.display = 'none';
                 matchesCard.style.display = 'block';
     
@@ -237,13 +237,9 @@ animateWinRate(targetPercentage) {
                     let dataOfOpponent;
     
                     if (userId === match.player_one) {
-                        console.log('Match ', i, ' I am Player One');
                         dataOfOpponent = await this.fetchOpponentPic(match.player_two);
-                       
                     } else {
-                        console.log('Match ', i, ' I am Player Two');
                         dataOfOpponent = await this.fetchOpponentPic(match.player_one);
-                        
                     }
     
                     const matchCard = document.createElement('li');
@@ -289,7 +285,7 @@ animateWinRate(targetPercentage) {
 
 
     async cleanup() {
-        console.log('Cleaning up Welcome view');
+        
 
         // Remove the dynamically added CSS
         const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);

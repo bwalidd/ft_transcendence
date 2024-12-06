@@ -78,7 +78,7 @@ export default class Settings extends Abstract {
     }
 
     async initialize() {
-        console.log('Settings page initialized');
+        // console.log('Settings page initialized');
         window.toggleInput = this.toggleInput.bind(this);
         window.saveSettings = this.saveSettings.bind(this);
         window.removeAvatar = this.removeAvatar.bind(this);
@@ -102,7 +102,7 @@ export default class Settings extends Abstract {
 
     async fetchUserData() {
         const csrfToken = await this.getCsrfToken();
-        console.log('csrfff--->', csrfToken);
+        // console.log('csrfff--->', csrfToken);
         try {
             const response = await fetch(`http://localhost:8001/api/auth/userdetails`, {
                 method: 'GET',
@@ -115,7 +115,7 @@ export default class Settings extends Abstract {
             if (!response.ok) throw new Error(`Failed to fetch user data: ${response.statusText}`);
         
             const userData = await response.json();
-            console.log('User data:', userData);
+            // console.log('User data:', userData);
 
             // Populate the fields with user data
             document.getElementById("username").value = userData.username || "";
@@ -242,7 +242,7 @@ export default class Settings extends Abstract {
     }
     
     async cleanup() {
-        console.log('Cleaning up Welcome view');
+        
 
         // Remove the dynamically added CSS
         const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);

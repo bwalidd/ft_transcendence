@@ -113,7 +113,7 @@ export default class Signup extends Abstract {
     }
 
     async cleanup() {
-        console.log('Cleaning up Welcome view');
+        
 
         // Remove the dynamically added CSS
         const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);

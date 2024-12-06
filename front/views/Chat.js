@@ -713,14 +713,14 @@ export default class Chat extends Abstract {
         const userId = this.userData.id;
         const ws = new WebSocket(`ws://localhost:8001/ws/chat-status/${userId}/${friendId}/`);
         ws.onopen = () => {
-            console.log(`Chat statusWebSocket connected for friend ID ${friendId}`);
+            // console.log(`Chat statusWebSocket connected for friend ID ${friendId}`);
         };
     
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log('Chat status:', data);
+            // console.log('Chat status:', data);
             if (data.status === 'blocked') {
-                console.log('Chat is blocked by you');
+                // console.log('Chat is blocked by you');
                 // Disable the chat input
                 document.getElementById('messageInput').disabled = true;
                 document.getElementById('chatBlocked').style.display = 'none';
@@ -737,7 +737,7 @@ export default class Chat extends Abstract {
                     // console.log('----->Unblocking the chat');
                 });
             } else if (data.status === 'blocked_by_friend') {
-                console.log('Chat is blocked by the friend');
+                // console.log('Chat is blocked by the friend');
                 // Disable the chat input
                 document.getElementById('messageInput').disabled = true;
                 document.getElementById('chatBlocked').style.display = 'none';
@@ -745,7 +745,7 @@ export default class Chat extends Abstract {
                 document.getElementById('gameButton').style.display = 'none';
                 document.getElementById('chatBlockedByFriend').style.marginLeft = '10px';
             } else {
-                console.log('Chat is enabled');
+                // console.log('Chat is enabled');
                 document.getElementById('messageInput').disabled = false;
                 document.getElementById('chatBlocked').style.display = 'block';
                 document.getElementById('gameButton').style.display = 'block';
@@ -1013,7 +1013,7 @@ export default class Chat extends Abstract {
     }
 
     async cleanup() {
-        console.log('Cleaning up Welcome view');
+        
 
         // Remove the dynamically added CSS
         const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);

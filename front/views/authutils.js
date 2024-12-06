@@ -1,6 +1,6 @@
 export async function fetchUserData(url) {
     let token = localStorage.getItem('access_token');
-    console.log('Access Token:', token);
+    // console.log('Access Token:', token);
 
     try {
         let response = await fetch(url, {
@@ -71,8 +71,8 @@ export async function logoutUser() {
     try {
         const csrfToken = getCsrfToken();
         const accessToken = localStorage.getItem('access_token');
-        console.log('CSRF Token:', csrfToken);
-        console.log('Access Token:', accessToken);
+        // console.log('CSRF Token:', csrfToken);
+        // console.log('Access Token:', accessToken);
 
         const response = await fetch('http://localhost:8001/api/auth/logout/', {
             method: 'POST',
