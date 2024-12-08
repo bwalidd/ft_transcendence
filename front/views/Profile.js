@@ -21,7 +21,7 @@ export default class Profile extends Abstract {
 
     async getHtml() {
         this.user = await fetchUserData('http://localhost:8001/api/auth/user/');
-        const avatarUrl = `http://localhost:8001${this.user.avatar}`;
+        const avatarUrl = `http://localhost:8001${this.user.image}`;
         // console.log('Avatar URL:', avatarUrl);
     
         return `
@@ -174,7 +174,7 @@ animateWinRate(targetPercentage) {
 
     putProfileImage() {
         const profileImage = document.querySelector('.profile-img');
-        profileImage.style.backgroundImage = `url('http://localhost:8001${this.user.avatar}')`;
+        profileImage.style.backgroundImage = `url('http://localhost:8001${this.user.image}')`;
     }
 
     async fetchOpponentPic(userId) {
@@ -246,7 +246,7 @@ animateWinRate(targetPercentage) {
     
                     const matchAvatar = document.createElement('div');
                     matchAvatar.className = 'match-avatar';
-                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataOfOpponent.avatar}')`;
+                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataOfOpponent.image}')`;
     
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';

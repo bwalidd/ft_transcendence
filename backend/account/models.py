@@ -9,12 +9,12 @@ class AccountManager(BaseUserManager):
         if not login:
             raise ValueError("Login is required")
 
-        avatar = kwargs.get('avatar', None)
+        image = kwargs.get('image', None)
 
         user = self.model(
             email=self.normalize_email(email),
             login=login,
-            avatar=avatar,
+            image=image,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -25,7 +25,7 @@ class AccountManager(BaseUserManager):
             email=email,
             login=login,
             password=password,
-            avatar=kwargs.get('avatar', None)
+            image=kwargs.get('image', None)
         )
         user.is_admin = True
         user.is_staff = True
@@ -37,7 +37,8 @@ class AccountManager(BaseUserManager):
 class Account(AbstractBaseUser):
     email = models.EmailField(unique=True, null=False, blank=False)
     login = models.CharField(max_length=50, unique=True, null=False, blank=False)
-    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, default="avatars/default_avatar.png")
+    # image = models.ImageField(upload_to="images/", null=True, blank=True, default="images/default_image.png")
+    image = models.ImageField(upload_to="avatars/", null=True, blank=True, default="avatars/default_avatar.png")
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

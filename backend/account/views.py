@@ -67,7 +67,7 @@ def loginView(request):
         user_data = {
             "login": user.login,
             "email": user.email,
-            "avatar": request.build_absolute_uri(user.avatar.url) if user.avatar else None,
+            "image": request.build_absolute_uri(user.image.url) if user.image else None,
             "csrf_token": csrf.get_token(request),  # Include CSRF token here
         }
         res.data = {**tokens, **user_data}

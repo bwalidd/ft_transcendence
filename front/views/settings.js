@@ -11,7 +11,7 @@ export default class Settings extends Abstract {
     constructor(params) {
         loadCSS('../styles/Settings.css');
         super(params);
-        this.avatarRemoved = false; // Flag to track if the avatar was removed
+        this.imageRemoved = false; // Flag to track if the avatar was removed
         this.newAvatarFile = null; 
         this.setTitle("Settings");
         this.cssSelector = '../styles/Settings.css';
@@ -123,8 +123,8 @@ export default class Settings extends Abstract {
 
             // Set avatar image if available
             const avatarPreview = document.getElementById("avatarPreview");
-            if (userData.avatar) {
-                avatarPreview.style.backgroundImage = `url(http://localhost:8001${userData.avatar})`;
+            if (userData.image) {
+                avatarPreview.style.backgroundImage = `url(http://localhost:8001${userData.image})`;
                 avatarPreview.style.backgroundSize = "cover";
                 avatarPreview.style.backgroundPosition = "center";
             }    
@@ -164,12 +164,12 @@ export default class Settings extends Abstract {
         const formData = new FormData();
 
         // Append avatar based on the `avatarRemoved` flag
-        if (this.avatarRemoved) {
+        if (this.imageRemoved) {
             // Fetch default avatar as a Blob and append to formData
             const defaultAvatarBlob = await fetch('../images/default.jpeg').then(res => res.blob());
-            formData.append('avatar', defaultAvatarBlob, 'default-avatar.jpeg');
+            formData.append('image', defaultAvatarBlob, 'default-avatar.jpeg');
         } else if (avatar) {
-            formData.append('avatar', avatar);
+            formData.append('image', avatar);
         }
 
         formData.append('login', username);
@@ -210,7 +210,7 @@ export default class Settings extends Abstract {
         document.getElementById('remove-avatar').style.display = 'none';
         document.getElementById('upload-avatar').style.display = 'block';
         document.getElementById('avatar').disabled = false; // Enable the file input
-        this.avatarRemoved = true;
+        this.imageRemoved = true;
         this.newAvatarFile = null;
     }
     
@@ -232,7 +232,7 @@ export default class Settings extends Abstract {
             avatarPreview.style.backgroundPosition = "center";
     
             this.newAvatarFile = file;
-            this.avatarRemoved = false;
+            this.imageRemoved = false;
     
             document.getElementById('remove-avatar').style.display = 'block';
             document.getElementById('upload-avatar').style.display = 'none';

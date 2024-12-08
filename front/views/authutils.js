@@ -29,7 +29,7 @@ export async function fetchUserData(url) {
         }
     } catch (error) {
         console.error('Error fetching user data:', error);
-        return { avatar: '/path/to/default/avatar.jpg', login: 'Guest' };
+        return { image: '/path/to/default/avatar.jpg', login: 'Guest' };
     }
 }
 

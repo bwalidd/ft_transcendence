@@ -164,7 +164,7 @@ export default class Chat extends Abstract {
             const friendButtonContainer = document.querySelector('.user-actions');
             
             // Set avatar and username in popup
-            avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
+            avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.image}')`;
             username.textContent = user.login;
             friendButtonContainer.innerHTML = 'Already Friends';
             popup.classList.add('show'); 
@@ -261,7 +261,7 @@ export default class Chat extends Abstract {
     
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';
-                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataofOpponent.avatar}')`;
+                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataofOpponent.image}')`;
                     matchUsername.textContent = dataofOpponent.login;
     
                     const matchResult = document.createElement('p');
@@ -472,8 +472,8 @@ export default class Chat extends Abstract {
                             to: data.from,
                             response: "accepted",
                             session_id: data.session_id,
-                            player1_name: login, // Include the player's name
-                            player2_name: data.from_login, // Include the friend's name
+                            player1_name: userName, // Include the current user's name
+                            player2_name: data.from_name, // Include the inviter's name
                         })
                     );
                     alertBox.remove();
@@ -670,7 +670,7 @@ export default class Chat extends Abstract {
             friendBlock.classList.add('friend-block');
 
             friendBlock.innerHTML = `
-                <div class="cover" style="background: url(http://localhost:8001${friend.avatar}); background-position: center; background-size: cover;"></div>
+                <div class="cover" style="background: url(http://localhost:8001${friend.image}); background-position: center; background-size: cover;"></div>
                 <div class="details d-flex justify-content-between">
                     <div class="listHead">
                         <h5>${friend.login}</h5>
@@ -692,7 +692,7 @@ export default class Chat extends Abstract {
         const username = document.querySelector('.opened-chat-username h4');
         username.textContent = friend.login;
         const profile = document.querySelector('.opened-chat-usename-profile');
-        profile.style.background = `url(http://localhost:8001${friend.avatar})`;
+        profile.style.background = `url(http://localhost:8001${friend.image})`;
         profile.style.backgroundPosition = 'center';
         profile.style.backgroundSize = 'cover';
     
