@@ -1,65 +1,64 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-from friend.models import friendList, friendRequest
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, email, username, password=None, **kwargs):
+    def create_user(self, email, login, password=None, **kwargs):
         if not email:
             raise ValueError("Email is required")
+        if not login:
+            raise ValueError("Login is required")
 
-        if not username:
-            raise ValueError("Username is required")
-
-        # Extract avatar from kwargs if provided
         avatar = kwargs.get('avatar', None)
 
         user = self.model(
             email=self.normalize_email(email),
-            username=username,
-            avatar=avatar  # Set avatar
+            login=login,
+            avatar=avatar,
         )
-
         user.set_password(password)
         user.save(using=self._db)
-
         return user
 
-    def create_superuser(self, email, username, password, **kwargs):
+    def create_superuser(self, email, login, password, **kwargs):
         user = self.create_user(
-            email=self.normalize_email(email),
-            username=username,
+            email=email,
+            login=login,
             password=password,
-            avatar=kwargs.get('avatar', None)  # Set avatar for superuser
+            avatar=kwargs.get('avatar', None)
         )
-
         user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
 
+
 class Account(AbstractBaseUser):
-    email = models.EmailField(null=False, blank=False, unique=True)
-    username = models.CharField(max_length=50, blank=False, null=False)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)  # Add avatar field
+    email = models.EmailField(unique=True, null=False, blank=False)
+    login = models.CharField(max_length=50, unique=True, null=False, blank=False)
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, default="avatars/default_avatar.png")
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    friends = models.ManyToManyField("self", blank=True, symmetrical=True, related_name='account_friends')  # Assign a unique related_name
-    is_friend = models.BooleanField(default=False)
-    is_requested = models.BooleanField(default=False)  # Add the requested boolean
+    friends = models.ManyToManyField("self", blank=True, symmetrical=True, related_name='account_friends')
+    # is_friend = models.BooleanField(default=False)
+    # is_requested = models.BooleanField(default=False)  # Add the requested boolean
 
     objects = AccountManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = ["login"]
+
+    class Meta:
+        verbose_name = "Account"
+        verbose_name_plural = "Accounts"
 
     def __str__(self):
-        return self.username
+        return f"{self.login}"
 
     def has_perm(self, perm, obj=None):
         return True

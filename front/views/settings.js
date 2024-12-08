@@ -118,7 +118,7 @@ export default class Settings extends Abstract {
             // console.log('User data:', userData);
 
             // Populate the fields with user data
-            document.getElementById("username").value = userData.username || "";
+            document.getElementById("username").value = userData.login || "";
             document.getElementById("email").value = userData.email || "";
 
             // Set avatar image if available
@@ -172,7 +172,7 @@ export default class Settings extends Abstract {
             formData.append('avatar', avatar);
         }
 
-        formData.append('username', username);
+        formData.append('login', username);
         formData.append('email', email);
         if (password) {
             formData.append('password', password);

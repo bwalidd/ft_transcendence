@@ -17,7 +17,7 @@ admin.site.register(friendList, FriendListAdmin)
 class FriendRequestAdmin(admin.ModelAdmin):
     list_filter = ['sender', 'receiver']
     list_display = ['sender', 'receiver']
-    search_field = ['sender__username','sender__email','receiver__email', 'receiver__username']
+    search_field = ['sender__login','sender__email','receiver__email', 'receiver__login']
     
 
     class Meta:

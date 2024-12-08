@@ -28,4 +28,4 @@ class UserBlocking(models.Model):
         verbose_name_plural = 'User Blockings'
 
     def __str__(self):
-        return f"{self.blocker.username} blocked {self.blocked.username}"
+        return f"{self.blocker.login} blocked {self.blocked.login}"

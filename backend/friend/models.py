@@ -10,7 +10,7 @@ class friendList(models.Model):
     friends = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='friend_list_friends')
 
     def __str__(self):
-        return self.user.username
+        return self.user.login
 
     def add_friend(self, account):
         """
@@ -57,7 +57,7 @@ class friendRequest(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.sender.username
+        return self.sender.login
 
     def accept(self):
         """

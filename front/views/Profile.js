@@ -72,7 +72,7 @@ export default class Profile extends Abstract {
                     <div id="first-container">
                         <div id="right-part">
                             <div class="profile-img"></div>
-                            <div class="profile-name">${this.user.username}</div>
+                            <div class="profile-name">${this.user.login}</div>
                         </div>
                         <div id="left-part">
                             <div class="wrapper">
@@ -250,7 +250,7 @@ animateWinRate(targetPercentage) {
     
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';
-                    matchUsername.textContent = dataOfOpponent.username;
+                    matchUsername.textContent = dataOfOpponent.login;
     
                     const matchResult = document.createElement('p');
                     matchResult.className = 'match-result';

@@ -34,7 +34,7 @@ export default class Home extends Abstract {
                         </a>
                         <div class="nav-link">
                             <p class="greeting">Hey,</p>
-                            <p class="username"><strong>${user.username}</strong></p>
+                            <p class="username"><strong>${user.login}</strong></p>
                         </div>
                         <a class="nav-link" href="/profile">
                             <div class="profile-img" style="background-image: url('${avatarUrl}');"></div>
@@ -284,7 +284,7 @@ export default class Home extends Abstract {
                 
                 const usernameDiv = document.createElement('div');
                 usernameDiv.className = 'username';
-                usernameDiv.textContent = user.username;
+                usernameDiv.textContent = user.login;
     
                 li.appendChild(avatarDiv);
                 li.appendChild(usernameDiv);
@@ -428,7 +428,7 @@ export default class Home extends Abstract {
             
             // Set avatar and username in popup
             avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
-            username.textContent = user.username;
+            username.textContent = user.login;
     
             // Clear any existing friend button content
             friendButtonContainer.innerHTML = '';
@@ -578,7 +578,7 @@ export default class Home extends Abstract {
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';
                     matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataofOpponent.avatar}')`;
-                    matchUsername.textContent = dataofOpponent.username;
+                    matchUsername.textContent = dataofOpponent.login;
     
                     const matchResult = document.createElement('p');
                     matchResult.className = 'match-result';

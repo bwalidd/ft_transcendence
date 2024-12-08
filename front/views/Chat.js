@@ -165,7 +165,7 @@ export default class Chat extends Abstract {
             
             // Set avatar and username in popup
             avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.avatar}')`;
-            username.textContent = user.username;
+            username.textContent = user.login;
             friendButtonContainer.innerHTML = 'Already Friends';
             popup.classList.add('show'); 
     
@@ -262,7 +262,7 @@ export default class Chat extends Abstract {
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';
                     matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataofOpponent.avatar}')`;
-                    matchUsername.textContent = dataofOpponent.username;
+                    matchUsername.textContent = dataofOpponent.login;
     
                     const matchResult = document.createElement('p');
                     matchResult.className = 'match-result';
@@ -363,7 +363,7 @@ export default class Chat extends Abstract {
             return;
         }
         const data = await response.json();
-        dest = data.username;
+        dest = data.login;
     }
 
     async fetchUsername(userId) {
@@ -385,7 +385,7 @@ export default class Chat extends Abstract {
             }
     
             const data = await response.json();
-            return data.username;
+            return data.login;
         } catch (error) {
             console.error('Error in fetchUsername:', error);
             return null;
@@ -429,7 +429,7 @@ export default class Chat extends Abstract {
         
     connectGameInviteSocket(friendId) {
         const userId = this.userData.id;
-        const userName = this.userData.username; // Get the current user's name
+        const userName = this.userData.login; // Get the current user's name
     
         // Close any existing socket
         if (this.gameSocket) {
@@ -472,8 +472,8 @@ export default class Chat extends Abstract {
                             to: data.from,
                             response: "accepted",
                             session_id: data.session_id,
-                            player1_name: userName, // Include the player's name
-                            player2_name: data.from_username, // Include the friend's name
+                            player1_name: login, // Include the player's name
+                            player2_name: data.from_login, // Include the friend's name
                         })
                     );
                     alertBox.remove();
@@ -585,7 +585,7 @@ export default class Chat extends Abstract {
             notification.classList.add('notification');
             notification.innerHTML = `
                 <div class="notification-content">
-                    <strong>${userData.username}</strong>: ${message.msg.length <= 15 ? message.msg : message.msg.slice(0, 15) + '...'}
+                    <strong>${userData.login}</strong>: ${message.msg.length <= 15 ? message.msg : message.msg.slice(0, 15) + '...'}
                 </div>
             `;
             document.body.appendChild(notification);
@@ -673,7 +673,7 @@ export default class Chat extends Abstract {
                 <div class="cover" style="background: url(http://localhost:8001${friend.avatar}); background-position: center; background-size: cover;"></div>
                 <div class="details d-flex justify-content-between">
                     <div class="listHead">
-                        <h5>${friend.username}</h5>
+                        <h5>${friend.login}</h5>
                     </div>
                 </div>
             `;
@@ -690,7 +690,7 @@ export default class Chat extends Abstract {
         // console.log('Selected friend:', friend);
         this.initChat('clicked');
         const username = document.querySelector('.opened-chat-username h4');
-        username.textContent = friend.username;
+        username.textContent = friend.login;
         const profile = document.querySelector('.opened-chat-usename-profile');
         profile.style.background = `url(http://localhost:8001${friend.avatar})`;
         profile.style.backgroundPosition = 'center';
@@ -965,7 +965,7 @@ export default class Chat extends Abstract {
                     type: "game_invitation",
                     from: this.userData.id,
                     to: this.currentFriend.id,
-                    message: `${this.userData.username} has invited you to a game.`,
+                    message: `${this.userData.login} has invited you to a game.`,
                 };
     
                 this.gameSocket.send(JSON.stringify(invitationData));

@@ -50,7 +50,7 @@ def block_friend(request, blocker_id, blocked_id):
 
         # Create the blocking relationship
         UserBlocking.objects.create(blocker_id=blocker_id, blocked_id=blocked_id)
-        return Response({'message': f'You have blocked {blocked_user.username}'}, status=status.HTTP_201_CREATED)
+        return Response({'message': f'You have blocked {blocked_user.login}'}, status=status.HTTP_201_CREATED)
 
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -75,7 +75,7 @@ def unblock_friend(request, blocker_id, blocked_id):
         blocking_relationship = UserBlocking.objects.filter(blocker_id=blocker_id, blocked_id=blocked_id).first()
         if blocking_relationship:
             blocking_relationship.delete()
-            return Response({'message': f'You have unblocked {blocked_user.username}'}, status=status.HTTP_200_OK)
+            return Response({'message': f'You have unblocked {blocked_user.login}'}, status=status.HTTP_200_OK)
 
         return Response({'message': 'User is not blocked'}, status=status.HTTP_200_OK)
 

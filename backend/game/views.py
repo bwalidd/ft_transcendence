@@ -52,8 +52,8 @@ def start_game(request):
             {
                 "message": "Game session created successfully.",
                 "session_id": str(game_session.session_id),
-                "player_one": player_one.username,
-                "player_two": player_two.username,
+                "player_one": player_one.login,
+                "player_two": player_two.login,
             },
             status=status.HTTP_201_CREATED
         )
@@ -104,11 +104,11 @@ def postResult(request, session_id):
 
     # Validate request data
     data = request.data
-    winner_username = data.get('winner')
+    winner_login = data.get('winner')
     score_player_1 = data.get('score_player_1')
     score_player_2 = data.get('score_player_2')
 
-    if not winner_username or score_player_1 is None or score_player_2 is None:
+    if not winner_login or score_player_1 is None or score_player_2 is None:
         return Response(
             {"error": "Incomplete data provided."},
             status=status.HTTP_400_BAD_REQUEST,
@@ -116,7 +116,7 @@ def postResult(request, session_id):
 
     # Identify the winner and loser
     try:
-        winner = User.objects.get(username=winner_username)
+        winner = User.objects.get(login=winner_login)
     except User.DoesNotExist:
         return Response(
             {"error": "Winner user does not exist."},
@@ -137,7 +137,7 @@ def postResult(request, session_id):
         {
             "message": "Game session result saved successfully.",
             "session_id": game_session.session_id,
-            "winner": winner.username,
+            "winner": winner.login,
             "score_player_1": game_session.score_player_1,
             "score_player_2": game_session.score_player_2,
         },

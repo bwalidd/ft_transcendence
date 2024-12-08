@@ -270,59 +270,6 @@ export default class GameRemote extends Abstract {
     
 
 
-
-    // Function to show a temporary notification
-    // Function to show a temporary notification
-   
-    // old
-    // async initializeGameSession(sessionId) {
-    //     try {
-    //         const csrfToken = await this.getCsrfToken();
-    //         const response = await fetch(`http://localhost:8001/api/game/details/${sessionId}/`, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-    //                 'Content-Type': 'application/json',
-    //                 'X-CSRFToken': csrfToken
-    //             },
-    //             credentials: 'include'
-    //         });
-    
-    //         if (!response.ok) {
-    //             throw new Error('Failed to fetch game session details');
-    //         }
-    
-    //         this.data_of_players = await response.json();
-    //         console.log('Game session details:', this.data_of_players);
-    
-    //         // Fetch and display user info for both players
-    //         await this.fetchAndDisplayUserInfo(this.data_of_players.player_one, "my-username");
-    //         await this.fetchAndDisplayUserInfo(this.data_of_players.player_two, "friend-username");
-    
-           
-    
-    //         this.leftuser = document.getElementById('my-username').textContent;
-    
-    //         // Ensure checkWhoLoggedIn finishes before setting currentPlayer
-    //         this.currentUsername = await this.checkWhoLoggedIn();
-    //         console.log('Current user is:------->', this.currentUsername);
-    //         console.log('Left user is:------->', this.leftuser);
-    
-    //         if (this.currentUsername === this.leftuser) {
-    //             this.currentPlayer = 'player_one';
-    //             console.log('Current player is player_one');
-    //         } else {
-    //             this.currentPlayer = 'player_two';
-    //             console.log('Current player is player_two');
-    //         }
-            
-    //     } catch (error) {
-    //         console.error("Error in initializeGameSession:", error);
-    //         throw error;
-    //     }
-    // }
-
-
    
     showTemporaryNotification(message) {
         // Create the overlay
@@ -383,7 +330,7 @@ export default class GameRemote extends Abstract {
             
             const data = await response.json();
     
-            return data.username;
+            return data.login;
         }catch (error) {
             console.error("Error in checkWhoLoggedIn:", error);
         }
@@ -408,15 +355,15 @@ export default class GameRemote extends Abstract {
             }
 
             const data = await response.json();
-            document.getElementById(elementId).textContent = data.username;
+            document.getElementById(elementId).textContent = data.login;
 
             const userAvatar = data.avatar || '/default-avatar.png';
             console.log('User avatar:', userAvatar);
 
             if (elementId === "my-username") {
-                localStorage.setItem('my-username', data.username);
+                localStorage.setItem('my-username', data.login);
             } else if (elementId === "friend-username") {
-                localStorage.setItem('friend-username', data.username);
+                localStorage.setItem('friend-username', data.login);
             }
 
             document.getElementById(`${elementId}-avatar`).style.backgroundImage = `url('http://localhost:8001${userAvatar}')`;

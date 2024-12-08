@@ -72,7 +72,7 @@ export default class Signup extends Abstract {
             }
     
             const formData = new FormData();
-            formData.append('username', username);
+            formData.append('login', username);
             formData.append('email', email);
             formData.append('password', password);
             formData.append('password2', confirmPassword);

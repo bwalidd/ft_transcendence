@@ -65,7 +65,7 @@ def loginView(request):
 
         # Add user data to the response, including avatar
         user_data = {
-            "username": user.username,
+            "login": user.login,
             "email": user.email,
             "avatar": request.build_absolute_uri(user.avatar.url) if user.avatar else None,
             "csrf_token": csrf.get_token(request),  # Include CSRF token here
@@ -223,7 +223,7 @@ def search_users(request):
     if not search_string:
         return response.Response({"error": "Search string is required"}, status=400)
 
-    users = models.Account.objects.filter(username__icontains=search_string)
+    users = models.Account.objects.filter(login__icontains=search_string)
     serializer = serializers.AccountSerializer(users, many=True)
     return response.Response(serializer.data)
 
@@ -237,15 +237,15 @@ def userProfileView(request, user_id):
     # Serialize the user data
     serializer = serializers.AccountSerializer(user)
     
-    # Check if the user is a friend of the requesting user
-    is_friend = request.user.friends.filter(id=user_id).exists()
+    # # Check if the user is a friend of the requesting user
+    # is_friend = request.user.friends.filter(id=user_id).exists()
 
-    # Check if a friend request has been sent
-    is_requested = models.friendRequest.objects.filter(sender=request.user, receiver=user).exists()
+    # # Check if a friend request has been sent
+    # is_requested = models.friendRequest.objects.filter(sender=request.user, receiver=user).exists()
     # Add the is_friend and is_requested status to the serialized data
     response_data = serializer.data
-    response_data['is_friend'] = is_friend
-    response_data['is_requested'] = is_requested
+    # response_data['is_friend'] = is_friend
+    # response_data['is_requested'] = is_requested
 
     return response.Response(response_data)
 

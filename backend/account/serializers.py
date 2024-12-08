@@ -9,7 +9,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ("username", "email", "password", "password2", "avatar")
+        fields = ("login", "email", "password", "password2", "avatar")
         extra_kwargs = {
             "password": {"write_only": True},
             "password2": {"write_only": True},
@@ -18,7 +18,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def save(self):
         user = get_user_model()(
             email=self.validated_data["email"],
-            username=self.validated_data["username"],
+            login=self.validated_data["login"],
             avatar=self.validated_data.get("avatar")
         )
 
@@ -42,7 +42,7 @@ class LoginSerializer(serializers.Serializer):
 class FriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("id", "username", "avatar")  # Simplified fields for friends
+        fields = ("id", "login", "avatar")  # Simplified fields for friends
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -52,7 +52,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ("id", "username", "email", "avatar", "friends", "is_friend", "is_requested")
+        fields = ("id", "login", "email", "avatar", "friends", "is_friend", "is_requested")
 
     def get_friends(self, obj):
         try:
@@ -79,7 +79,7 @@ class AccountSerializer(serializers.ModelSerializer):
 class AccountDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("id", "username", "email", "avatar","password")
+        fields = ("id", "login", "email", "avatar","password")
 
 
 # from rest_framework import serializers
@@ -92,7 +92,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('username', 'email', 'password', 'confirm_password', 'avatar')
+        fields = ('login', 'email', 'password', 'confirm_password', 'avatar')
 
     def validate(self, data):
         # Validate that passwords match if provided
@@ -102,8 +102,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        # Update username and email
-        instance.username = validated_data.get('username', instance.username)
+        # Update login and email
+        instance.login = validated_data.get('login', instance.login)
         instance.email = validated_data.get('email', instance.email)
         
         # Update avatar if provided
