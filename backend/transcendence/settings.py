@@ -33,6 +33,23 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 ]
 
+# # Updated CORS and Cookie Settings
+# CORS_ALLOW_ALL_ORIGINS = False  # More secure
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:8004',
+#     # Add other specific origins here
+# ]
+# CORS_ALLOW_CREDENTIALS = True
+
+# # Explicit CSRF Cookie Settings
+# CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_HTTP_ONLY = True
+# CSRF_COOKIE_SAMESITE = 'None'  # Explicitly set to None
+
+# # Session Cookie Settings
+# SESSION_COOKIE_SECURE = True
+# SESSION_COOKIE_SAMESITE = 'None'  # Explicitly set to None
+
 # Updated CORS and Cookie Settings
 CORS_ALLOW_ALL_ORIGINS = False  # More secure
 CORS_ALLOWED_ORIGINS = [
@@ -104,7 +121,7 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8004',
+    'http://0.0.0.0:8004',
 ]
 
 AUTH_USER_MODEL = "account.Account"

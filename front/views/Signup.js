@@ -41,7 +41,7 @@ export default class Signup extends Abstract {
                         </div>
                         <button id="btn-submit" type="submit" class="btn btn-secondary text-center">Submit</button>
                     </form>
-                    <a href="/profile" class="btn btn-outline-light text-center" style="margin-top: 100px">Sign in with Intra 42</a>
+                    <button id="loginIntra" class="btn btn-outline-light text-center" style="margin-top: 100px">Sign in with Intra 42</button>
                     <div class="parag">
                         <p id="login"> Already have an account? <a href="/login">Login here</a></p>
                     </div>
@@ -49,6 +49,32 @@ export default class Signup extends Abstract {
             </div>
         </div>
         `;
+    }
+
+    async loginWithIntra() {
+        document.getElementById('loginIntra').addEventListener('click', async () => {
+            // try {
+            //     // Perform the fetch request
+            //     const response = await fetch('http://localhost:8001/api/auth/login42/', {
+            //         method: 'GET',
+            //         credentials: 'include', // Includes cookies
+            //         redirect: 'follow',    // Allow the fetch to follow redirects
+            //     });
+    
+            //     // Since the request redirects to the 42 OAuth page, check for a redirect
+            //     if (response.redirected) {
+            //         // Redirect the browser to the 42 login page
+            //         window.location.href = response.url;
+            //     } else {
+            //         alert('Login failed. Please try again.');
+            //     }
+            // } catch (error) {
+            //     console.error('Error:', error);
+            //     alert('Login failed. Please try again.');
+            // }
+
+            window.location.href = 'http://localhost:8001/api/auth/login42/';
+        });
     }
 
     initialize() {
@@ -115,6 +141,7 @@ export default class Signup extends Abstract {
                 alert('Registration failed. Please try again.');
             }
         });
+        this.loginWithIntra();
     }
     
 

@@ -291,6 +291,15 @@ def login_with_42(request):
     auth_url = f"{AUTH_URL}?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code"
     return redirect(auth_url)
 
+# def login_with_42(request):
+#     """
+#     Redirect user to the 42 OAuth authorization page.
+#     """
+    
+#     auth_url = f"{AUTH_URL}?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code"
+#     return redirect(auth_url)
+
+
 
 def callback(request):
     """
@@ -360,16 +369,22 @@ def get_user_data(request):
     "email": email,
     "image": image_url  # This will hold the URL of the medium image
     }
+    user, created = Account.objects.get_or_create(
+            login=user_data["login"],  # Use a unique field to check existence
+            defaults=user_data  # Pass the dictionary to populate fields if a new user is created
+            )
 
-    user = Account.objects.create(**user_data)
+    # user = Account.objects.create(**user_data)
     # serializer = Registration42Serializer(data=response.json())
     # serializer.is_valid(raise_exception=True)
     # user = serializer.save()
    
     tokens = get_user_tokens(user)
-    response = JsonResponse({
-        "message": "User authenticated successfully"
-    })
+    # response = JsonResponse({
+    #     "message": "User authenticated successfully"
+    # })
+    response = redirect('http://localhost:8004/')
+
     response.set_cookie(
             key=settings.SIMPLE_JWT['AUTH_COOKIE'],  # Cookie name from settings
             expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
@@ -388,7 +403,11 @@ def get_user_data(request):
             secure=True,
             samesite='Strict',
         )
-        
+    response['Access-Control-Allow-Origin'] = 'http://localhost:8004'
+    response['Access-Control-Allow-Credentials'] = 'true'
+    
+    # return redirect('http://localhost:8004/')
+
     return response
 
     # return JsonResponse(response.json())
