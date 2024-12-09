@@ -164,7 +164,7 @@ export default class Chat extends Abstract {
             const friendButtonContainer = document.querySelector('.user-actions');
             
             // Set avatar and username in popup
-            avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.image}')`;
+            avatarDiv.style.backgroundImage = `url('${user.image}')`;
             username.textContent = user.login;
             friendButtonContainer.innerHTML = 'Already Friends';
             popup.classList.add('show'); 

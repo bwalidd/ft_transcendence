@@ -21,7 +21,7 @@ export default class Profile extends Abstract {
 
     async getHtml() {
         this.user = await fetchUserData('http://localhost:8001/api/auth/user/');
-        const avatarUrl = `http://localhost:8001${this.user.image}`;
+        const avatarUrl = `${this.user.image}`;
         // console.log('Avatar URL:', avatarUrl);
     
         return `
@@ -77,7 +77,7 @@ export default class Profile extends Abstract {
                         <div id="left-part">
                             <div class="wrapper">
                                 <div class="c100 red over50" style="--p:80;">
-                                    <span id="win-rate-percentage">80%</span>
+                                    <span id="win-rate-percentage">0%</span>
                                     <div class="slice">
                                         <div class="bar"></div>
                                         <div class="fill"></div>
@@ -174,7 +174,7 @@ animateWinRate(targetPercentage) {
 
     putProfileImage() {
         const profileImage = document.querySelector('.profile-img');
-        profileImage.style.backgroundImage = `url('http://localhost:8001${this.user.image}')`;
+        profileImage.style.backgroundImage = `url('${this.user.image}')`;
     }
 
     async fetchOpponentPic(userId) {

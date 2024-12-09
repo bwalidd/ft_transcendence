@@ -19,7 +19,7 @@ export default class Home extends Abstract {
 
     async getHtml() {
         const user = await fetchUserData('http://localhost:8001/api/auth/user/');
-        const avatarUrl = `http://localhost:8001${user.image}`;
+        const avatarUrl = `${user.image}`;
         
 
         return `
@@ -280,7 +280,9 @@ export default class Home extends Abstract {
                 const li = document.createElement('li');
                 const avatarDiv = document.createElement('div');
                 avatarDiv.className = 'avatar';
-                avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.image}')`;
+                avatarDiv.style.backgroundImage = `url('${user.image}')`;
+                avatarDiv.style.backgroundSize = 'cover';
+                avatarDiv.style.backgroundPosition = 'center';
                 
                 const usernameDiv = document.createElement('div');
                 usernameDiv.className = 'username';
@@ -427,7 +429,9 @@ export default class Home extends Abstract {
             const friendButtonContainer = document.querySelector('.user-actions');
             
             // Set avatar and username in popup
-            avatarDiv.style.backgroundImage = `url('http://localhost:8001${user.image}')`;
+            avatarDiv.style.backgroundImage = `url('${user.image}')`;
+            avatarDiv.style.backgroundSize = 'cover';
+            avatarDiv.style.backgroundPosition = 'center';
             username.textContent = user.login;
     
             // Clear any existing friend button content
