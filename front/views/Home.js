@@ -321,19 +321,19 @@ export default class Home extends Abstract {
         alert('Sending friend request...');
         try {
             const csrfToken = await this.getCsrfToken();
+            console.log('CSRF Token:------>', csrfToken);
             const response = await fetch(`http://localhost:8001/api/friend/send-request/${receiverId}/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken // Include CSRF token
+                    'X-CSRFToken': csrfToken // Include CSRF token from the cookie
                 },
-                credentials: 'include'
+                credentials: 'include' // Include cookies in the request
             });
     
             if (response.ok) {
                 alert('Friend request sent successfully');
-                // Optionally, update the UI to reflect the new state (e.g., change button to "Requested")
                 const friendButtonContainer = document.querySelector('.user-actions');
                 friendButtonContainer.innerHTML = '<h2 class="request-text">Requested</h2>';
             } else {
@@ -344,6 +344,7 @@ export default class Home extends Abstract {
             console.error('Error during sending friend request:', error);
         }
     }
+    
     
     async acceptFriendRequest(requestId) {
         // console.log('Accepting friend request with ID:', requestId);
@@ -581,7 +582,7 @@ export default class Home extends Abstract {
     
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';
-                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataofOpponent.image}')`;
+                    matchAvatar.style.backgroundImage = `url('${dataofOpponent.image}')`;
                     matchUsername.textContent = dataofOpponent.login;
     
                     const matchResult = document.createElement('p');

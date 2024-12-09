@@ -58,26 +58,27 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
-# Explicit CSRF Cookie Settings
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTP_ONLY = True
-CSRF_COOKIE_SAMESITE = 'None'  # Explicitly set to None
+CSRF_COOKIE_SECURE = False  # For development, set to True in production
+CSRF_COOKIE_HTTP_ONLY = False  # Allow JavaScript to read CSRF cookies (if needed)
+CSRF_COOKIE_SAMESITE = 'Lax'  # 'Strict' or 'Lax' for security
 
 # Session Cookie Settings
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = 'None'  # Explicitly set to None
+SESSION_COOKIE_SECURE = False  # For development, set to True in production
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTP_ONLY = True  # Cookies are inaccessible to JavaScript
 
 # Middleware with explicit CORS handling
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Ensure this is before CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'transcendence.urls'
 
@@ -121,7 +122,8 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://0.0.0.0:8004',
+    # 'http://0.0.0.0:8004',
+    'http://localhost:8004',
 ]
 
 AUTH_USER_MODEL = "account.Account"

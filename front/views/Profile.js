@@ -246,7 +246,7 @@ animateWinRate(targetPercentage) {
     
                     const matchAvatar = document.createElement('div');
                     matchAvatar.className = 'match-avatar';
-                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataOfOpponent.image}')`;
+                    matchAvatar.style.backgroundImage = `url('${dataOfOpponent.image}')`;
     
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';

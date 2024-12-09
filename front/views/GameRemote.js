@@ -206,7 +206,7 @@ export default class GameRemote extends Abstract {
                 await this.initializeGameSession(sessionId); // Ensure game session is fully initialized
                 this.setupGameEnvironment();
             } else {
-                console.error("No sessionId found in localStorage.");
+                // console.error("No sessionId found in localStorage.");
             }
         } catch (error) {
             console.error("Error during initialization:", error);
@@ -366,7 +366,7 @@ export default class GameRemote extends Abstract {
                 localStorage.setItem('friend-username', data.login);
             }
 
-            document.getElementById(`${elementId}-avatar`).style.backgroundImage = `url('http://localhost:8001${userAvatar}')`;
+            document.getElementById(`${elementId}-avatar`).style.backgroundImage = `url('${userAvatar}')`;
         } catch (error) {
             console.error(`Error in fetchAndDisplayUserInfo for ${elementId}:`, error);
             throw error;

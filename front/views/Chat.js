@@ -75,7 +75,7 @@ export default class Chat extends Abstract {
 
                                 </div>
                                 <div class="opened-chat-username d-flex flex-column justify-content-center" style="position:absolute; left:80px;"><h4>Wbouwach</h4></div>
-                                <div class="online d-flex align-items-center" style="position:absolute; right:0; margin:5px; gap:5px"><div class="circle m-1"></div><b>Online</b></div>
+                                <div class="online d-flex align-items-center" style="position:absolute; right:0; margin:5px; gap:5px"><div class="circle m-1"></div><b>Offline</b></div>
                             </div>
 
                             <div class="chat-box" id="chatBox">
@@ -192,7 +192,9 @@ export default class Chat extends Abstract {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
                     'Content-Type': 'application/json'
 
-                }}
+                },
+                credentials: 'include'
+            }
             );
             const res = await response.json();
             return res;
@@ -261,7 +263,7 @@ export default class Chat extends Abstract {
     
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';
-                    matchAvatar.style.backgroundImage = `url('http://localhost:8001${dataofOpponent.image}')`;
+                    matchAvatar.style.backgroundImage = `url('${dataofOpponent.image}')`;
                     matchUsername.textContent = dataofOpponent.login;
     
                     const matchResult = document.createElement('p');
@@ -670,7 +672,7 @@ export default class Chat extends Abstract {
             friendBlock.classList.add('friend-block');
 
             friendBlock.innerHTML = `
-                <div class="cover" style="background: url(http://localhost:8001${friend.image}); background-position: center; background-size: cover;"></div>
+                <div class="cover" style="background: url(${friend.image}); background-position: center; background-size: cover;"></div>
                 <div class="details d-flex justify-content-between">
                     <div class="listHead">
                         <h5>${friend.login}</h5>
@@ -692,7 +694,7 @@ export default class Chat extends Abstract {
         const username = document.querySelector('.opened-chat-username h4');
         username.textContent = friend.login;
         const profile = document.querySelector('.opened-chat-usename-profile');
-        profile.style.background = `url(http://localhost:8001${friend.image})`;
+        profile.style.background = `url(${friend.image})`;
         profile.style.backgroundPosition = 'center';
         profile.style.backgroundSize = 'cover';
     
