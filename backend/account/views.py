@@ -7,9 +7,13 @@ from account import serializers, models
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import UserUpdateSerializer
+from .serializers import UserUpdateSerializer, Registration42Serializer
 import logging
-
+from django.http import JsonResponse
+from django.shortcuts import redirect
+import requests
+from rest_framework.response import Response 
+from .models import Account  
 
 
 def get_user_tokens(user):
@@ -207,7 +211,7 @@ def userDetailView(request):
 
 
 @rest_decorators.api_view(["GET"])
-# @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def allusers(request):
     users = models.Account.objects.all()  # Fetch all users
     serializer = serializers.AccountSerializer(users, many=True)  # Serialize multiple users
@@ -263,3 +267,130 @@ def update_user(request):
     print("-------->",serializer.data)
     return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+# Replace these with your 42 API credentials
+CLIENT_ID = 'u-s4t2ud-84b6775d22286874989e5e213621ee48a405e39705ec71d0aed001e0b7691caf'
+CLIENT_SECRET = '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'
+REDIRECT_URI = 'http://localhost:8001/api/auth/callback/'
+
+# 42 Intra API endpoints
+AUTH_URL = 'https://api.intra.42.fr/oauth/authorize'
+TOKEN_URL = 'https://api.intra.42.fr/oauth/token'
+
+
+def login_with_42(request):
+    """
+    Redirect user to the 42 OAuth authorization page.
+    """
+    params = {
+        'client_id': CLIENT_ID,
+        'redirect_uri': REDIRECT_URI,
+        'response_type': 'code',
+    }
+    auth_url = f"{AUTH_URL}?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code"
+    return redirect(auth_url)
+
+
+def callback(request):
+    """
+    Handle the callback from 42 and exchange code for a token.
+    """
+    code = request.GET.get('code')
+
+    if not code:
+        return JsonResponse({'error': 'Authorization code not provided'}, status=400)
+
+    # Exchange authorization code for access token
+    data = {
+        'grant_type': 'authorization_code',
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'code': code,
+        'redirect_uri': REDIRECT_URI,
+    }
+    response = requests.post(TOKEN_URL, data=data)
+    if response.status_code != 200:
+        return JsonResponse({'error': 'Failed to retrieve access token'}, status=response.status_code)
+
+    token_data = response.json()
+    access_token = token_data.get('access_token')
+    refresh_token = token_data.get('refresh_token')
+
+    # Store in session
+    request.session['access_token_0auth'] = access_token
+    request.session['refresh_token_0auth'] = refresh_token
+
+    print(f"1 ${access_token}$")
+    # return JsonResponse(token_data)
+    data_url = f"http://localhost:8001/api/auth/user42/"
+    return redirect(data_url)
+
+def get_user_data(request):
+    """
+    Fetch user data from 42 API using the access token.
+    """
+    # access_token = request.headers.get('Authorization')
+    # access_token = request.GET.get('access_token')
+    access_token = request.session.get('access_token_0auth')
+    print(f"${access_token}$")
+    if not access_token:
+        return JsonResponse({'error': 'Access token required'}, status=401)
+    # access_token = 'f4022e248899a2e5a9da259926130f9364b766552626883908794c98c1bc3a4c'
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        # 'Authorization': f'{access_token}',
+    }
+    user_info_url = 'https://api.intra.42.fr/v2/me'
+    response = requests.get(user_info_url, headers=headers)
+
+    if response.status_code != 200:
+        return JsonResponse({'error': 'Failed to fetch user data'}, status=response.status_code)
+
+    data = response.json()
+    
+    # Extract the required fields
+    image_url = data.get("image", {}).get("versions", {}).get("medium")  # You can choose 'large', 'small', or 'micro' here
+    email = data.get("email")
+    login = data.get("login")
+
+    # Create the dictionary for the account creation
+    user_data = {
+    "login": login,
+    "email": email,
+    "image": image_url  # This will hold the URL of the medium image
+    }
+
+    user = Account.objects.create(**user_data)
+    # serializer = Registration42Serializer(data=response.json())
+    # serializer.is_valid(raise_exception=True)
+    # user = serializer.save()
+   
+    tokens = get_user_tokens(user)
+    response = JsonResponse({
+        "message": "User authenticated successfully"
+    })
+    response.set_cookie(
+            key=settings.SIMPLE_JWT['AUTH_COOKIE'],  # Cookie name from settings
+            expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+            value=tokens["access_token"],
+            httponly=True,  # Prevent access via JavaScript
+            secure=False,  # Set to True if using HTTPS (production)
+            samesite='Strict',  # CSRF protection
+        )
+
+        # Optionally, set the refresh token in a separate cookie
+    response.set_cookie(
+            key=settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"],  # Different cookie for refresh token
+            expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+            value=tokens["refresh_token"],
+            httponly=True,
+            secure=True,
+            samesite='Strict',
+        )
+        
+    return response
+
+    # return JsonResponse(response.json())
+    # url_token = "http://127.0.0.1:8000/api/token"
+    # redirect()

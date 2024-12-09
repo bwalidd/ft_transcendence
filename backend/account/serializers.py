@@ -33,6 +33,71 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         return user
 
+# class Registration42Serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = get_user_model()
+#         fields = ("login", "email", "image")
+
+#     def validate_image(self, value):
+#         """
+#         Validate and extract the 'medium' image URL from the incoming JSON data.
+#         """
+#         if isinstance(value, dict):  # Ensure the value is a dictionary
+#             # Attempt to extract the 'medium' image URL
+#             versions = value.get("versions", {})
+#             medium_image = versions.get("medium")
+#             if medium_image:
+#                 # Optionally validate the URL format
+#                 from django.core.validators import URLValidator
+#                 from django.core.exceptions import ValidationError
+
+#                 validate = URLValidator()
+#                 try:
+#                     validate(medium_image)  # Check if it's a valid URL
+#                     return medium_image    # Return the valid URL
+#                 except ValidationError:
+#                     raise serializers.ValidationError("Invalid image URL format.")
+        
+#         # If the 'medium' image is missing, raise an error
+#         raise serializers.ValidationError("Invalid image data. 'medium' URL is required.")
+
+#     def create(self, validated_data):
+#         """
+#         Create and return a new user instance with the extracted 'medium' image URL.
+#         """
+#         print(f"2223112={validated_data[image][version][medium]}=22223333")
+#         return get_user_model().objects.create(
+#             email=validated_data["email"],
+#             login=validated_data["login"],
+#             image=validated_data.get("image")  # Contains the validated and extracted URL
+#         )
+
+
+class Registration42Serializer(serializers.ModelSerializer):
+    # image = serializers.URLField(required=False)  # Use URLField for image URL
+    class Meta:
+        model = get_user_model()
+        fields = ("login", "email", "image")
+    
+    def save(self):
+        user = get_user_model()(
+            email=self.validated_data["email"],
+            login=self.validated_data["login"],
+            image=self.validated_data["image"]["versions"]["medium"]  # Extract the 'medium' image URL  
+        )
+        user.save()
+        return user
+
+    # def save(self):
+        # image_data = self.validated_data.get("image")  # Extract the image dictionary
+        # image_url = image_data["versions"]["medium"] if image_data else None  # Choose the "medium" size
+        # print(f"2223112={image_url}=22223333")
+        # user = get_user_model()(
+        #     email=self.validated_data["email"],
+        #     login=self.validated_data["login"],
+        #     image=image_url  # Save the chosen image URL
+        # )
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(

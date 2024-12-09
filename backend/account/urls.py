@@ -7,6 +7,11 @@ urlpatterns = [
     path('login/', views.loginView),
     path('register/', views.registerView),
     path('refresh-token/', views.CookieTokenRefreshView.as_view()),
+
+    path('login42/', views.login_with_42),
+    path('callback/', views.callback),
+    path('user42/', views.get_user_data),
+
     path('logout/', views.logoutView),
     path("user/", views.user),
     path("allusers/",views.allusers),

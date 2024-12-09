@@ -9,6 +9,7 @@ COPY . /app/
 RUN pip install -r requirements.txt
 RUN pip install -U channels[daphne]
 RUN pip install channels-redis
+RUN pip install requests
 
 EXPOSE 8001
 
