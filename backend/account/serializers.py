@@ -5,11 +5,11 @@ from friend.models import friendList, friendRequest
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
-    image = serializers.ImageField(required=False)
+    avatar = serializers.ImageField(required=False)
 
     class Meta:
         model = get_user_model()
-        fields = ("login", "email", "password", "password2", "image")
+        fields = ("login", "email", "password", "password2", "avatar")
         extra_kwargs = {
             "password": {"write_only": True},
             "password2": {"write_only": True},
@@ -19,7 +19,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user = get_user_model()(
             email=self.validated_data["email"],
             login=self.validated_data["login"],
-            image=self.validated_data.get("image")
+            avatar=self.validated_data.get("avatar"),  # Save avatar if provided
+            isIntraUser=False,
         )
 
         password = self.validated_data["password"]
@@ -117,7 +118,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ("id", "login", "email", "image", "friends", "is_friend", "is_requested")
+        fields = ("id", "login", "email", "image","avatar","isIntraUser", "friends", "is_friend", "is_requested")
 
     def get_friends(self, obj):
         try:
@@ -144,7 +145,7 @@ class AccountSerializer(serializers.ModelSerializer):
 class AccountDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("id", "login", "email", "image","password")
+        fields = ("id", "login", "email", "avatar","image","password")
 
 
 # from rest_framework import serializers
@@ -157,7 +158,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('login', 'email', 'password', 'confirm_password', 'image')
+        fields = ('login', 'email', 'password', 'confirm_password', 'avatar')
 
     def validate(self, data):
         # Validate that passwords match if provided
@@ -171,9 +172,9 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.login = validated_data.get('login', instance.login)
         instance.email = validated_data.get('email', instance.email)
         
-        # Update image if provided
-        if 'image' in validated_data:
-            instance.image = validated_data['image']
+        # Update avatar if provided
+        if 'avatar' in validated_data:
+            instance.avatar = validated_data['avatar']
         
         # Update password if both password fields are filled
         password = validated_data.get('password')

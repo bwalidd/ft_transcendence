@@ -19,8 +19,15 @@ export default class Home extends Abstract {
 
     async getHtml() {
         const user = await fetchUserData('http://localhost:8001/api/auth/user/');
-        const avatarUrl = `${user.image}`;
-        
+        console.log('User:', user);
+        // if (user.isIntraUser) {
+        //     alert('intranet user');
+        // }else{
+        //     alert('not intranet user');
+        //     // console.log('User:', user.avatar);
+        // }
+        // const avatarUrl = `${user.image}`;
+        const avatarUrl = user.isIntraUser ? user.image : `http://localhost:8001${user.avatar}`;
 
         return `
         <div class="first-container">
@@ -280,7 +287,9 @@ export default class Home extends Abstract {
                 const li = document.createElement('li');
                 const avatarDiv = document.createElement('div');
                 avatarDiv.className = 'avatar';
-                avatarDiv.style.backgroundImage = `url('${user.image}')`;
+                const avatarUrl = user.isIntraUser ? user.image : `http://localhost:8001${user.avatar}`;
+                console.log('User avatar:', avatarUrl ,' of user ', user.login);
+                avatarDiv.style.backgroundImage = `url('${avatarUrl}')`;
                 avatarDiv.style.backgroundSize = 'cover';
                 avatarDiv.style.backgroundPosition = 'center';
                 
@@ -430,9 +439,11 @@ export default class Home extends Abstract {
             const friendButtonContainer = document.querySelector('.user-actions');
             
             // Set avatar and username in popup
-            avatarDiv.style.backgroundImage = `url('${user.image}')`;
+            const avatarUrl = user.isIntraUser ? user.image : `http://localhost:8001${user.avatar}`;
+            console.log('User avatar: of',user.login ,' is ', avatarUrl);
+            avatarDiv.style.backgroundImage = `url('${avatarUrl}')`;
             avatarDiv.style.backgroundSize = 'cover';
-            avatarDiv.style.backgroundPosition = 'center';
+            avatarDiv.style.backgroundPosition = 'center';  
             username.textContent = user.login;
     
             // Clear any existing friend button content
@@ -582,7 +593,8 @@ export default class Home extends Abstract {
     
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';
-                    matchAvatar.style.backgroundImage = `url('${dataofOpponent.image}')`;
+                    const dataofOpponentAvatar = dataofOpponent.isIntraUser ? dataofOpponent.image : `http://localhost:8001${dataofOpponent.avatar}`;
+                    matchAvatar.style.backgroundImage = `url('${dataofOpponentAvatar}')`;
                     matchUsername.textContent = dataofOpponent.login;
     
                     const matchResult = document.createElement('p');

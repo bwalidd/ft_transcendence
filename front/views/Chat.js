@@ -165,7 +165,8 @@ export default class Chat extends Abstract {
             const friendButtonContainer = document.querySelector('.user-actions');
             
             // Set avatar and username in popup
-            avatarDiv.style.backgroundImage = `url('${user.image}')`;
+            const avatarUrl = user.isIntraUser ? user.image : `http://localhost:8001${user.avatar}`;
+            avatarDiv.style.backgroundImage = `url('${avatarUrl}')`;
             username.textContent = user.login;
             friendButtonContainer.innerHTML = 'Already Friends';
             popup.classList.add('show'); 
@@ -264,7 +265,8 @@ export default class Chat extends Abstract {
     
                     const matchUsername = document.createElement('p');
                     matchUsername.className = 'match-username';
-                    matchAvatar.style.backgroundImage = `url('${dataofOpponent.image}')`;
+                    const avatarUrl = dataofOpponent.isIntraUser ? dataofOpponent.image : `http://localhost:8001${dataofOpponent.avatar}`;
+                    matchAvatar.style.backgroundImage = `url('${avatarUrl}')`;
                     matchUsername.textContent = dataofOpponent.login;
     
                     const matchResult = document.createElement('p');
@@ -671,9 +673,9 @@ export default class Chat extends Abstract {
         friends.forEach(friend => {
             const friendBlock = document.createElement('div');
             friendBlock.classList.add('friend-block');
-
+            const friendImage = friend.isIntraUser ? friend.image : `http://localhost:8001${friend.avatar}`;
             friendBlock.innerHTML = `
-                <div class="cover" style="background: url(${friend.image}); background-position: center; background-size: cover;"></div>
+                <div class="cover" style="background: url(${friendImage}); background-position: center; background-size: cover;"></div>
                 <div class="details d-flex justify-content-between">
                     <div class="listHead">
                         <h5>${friend.login}</h5>
@@ -694,8 +696,9 @@ export default class Chat extends Abstract {
         this.initChat('clicked');
         const username = document.querySelector('.opened-chat-username h4');
         username.textContent = friend.login;
+        const friendImage = friend.isIntraUser ? friend.image : `http://localhost:8001${friend.avatar}`;
         const profile = document.querySelector('.opened-chat-usename-profile');
-        profile.style.background = `url(${friend.image})`;
+        profile.style.background = `url(${friendImage})`;
         profile.style.backgroundPosition = 'center';
         profile.style.backgroundSize = 'cover';
     

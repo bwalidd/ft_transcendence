@@ -68,10 +68,16 @@ def loginView(request):
         )
 
         # Add user data to the response, including avatar
+        user_image_url = (
+            request.build_absolute_uri(user.image)
+            if user.image
+            else None
+        )
+
         user_data = {
             "login": user.login,
             "email": user.email,
-            "image": request.build_absolute_uri(user.image.url) if user.image else None,
+            "image": user_image_url,
             "csrf_token": csrf.get_token(request),  # Include CSRF token here
         }
         res.data = {**tokens, **user_data}
@@ -81,6 +87,7 @@ def loginView(request):
     raise rest_exceptions.AuthenticationFailed(
         "Email or Password is incorrect!"
     )
+
 
 
 

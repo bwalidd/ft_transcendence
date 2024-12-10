@@ -57,17 +57,17 @@ const loadView = async (path) => {
 
         // Import the new view module
         const module = await import(`../views/${viewName}.js`);
-        if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
-            alert('You need to login first');
-            return navigate('/welcome');
-        } else if (shouldNotAuthpages.includes(viewName) && localStorage.getItem('access_token')) {
-            alert('You are already logged in');
-            return navigate('/');
-        }
-        if (viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
-            alert('You need to start a new game first');
-            return navigate('/');
-        }
+        // if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
+        //     alert('You need to login first');
+        //     return navigate('/welcome');
+        // } else if (shouldNotAuthpages.includes(viewName) && localStorage.getItem('access_token')) {
+        //     alert('You are already logged in');
+        //     return navigate('/');
+        // }
+        // if (viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
+        //     alert('You need to start a new game first');
+        //     return navigate('/');
+        // }
 
         const View = module.default;
         if (typeof View !== 'function') {

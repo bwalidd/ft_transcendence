@@ -105,11 +105,11 @@ export default class Signup extends Abstract {
             
             // Check if the user has selected an avatar, if not, add the default one
             if (avatar) {
-                formData.append('image', avatar);
+                formData.append('avatar', avatar);
             } else {
                 // Default avatar when none is selected
                 const defaultAvatar = new File([await fetch('../images/default.jpeg').then(res => res.blob())], 'default.jpeg', { type: 'image/jpeg' });
-                formData.append('image', defaultAvatar);
+                formData.append('avatar', defaultAvatar);
             }
     
             try {

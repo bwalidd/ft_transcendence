@@ -123,8 +123,9 @@ export default class Settings extends Abstract {
 
             // Set avatar image if available
             const avatarPreview = document.getElementById("avatarPreview");
-            if (userData.image) {
-                avatarPreview.style.backgroundImage = `url(http://localhost:8001${userData.image})`;
+            console.log('avatar--->', userData);
+            if (userData.avatar) {
+                avatarPreview.style.backgroundImage = `url(http://localhost:8001${userData.avatar})`;
                 avatarPreview.style.backgroundSize = "cover";
                 avatarPreview.style.backgroundPosition = "center";
             }    
@@ -167,9 +168,9 @@ export default class Settings extends Abstract {
         if (this.imageRemoved) {
             // Fetch default avatar as a Blob and append to formData
             const defaultAvatarBlob = await fetch('../images/default.jpeg').then(res => res.blob());
-            formData.append('image', defaultAvatarBlob, 'default-avatar.jpeg');
+            formData.append('avatar', defaultAvatarBlob, 'default-avatar.jpeg');
         } else if (avatar) {
-            formData.append('image', avatar);
+            formData.append('avatar', avatar);
         }
 
         formData.append('login', username);
