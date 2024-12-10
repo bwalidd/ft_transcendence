@@ -108,7 +108,7 @@ class LoginSerializer(serializers.Serializer):
 class FriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("id", "login", "image")  # Simplified fields for friends
+        fields = ("id", "login", "image","isIntraUser", "avatar")  # Simplified fields for friends
 
 
 class AccountSerializer(serializers.ModelSerializer):

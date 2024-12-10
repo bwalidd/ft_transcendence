@@ -77,7 +77,7 @@ export default class Home extends Abstract {
                                     <p>Chat</p>
                                 </a>
                             </li>
-                            <li>
+                            <li id="settings-part">
                                 <a href="/settings">
                                     <img src="../images/sidenav-img/settings.png" class="home">
                                     <p>Settings</p>
@@ -231,6 +231,31 @@ export default class Home extends Abstract {
             localMatchButton.addEventListener('click', () => {
                 navigate('/friendly');
             });
+        }
+
+        this.checkIsIntraUser();
+    }
+
+    async checkIsIntraUser() {
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch('http://localhost:8001/api/auth/user/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include'
+            });
+            const data = await response.json();
+            if (data.isIntraUser === true) {
+                document.getElementById('settings-part').style.display = 'none';
+            }else{
+                document.getElementById('settings-part').style.display = 'block';
+            }
+        }catch(error){
+            console.error('Error checking if user is intra:', error);
         }
     }
     

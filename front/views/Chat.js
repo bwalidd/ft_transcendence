@@ -31,7 +31,7 @@ export default class Chat extends Abstract {
                             <li><a href="/leaderboard"><img src="../images/sidenav-img/leaderboard.png" class="home"><p>Leaderboard</p></a></li>
                             <li><a href="/tournaments"><img src="../images/sidenav-img/trophy.png" class="home"><p>Tournaments</p></a></li>
                             <li><a href="/chat"><img src="../images/sidenav-img/messages.png" class="home"><p>Chat</p></a></li>
-                            <li><a href="/settings"><img src="../images/sidenav-img/settings.png" class="home"><p>Settings</p></a></li>
+                            <li id="settings-part"><a href="/settings"><img src="../images/sidenav-img/settings.png" class="home"><p>Settings</p></a></li>
                         </ul>
                         <div class="sep"></div>
                         <ul>
@@ -139,6 +139,29 @@ export default class Chat extends Abstract {
 
     }
 
+    async checkIsIntraUser() {
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch('http://localhost:8001/api/auth/user/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Ensure the token is passed
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include'
+            });
+            const data = await response.json();
+            if (data.isIntraUser === true) {
+                document.getElementById('settings-part').style.display = 'none';
+            }else{
+                document.getElementById('settings-part').style.display = 'block';
+            }
+        }catch(error){
+            console.error('Error checking if user is intra:', error);
+        }
+    }
+
     
     async showUserPopup(userId) {
         
@@ -167,6 +190,8 @@ export default class Chat extends Abstract {
             // Set avatar and username in popup
             const avatarUrl = user.isIntraUser ? user.image : `http://localhost:8001${user.avatar}`;
             avatarDiv.style.backgroundImage = `url('${avatarUrl}')`;
+            avatarDiv.style.backgroundPosition = 'center';
+            avatarDiv.style.backgroundSize = 'cover';
             username.textContent = user.login;
             friendButtonContainer.innerHTML = 'Already Friends';
             popup.classList.add('show'); 
@@ -673,7 +698,9 @@ export default class Chat extends Abstract {
         friends.forEach(friend => {
             const friendBlock = document.createElement('div');
             friendBlock.classList.add('friend-block');
+            console.log('Friend:--->', friend);
             const friendImage = friend.isIntraUser ? friend.image : `http://localhost:8001${friend.avatar}`;
+            console.log('Friend image:', friendImage);
             friendBlock.innerHTML = `
                 <div class="cover" style="background: url(${friendImage}); background-position: center; background-size: cover;"></div>
                 <div class="details d-flex justify-content-between">
@@ -902,7 +929,7 @@ export default class Chat extends Abstract {
     initialize() {
         this.inviter = null;
         this.invitee = null;
-    
+        this.checkIsIntraUser();
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
