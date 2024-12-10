@@ -127,7 +127,7 @@ export default class Signup extends Abstract {
                 // Create custom alert
                 const alertBox = document.createElement('div');
                 alertBox.className = 'custom-alert';
-                alertBox.innerText = 'Login successful!';
+                alertBox.innerText = 'Regisered!';
                 document.body.appendChild(alertBox);
     
                 // Remove the alert after 3 seconds

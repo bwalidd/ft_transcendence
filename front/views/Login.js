@@ -68,16 +68,16 @@ export default class Login extends Abstract {
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('refresh_token', data.refresh_token);
                     
-                    // Create custom alert
-                    const alertBox = document.createElement('div');
-                    alertBox.className = 'custom-alert';
-                    alertBox.innerText = 'Login successful!';
-                    document.body.appendChild(alertBox);
+                    // // Create custom alert
+                    // const alertBox = document.createElement('div');
+                    // alertBox.className = 'custom-alert';
+                    // alertBox.innerText = 'Login successful!!!!';
+                    // document.body.appendChild(alertBox);
     
-                    // Remove the alert after 3 seconds
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 3000);
+                    // // Remove the alert after 3 seconds
+                    // setTimeout(() => {
+                    //     alertBox.remove();
+                    // }, 30000);
     
                     navigate('/');
                 } else {

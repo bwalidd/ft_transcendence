@@ -364,15 +364,15 @@ animateWinRate(targetPercentage) {
             localStorage.removeItem('access_token');
             // localStorage.removeItem('refresh_token');
     
-            const alertBox = document.createElement('div');
-            alertBox.className = 'custom-alert';
-            alertBox.innerText = 'Logout Done!';
-            document.body.appendChild(alertBox);
+            // const alertBox = document.createElement('div');
+            // alertBox.className = 'custom-alertt';
+            // alertBox.innerText = 'Logout Done! from profile';
+            // document.body.appendChild(alertBox);
     
-            // Remove the alert after 3 seconds
-            setTimeout(() => {
-                alertBox.remove();
-            }, 3000);
+            // // Remove the alert after 3 seconds
+            // setTimeout(() => {
+            //     alertBox.remove();
+            // }, 3000);
     
             navigate('/welcome');
     

@@ -35,7 +35,7 @@ export default class Chat extends Abstract {
                         </ul>
                         <div class="sep"></div>
                         <ul>
-                            <li><a id="logout-link"><img src="../images/sidenav-img/logout.png"><p></p></a></li>
+                            <li><a id="logout-link"><img src="../images/sidenav-img/logout.png"><p>Logout</p></a></li>
                         </ul>
                     </div>
 
@@ -933,17 +933,17 @@ export default class Chat extends Abstract {
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
-            localStorage.removeItem('access_token');
-            // // localStorage.removeItem('refresh_token');
-            const alertBox = document.createElement('div');
-            alertBox.className = 'custom-alert';
-            alertBox.innerText = 'Logout Done!';
-            document.body.appendChild(alertBox);
+            // localStorage.removeItem('access_token');
+            // // // localStorage.removeItem('refresh_token');
+            // const alertBox = document.createElement('div');
+            // alertBox.className = 'custom-alert';
+            // alertBox.innerText = 'Logout Done!';
+            // document.body.appendChild(alertBox);
     
-            // Remove the alert after 3 seconds
-            setTimeout(() => {
-                alertBox.remove();
-            }, 3000);
+            // // Remove the alert after 3 seconds
+            // setTimeout(() => {
+            //     alertBox.remove();
+            // }, 3000);
             navigate('/welcome');
         });
     
@@ -1048,15 +1048,15 @@ export default class Chat extends Abstract {
             localStorage.removeItem('access_token');
             // localStorage.removeItem('refresh_token');
     
-            const alertBox = document.createElement('div');
-            alertBox.className = 'custom-alert';
-            alertBox.innerText = 'Logout Done!';
-            document.body.appendChild(alertBox);
+            // const alertBox = document.createElement('div');
+            // alertBox.className = 'custom-alert';
+            // alertBox.innerText = 'Logout Done from chat!';
+            // document.body.appendChild(alertBox);
     
-            // Remove the alert after 3 seconds
-            setTimeout(() => {
-                alertBox.remove();
-            }, 3000);
+            // // Remove the alert after 3 seconds
+            // setTimeout(() => {
+            //     alertBox.remove();
+            // }, 3000);
     
             navigate('/welcome');
     
