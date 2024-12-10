@@ -61,19 +61,19 @@ export default class Home extends Abstract {
                             <li>
                                 <a href="/tournaments">
                                     <img src="../images/sidenav-img/trophy.png" class="home">
-                                    <p>Tournament</p>
+                                    <p>Tournaments</p>
                                 </a>
                             </li>
                             <li>
                                 <a href="/chat">
                                     <img src="../images/sidenav-img/messages.png" class="home">
-                                    <p>Messages</p>
+                                    <p>Chat</p>
                                 </a>
                             </li>
                             <li>
                                 <a href="/settings">
                                     <img src="../images/sidenav-img/settings.png" class="home">
-                                    <p>Setting</p>
+                                    <p>Settings</p>
                                 </a>
                             </li>
                         </ul>
@@ -167,7 +167,7 @@ export default class Home extends Abstract {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            // localStorage.removeItem('refresh_token');
             
             const alertBox = document.createElement('div');
             alertBox.className = 'custom-alert';
@@ -707,7 +707,7 @@ export default class Home extends Abstract {
     
             // Clear tokens and navigate
             localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            // localStorage.removeItem('refresh_token');
     
             const alertBox = document.createElement('div');
             alertBox.className = 'custom-alert';

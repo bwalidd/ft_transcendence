@@ -300,9 +300,9 @@ li a {
   height: 40px;
 }
 
-.side-nav {
+/* .side-nav {
   overflow-y: auto;
-  width: 110px;
+  width: 250px;
   overflow-x: hidden;
   height: 100vh;
   left: 0;
@@ -320,9 +320,17 @@ li a {
   border-right: solid rgba(255, 255, 255, 0.39) 1px;
 }
 
-.side-nav:hover {
-  width: 250px;
-}
+.side-nav p{
+  font-family: 'Diablo';
+  font-size: 20px;
+  color: antiquewhite;
+  text-align: center;
+  text-shadow: 1px 1px 2px #666, 
+               2px 2px 4px #333, 
+               3px 3px 6px #000;
+} */
+
+
 
 .sep {
   border: solid rgba(255, 255, 255, 0.219) 1px;
@@ -378,36 +386,30 @@ li a {
   transition: width 0.3s, max-height 0.3s;
 }
 
-.side-nav:hover .logo {
-  width: 230px;
-  height: 200px;
-  margin-top: 10px;
-  background: url('../images/llogo.png') no-repeat center center;
-  background-size: cover;
-}
 
-.side-nav li p {
+/* .side-nav li p {
   white-space: nowrap;
+  font-size: medium;
   display: none;
-}
+} */
 
 ::placeholder {
 	color: rgb(255, 255, 255); /* Placeholder color */
 	font-weight: 400; /* Optional: adjust font weight of placeholder */
 }
 
-
-.side-nav:hover li p {
+/* 
+.side-nav li p {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 5px 0;
 }
 
-.side-nav:hover ul li img {
+.side-nav ul li img {
   margin-right: 10px;
   width: 40px;
-}
+} */
 
 .bodypage ul {
   list-style: none;
@@ -723,4 +725,83 @@ popup
 }
 
 
-/* local or computer */
+/* side bar */
+
+
+.side-nav {
+  overflow-y: auto;
+  width: 250px;
+  overflow-x: hidden;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  position: fixed;
+  padding: 30px 15px;
+  background: rgba(255, 255, 255, 0.034);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: width 0.4s;
+  border-right: solid rgba(255, 255, 255, 0.39) 1px;
+}
+
+.side-nav .logo {
+  width: 100%;
+  height: 80px;
+  background: url('../images/sidenav-img/logo.png') no-repeat center center;
+  background-size: contain;
+  margin-bottom: 20px;
+}
+
+.side-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-nav ul li {
+  margin: 10px 0;
+}
+
+.side-nav ul li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: antiquewhite;
+  transition: background 0.3s, color 0.3s;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+
+
+.side-nav ul li img {
+  margin-right: 15px;
+  width: 40px;
+  height: 40px;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+.side-nav p {
+  font-family: 'Diablo', sans-serif;
+  font-size: 20px;
+  color: antiquewhite;
+  text-align: center;
+  text-shadow: 1px 1px 2px #666, 2px 2px 4px #333, 3px 3px 6px #000;
+  margin: 0;
+}
+
+.side-nav li p {
+  font-size: 16px;
+  margin: 0;
+  text-align: left;
+}
+
+.side-nav .sep {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 20px 0;
+}

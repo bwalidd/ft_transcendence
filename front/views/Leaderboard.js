@@ -35,49 +35,51 @@ export default class Leaderboard extends Abstract {
                 </nav>
 
                 <div class="container-fluid bodypage">
-                    <div class="side-nav">
-                        <div class="logo"></div>
-                        <ul>
+                    <div class="sidebar">
+                        <div class="sidebar-logo"></div>
+                        <ul class="sidebar-menu">
                             <li>
                                 <a href="/">
-                                    <img src="../images/sidenav-img/home.png" class="home">
+                                    <img src="../images/sidenav-img/home.png" class="sidebar-icon">
                                     <p>Home</p>
                                 </a>
                             </li>
                             <li>
                                 <a href="/leaderboard">
-                                    <img src="../images/sidenav-img/leaderboard.png" class="home">
+                                    <img src="../images/sidenav-img/leaderboard.png" class="sidebar-icon">
                                     <p>Leaderboard</p>
                                 </a>
                             </li>
                             <li>
-                                <a>
-                                    <img src="../images/sidenav-img/trophy.png" class="home">
-                                    <p>Tournament</p>
+                                <a href="/tournaments">
+                                    <img src="../images/sidenav-img/trophy.png" class="sidebar-icon">
+                                    <p>Tournaments</p>
                                 </a>
                             </li>
                             <li>
                                 <a href="/chat">
-                                    <img src="../images/sidenav-img/messages.png" class="home">
+                                    <img src="../images/sidenav-img/messages.png" class="sidebar-icon">
                                     <p>Messages</p>
                                 </a>
                             </li>
                             <li>
-                                <a>
-                                    <img src="../images/sidenav-img/settings.png" class="home">
-                                    <p>Setting</p>
+                                <a href="/settings">
+                                    <img src="../images/sidenav-img/settings.png" class="sidebar-icon">
+                                    <p>Settings</p>
                                 </a>
                             </li>
-
                         </ul>
-                        <div class="sep"></div>
-                        <ul>
+                        <div class="sidebar-separator"></div>
+                        <ul class="sidebar-menu">
                             <li>
-                                <img src="../images/sidenav-img/logout.png">
-                                <p>Logout</p>
+                                <a id="logout-link">
+                                    <img src="../images/sidenav-img/logout.png" class="sidebar-icon">
+                                    <p>Logout</p>
+                                </a>
                             </li>
                         </ul>
-                    </div> 
+                 </div>
+
 
 
                     <div class="container leader d-flex flex-column " style="width:70%; height: 90vh">

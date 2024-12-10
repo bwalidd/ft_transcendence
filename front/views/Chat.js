@@ -22,6 +22,7 @@ export default class Chat extends Abstract {
     async getHtml() {
         return `
             <div class="containerr">
+                <div class="overlay"></div>
                 <div class="container-fluid body-content">
                     <div class="side-nav">
                         <div class="logo"></div>
@@ -903,7 +904,7 @@ export default class Chat extends Abstract {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            // // localStorage.removeItem('refresh_token');
             const alertBox = document.createElement('div');
             alertBox.className = 'custom-alert';
             alertBox.innerText = 'Logout Done!';
@@ -1015,7 +1016,7 @@ export default class Chat extends Abstract {
     
             // Clear tokens and navigate
             localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            // localStorage.removeItem('refresh_token');
     
             const alertBox = document.createElement('div');
             alertBox.className = 'custom-alert';

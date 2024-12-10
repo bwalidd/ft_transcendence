@@ -32,42 +32,49 @@ export default class Profile extends Abstract {
             <div class="containerr">
                 <div class="overlay"></div>
                 <div class="side-nav">
-                    <div class="logo"></div>
-                    <ul>
-                        <li>
-                            <a href="/"> <img src="../images/sidenav-img/home.png" class="home">
-                                <p>Home</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/leaderboard"> <img src="../images/sidenav-img/leaderboard.png" class="home">
-                                <p>Leaderboard</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a> <img src="../images/sidenav-img/trophy.png" class="home">
-                                <p>Tournaments</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/chat"> <img src="../images/sidenav-img/messages.png" class="home">
-                                <p>Chats</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/settings"> <img src="../images/sidenav-img/settings.png" class="home">
-                                <p>Settings</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li>
-                            <a id="logout-link"> <img src="../images/sidenav-img/logout.png">
-                                <p></p>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                        <div class="logo"></div>
+                        <ul>
+                            <li>
+                                <a href="/">
+                                    <img src="../images/sidenav-img/home.png" class="home">
+                                    <p>Home</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/leaderboard">
+                                    <img src="../images/sidenav-img/leaderboard.png" class="home">
+                                    <p>Leaderboard</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/tournaments">
+                                    <img src="../images/sidenav-img/trophy.png" class="home">
+                                    <p>Tournaments</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/chat">
+                                    <img src="../images/sidenav-img/messages.png" class="home">
+                                    <p>Chat</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/settings">
+                                    <img src="../images/sidenav-img/settings.png" class="home">
+                                    <p>Settings</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="sep"></div>
+                        <ul>
+                            <li>
+                                <a id="logout-link">
+                                    <img src="../images/sidenav-img/logout.png">
+                                    <p>Logout</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 <div class="center-rectangle">
                     <div id="first-container">
                         <div id="right-part">
@@ -123,7 +130,7 @@ export default class Profile extends Abstract {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            // localStorage.removeItem('refresh_token');
             navigate('/welcome');
         });
     }
@@ -329,7 +336,7 @@ animateWinRate(targetPercentage) {
     
             // Clear tokens and navigate
             localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            // localStorage.removeItem('refresh_token');
     
             const alertBox = document.createElement('div');
             alertBox.className = 'custom-alert';
