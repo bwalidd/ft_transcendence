@@ -19,7 +19,7 @@ export default class Home extends Abstract {
 
     async getHtml() {
         const user = await fetchUserData('http://localhost:8001/api/auth/user/');
-        console.log('User:', user);
+        // console.log('User:', user);
         // if (user.isIntraUser) {
         //     alert('intranet user');
         // }else{
@@ -704,7 +704,7 @@ export default class Home extends Abstract {
         popup.classList.remove('show');
     }
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

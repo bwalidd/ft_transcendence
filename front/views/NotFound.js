@@ -32,7 +32,7 @@ export default class NotFound extends Abstract {
         
     }
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

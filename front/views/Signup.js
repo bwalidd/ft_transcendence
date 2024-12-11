@@ -145,7 +145,7 @@ export default class Signup extends Abstract {
     }
     
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

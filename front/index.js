@@ -2,6 +2,8 @@
 const routes = [
     {path: "/welcome", view: "Welcome"},
     {path:"/play",view:"GameRemote"},
+    {path:"/enable2fa",view:"Enable2Fa"},
+    {path:"/login2fa",view:"Handle2Fa"},
     {path: "/training", view: "GameAi"},
     {path: "/friendly", view: "LocalMatch"},
     {path:"/tournaments",view:"Tournaments"},

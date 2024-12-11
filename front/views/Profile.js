@@ -317,7 +317,7 @@ animateWinRate(targetPercentage) {
     
 
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

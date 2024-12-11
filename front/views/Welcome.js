@@ -33,7 +33,7 @@ export default class Welcome extends Abstract {
         `;
     }
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

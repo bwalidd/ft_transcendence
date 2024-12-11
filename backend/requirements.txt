@@ -9,3 +9,5 @@ Pillow
 PyJWT
 channels
 channels_redis
+pyotp
+qrcode

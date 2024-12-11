@@ -65,21 +65,20 @@ export default class Login extends Abstract {
     
                 if (response.ok) {
                     const data = await response.json();
-                    localStorage.setItem('access_token', data.access_token);
-                    localStorage.setItem('refresh_token', data.refresh_token);
+                    console.log('------------------------');
+                    console.log(data);
+                    console.log('------------------------');
+                    if (data.isIntraUser === false && data.mfa_enabled === false){
+                        localStorage.setItem('access_token', data.access_token);
+                        localStorage.setItem('refresh_token', data.refresh_token);
+                        navigate('/enable2fa');
+                    }else{
                     
-                    // // Create custom alert
-                    // const alertBox = document.createElement('div');
-                    // alertBox.className = 'custom-alert';
-                    // alertBox.innerText = 'Login successful!!!!';
-                    // document.body.appendChild(alertBox);
-    
-                    // // Remove the alert after 3 seconds
-                    // setTimeout(() => {
-                    //     alertBox.remove();
-                    // }, 30000);
-    
-                    navigate('/');
+                        localStorage.setItem('access_token', data.access_token);
+                        localStorage.setItem('refresh_token', data.refresh_token);
+                        
+                        navigate('/');
+                }
                 } else {
                     const errorData = await response.json();
                     document.getElementById('error-message').innerText = errorData.detail || 'Login failed. Please try again.';
@@ -91,7 +90,7 @@ export default class Login extends Abstract {
         });
     }
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

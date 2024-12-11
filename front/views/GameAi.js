@@ -232,7 +232,7 @@ export default class GameAi extends Abstract {
     
     }
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

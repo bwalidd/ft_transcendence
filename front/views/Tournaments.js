@@ -48,7 +48,7 @@ export default class Tournaments extends Abstract {
         `;
     }
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

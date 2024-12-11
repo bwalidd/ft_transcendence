@@ -242,7 +242,7 @@ export default class Settings extends Abstract {
         }
     }
     
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

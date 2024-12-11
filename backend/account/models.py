@@ -37,9 +37,6 @@ class AccountManager(BaseUserManager):
 class Account(AbstractBaseUser):
     email = models.EmailField(unique=True, null=False, blank=False)
     login = models.CharField(max_length=50, unique=True, null=False, blank=False)
-    # image = models.ImageField(upload_to="images/", null=True, blank=True, default="images/default_image.png")
-    # image = models.ImageField(upload_to="avatars/", null=True, blank=True, default="avatars/default_avatar.png")
-    # image = models.URLField(max_length=500, blank=True, null=True)  
     image =models.CharField(max_length=500, blank=True, null=True)
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, default="avatars/default_avatar.png")
     is_admin = models.BooleanField(default=False)
@@ -49,10 +46,13 @@ class Account(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     friends = models.ManyToManyField("self", blank=True, symmetrical=True, related_name='account_friends')
-    # is_friend = models.BooleanField(default=False)
-    # is_requested = models.BooleanField(default=False)  # Add the requested boolean
     isIntraUser = models.BooleanField(default=True)
+    mfa_secret = models.CharField(max_length=16, blank=True, null=True)
+    mfa_enabled = models.BooleanField(default=False)
+    
+    
     objects = AccountManager()
+
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["login"]

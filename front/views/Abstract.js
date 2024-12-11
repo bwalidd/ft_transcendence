@@ -16,7 +16,7 @@ export default class Abstract {
         // shared initialize logic 
     }
 
-    async cleanup() {
+    cleanup() {
         // shared cleanup logic (to be overridden in subclasses if needed)
     }   
 

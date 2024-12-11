@@ -1075,7 +1075,7 @@ export default class Chat extends Abstract {
         }
     }
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

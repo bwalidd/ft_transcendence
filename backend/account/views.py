@@ -14,7 +14,8 @@ from django.shortcuts import redirect
 import requests
 from rest_framework.response import Response 
 from .models import Account  
-
+import pyotp
+import qrcode
 
 def get_user_tokens(user):
     refresh = tokens.RefreshToken.for_user(user)
@@ -79,6 +80,9 @@ def loginView(request):
             "email": user.email,
             "image": user_image_url,
             "csrf_token": csrf.get_token(request),  # Include CSRF token here
+            "mfa_enabled": user.mfa_enabled,
+            "isIntraUser": user.isIntraUser,
+            "mfa_secret": user.mfa_secret,
         }
         res.data = {**tokens, **user_data}
 

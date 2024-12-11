@@ -155,7 +155,7 @@ export default class Leaderboard extends Abstract {
         return rows.join('');
     }
 
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS

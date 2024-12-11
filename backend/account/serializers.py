@@ -89,16 +89,6 @@ class Registration42Serializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    # def save(self):
-        # image_data = self.validated_data.get("image")  # Extract the image dictionary
-        # image_url = image_data["versions"]["medium"] if image_data else None  # Choose the "medium" size
-        # print(f"2223112={image_url}=22223333")
-        # user = get_user_model()(
-        #     email=self.validated_data["email"],
-        #     login=self.validated_data["login"],
-        #     image=image_url  # Save the chosen image URL
-        # )
-
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(
@@ -113,12 +103,12 @@ class FriendSerializer(serializers.ModelSerializer):
 
 class AccountSerializer(serializers.ModelSerializer):
     friends = serializers.SerializerMethodField()
-    is_friend = serializers.SerializerMethodField()
-    is_requested = serializers.SerializerMethodField()
+    # is_friend = serializers.SerializerMethodField()
+    # is_requested = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
-        fields = ("id", "login", "email", "image","avatar","isIntraUser", "friends", "is_friend", "is_requested")
+        fields = ("id", "login", "email", "image","avatar","isIntraUser", "friends","mfa_enabled","mfa_secret")
 
     def get_friends(self, obj):
         try:

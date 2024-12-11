@@ -543,7 +543,7 @@ export default class GameRemote extends Abstract {
         }
     }
     
-    async cleanup() {
+    cleanup() {
         
 
         // Remove the dynamically added CSS
