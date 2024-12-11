@@ -33,9 +33,55 @@ export default class Handle2Fa extends Abstract {
    
 
     initialize() {
-       
+       this.verify2Fa();
     }
     
+    async getCsrfToken() {
+        const name = 'csrftoken=';
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length);
+            }
+        }
+        return null;
+    }
+
+    async verify2Fa() {
+        document.querySelector('.btn').addEventListener('click', async () => {
+            const code = document.getElementById('2fa-code').value;
+        
+            try {
+                const csrfToken = await this.getCsrfToken();
+                const response = await fetch('http://localhost:8001/api/auth/verify-2fa/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ code }),
+                });
+        
+                const data = await response.json();
+                console.log('------------------>>>',data);
+                if (response.ok) {
+                    alert('2FA verified successfully!');
+                    //change 2fa status to true
+                  
+                    navigate('/');
+                } else {
+                    alert(data.error || 'Failed to verify 2FA.');
+                }
+            } catch (error) {
+                console.error('Error verifying 2FA:', error);
+            }
+        });
+    }
+
+
 
     cleanup() {
         

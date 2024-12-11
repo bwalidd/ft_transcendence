@@ -22,7 +22,9 @@ export default class Enable2Fa extends Abstract {
         <div class="overlay"></div>    
         <div class="fa-container">
             <h1 class="big-text text-center display-4 mb-5" style="margin-top: -90px;">Enable 2FA</h1>
-            <div class="qr-code"></div>
+            <div class="qr-code">
+        
+            </div>
             <input type="text" class="form-control" id="2fa-code" placeholder="Enter 2FA Code" required>
             <button type="submit" class="btn btn-secondary text-center">Login</button>
         </div>
@@ -35,25 +37,34 @@ export default class Enable2Fa extends Abstract {
 
     initialize() {
        this.Enable2Fa();
+       this.verify2Fa();
     }
 
     async Enable2Fa() {
         try {
-            const response = await fetch(`http://localhost:8001/api/auth/user/`, {
+            const response = await fetch('http://localhost:8001/api/auth/generate-qr/', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Include token if required
-                    'Content-Type': 'application/json'
-
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
                 },
-                credentials: 'include'
+                credentials: 'include',
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to fetch QR code');
             }
-            );
-            const res = await response.json();
-            console.log(res);
-        }catch (error) {
-            console.error('Error fetching opponent pic:', error);
-
+    
+            const data = await response.json();
+            console.log(data);
+    
+            // Set the QR code image in the HTML
+            const qrCodeDiv = document.querySelector('.qr-code');
+            if (qrCodeDiv) {
+                qrCodeDiv.innerHTML = `<img src="${data.qr_code}" alt="QR Code" class="qr-code-img">`;
+            }
+        } catch (error) {
+            console.error('Error enabling 2FA:', error);
         }
     }
     
@@ -67,5 +78,76 @@ export default class Enable2Fa extends Abstract {
             cssLink.remove();
         }
 
+    }
+
+    async getCsrfToken() {
+        const name = 'csrftoken=';
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length);
+            }
+        }
+        return null;
+    }
+
+    async verify2Fa(){
+        document.querySelector('.btn').addEventListener('click', async () => {
+            const code = document.getElementById('2fa-code').value;
+        
+            try {
+                const csrfToken = await this.getCsrfToken();
+                const response = await fetch('http://localhost:8001/api/auth/verify-2fa/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ code }),
+                });
+        
+                const data = await response.json();
+                console.log('------------------>>>',data);
+                if (response.ok) {
+                    alert('2FA verified successfully!');
+                    //change 2fa status to true
+                    this.change2faStatus();
+                    navigate('/');
+                } else {
+                    alert(data.error || 'Failed to verify 2FA.');
+                }
+            } catch (error) {
+                console.error('Error verifying 2FA:', error);
+            }
+        });
+        
+    }
+
+
+    async change2faStatus(){
+        try {
+            const csrfToken = await this.getCsrfToken();
+            const response = await fetch('http://localhost:8001/api/auth/change-2fa-status/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                credentials: 'include',
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to change 2FA status');
+            }
+    
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error changing 2FA status:', error);
+        }
     }
 }

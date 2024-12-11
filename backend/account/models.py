@@ -47,7 +47,7 @@ class Account(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     friends = models.ManyToManyField("self", blank=True, symmetrical=True, related_name='account_friends')
     isIntraUser = models.BooleanField(default=True)
-    mfa_secret = models.CharField(max_length=16, blank=True, null=True)
+    mfa_secret = models.CharField(max_length=32, blank=True, null=True)
     mfa_enabled = models.BooleanField(default=False)
     
     

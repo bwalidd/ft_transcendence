@@ -16,6 +16,8 @@ from rest_framework.response import Response
 from .models import Account  
 import pyotp
 import qrcode
+import io
+import base64
 
 def get_user_tokens(user):
     refresh = tokens.RefreshToken.for_user(user)
@@ -207,6 +209,35 @@ def user(request):
 
     return res
 
+@api_view(["GET"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def generate_qr_code(request):
+    user = request.user
+    print('-------------------------')
+    print('------------------------->',user.id)
+    print('------------------------->',user)
+    print('------------------------->',user.mfa_secret)
+    print('------------------------->',user.mfa_enabled)
+    print('-------------------------')
+
+    if not user.mfa_secret:
+        user.mfa_secret = pyotp.random_base32()
+        user.save()
+
+    otp_uri = pyotp.totp.TOTP(user.mfa_secret).provisioning_uri(
+        name=user.email,
+        issuer_name=user.login
+    )
+
+    # Generate the QR Code
+    qr = qrcode.make(otp_uri)
+    buffer = io.BytesIO()
+    qr.save(buffer, format="PNG")
+    buffer.seek(0)
+    qr_code = base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+    return Response({"qr_code": f"data:image/png;base64,{qr_code}"})
+
 
 @rest_decorators.api_view(["GET"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
@@ -230,6 +261,25 @@ def allusers(request):
 
 
 
+
+@api_view(["POST"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def verify_2fa(request):
+    user = request.user
+    code = request.data.get("code", "")
+
+    if not user.mfa_secret:
+        return Response({"error": "2FA not enabled for this user."}, status=400)
+
+    totp = pyotp.TOTP(user.mfa_secret)
+    if totp.verify(code):
+        return Response({"message": "2FA verified successfully!"})
+    else:
+        return Response({"error": "Invalid 2FA code."}, status=400)
+
+
+
+
 @rest_decorators.api_view(["GET"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def search_users(request):
@@ -241,6 +291,16 @@ def search_users(request):
     users = models.Account.objects.filter(login__icontains=search_string)
     serializer = serializers.AccountSerializer(users, many=True)
     return response.Response(serializer.data)
+
+
+
+@api_view(["GET"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def change2fa(request):
+    user = request.user
+    user.mfa_enabled = True
+    user.save()
+    return Response({"mfa_enabled": user.mfa_enabled})
 
 
 @rest_decorators.api_view(["GET"])

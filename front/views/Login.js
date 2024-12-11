@@ -43,6 +43,7 @@ export default class Login extends Abstract {
     }
 
     initialize() {
+        
         const form = document.getElementById('login-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -72,13 +73,12 @@ export default class Login extends Abstract {
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
                         navigate('/enable2fa');
-                    }else{
-                    
+                    }
+                    else if(data.isIntraUser === false && data.mfa_enabled === true){
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
-                        
-                        navigate('/');
-                }
+                        navigate('/login2fa');
+                    }
                 } else {
                     const errorData = await response.json();
                     document.getElementById('error-message').innerText = errorData.detail || 'Login failed. Please try again.';
