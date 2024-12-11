@@ -933,17 +933,7 @@ export default class Chat extends Abstract {
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();
-            // localStorage.removeItem('access_token');
-            // // // localStorage.removeItem('refresh_token');
-            // const alertBox = document.createElement('div');
-            // alertBox.className = 'custom-alert';
-            // alertBox.innerText = 'Logout Done!';
-            // document.body.appendChild(alertBox);
-    
-            // // Remove the alert after 3 seconds
-            // setTimeout(() => {
-            //     alertBox.remove();
-            // }, 3000);
+            
             navigate('/welcome');
         });
     
@@ -1046,17 +1036,12 @@ export default class Chat extends Abstract {
     
             // Clear tokens and navigate
             localStorage.removeItem('access_token');
-            // localStorage.removeItem('refresh_token');
+            if (localStorage.getItem('refresh_token')) {
+                localStorage.removeItem('refresh_token');
+            }
+            
     
-            // const alertBox = document.createElement('div');
-            // alertBox.className = 'custom-alert';
-            // alertBox.innerText = 'Logout Done from chat!';
-            // document.body.appendChild(alertBox);
-    
-            // // Remove the alert after 3 seconds
-            // setTimeout(() => {
-            //     alertBox.remove();
-            // }, 3000);
+         
     
             navigate('/welcome');
     

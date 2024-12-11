@@ -85,6 +85,7 @@ def loginView(request):
             "mfa_enabled": user.mfa_enabled,
             "isIntraUser": user.isIntraUser,
             "mfa_secret": user.mfa_secret,
+            "alwaysDisable2fa": user.alwaysDisable2fa
         }
         res.data = {**tokens, **user_data}
 
@@ -213,12 +214,7 @@ def user(request):
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def generate_qr_code(request):
     user = request.user
-    print('-------------------------')
-    print('------------------------->',user.id)
-    print('------------------------->',user)
-    print('------------------------->',user.mfa_secret)
-    print('------------------------->',user.mfa_enabled)
-    print('-------------------------')
+
 
     if not user.mfa_secret:
         user.mfa_secret = pyotp.random_base32()
@@ -260,6 +256,16 @@ def allusers(request):
     return response.Response(serializer.data)  # Return serialized data
 
 
+
+@rest_decorators.api_view(["GET"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def disable_2fa(request):
+    user = request.user
+    user.mfa_enabled = False
+    user.mfa_secret = None
+    user.alwaysDisable2fa = True
+    user.save()
+    return Response({"mfa_enabled": user.mfa_enabled, "mfa_secret": user.mfa_secret, "alwaysDisable2fa": user.alwaysDisable2fa})
 
 
 @api_view(["POST"])

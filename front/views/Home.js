@@ -174,7 +174,10 @@ export default class Home extends Abstract {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
-            // localStorage.removeItem('refresh_token');
+            if (localStorage.getItem('refresh_token')) {
+                localStorage.removeItem('refresh_token');
+            }
+            
             
             // const alertBox = document.createElement('div');
             // alertBox.className = 'custom-alert';
@@ -744,17 +747,10 @@ export default class Home extends Abstract {
     
             // Clear tokens and navigate
             localStorage.removeItem('access_token');
-            // localStorage.removeItem('refresh_token');
-    
-            // const alertBox = document.createElement('div');
-            // alertBox.className = 'custom-alert';
-            // alertBox.innerText = 'Logout Done! from home';
-            // document.body.appendChild(alertBox);
-    
-            // // Remove the alert after 3 seconds
-            // setTimeout(() => {
-            //     alertBox.remove();
-            // }, 3000);
+            if (localStorage.getItem('refresh_token')) {
+                localStorage.removeItem('refresh_token');
+            }    
+           
     
             navigate('/welcome');
     

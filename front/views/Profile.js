@@ -130,7 +130,9 @@ export default class Profile extends Abstract {
             event.preventDefault();
             await this.logoutUser();
             localStorage.removeItem('access_token');
-            // localStorage.removeItem('refresh_token');
+            if(localStorage.removeItem('refresh_token')){
+                localStorage.removeItem('refresh_token');
+            }
             navigate('/welcome');
         });
     }
@@ -362,17 +364,10 @@ animateWinRate(targetPercentage) {
     
             // Clear tokens and navigate
             localStorage.removeItem('access_token');
-            // localStorage.removeItem('refresh_token');
-    
-            // const alertBox = document.createElement('div');
-            // alertBox.className = 'custom-alertt';
-            // alertBox.innerText = 'Logout Done! from profile';
-            // document.body.appendChild(alertBox);
-    
-            // // Remove the alert after 3 seconds
-            // setTimeout(() => {
-            //     alertBox.remove();
-            // }, 3000);
+            if(localStorage.removeItem('refresh_token')){
+                localStorage.removeItem('refresh_token');
+            }
+            
     
             navigate('/welcome');
     

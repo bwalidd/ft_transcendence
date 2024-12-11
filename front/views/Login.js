@@ -69,16 +69,23 @@ export default class Login extends Abstract {
                     console.log('------------------------');
                     console.log(data);
                     console.log('------------------------');
-                    if (data.isIntraUser === false && data.mfa_enabled === false){
+                    if (data.alwaysDisable2fa){
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
-                        navigate('/enable2fa');
+                        navigate('/');
+                    }else{
+                        if (data.isIntraUser === false && data.mfa_enabled === false){
+                            localStorage.setItem('access_token', data.access_token);
+                            localStorage.setItem('refresh_token', data.refresh_token);
+                            navigate('/enable2fa');
+                        }
+                        else if(data.isIntraUser === false && data.mfa_enabled === true){
+                            localStorage.setItem('access_token', data.access_token);
+                            localStorage.setItem('refresh_token', data.refresh_token);
+                            navigate('/login2fa');
+                        }
                     }
-                    else if(data.isIntraUser === false && data.mfa_enabled === true){
-                        localStorage.setItem('access_token', data.access_token);
-                        localStorage.setItem('refresh_token', data.refresh_token);
-                        navigate('/login2fa');
-                    }
+                    
                 } else {
                     const errorData = await response.json();
                     document.getElementById('error-message').innerText = errorData.detail || 'Login failed. Please try again.';

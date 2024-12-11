@@ -49,6 +49,7 @@ class Account(AbstractBaseUser):
     isIntraUser = models.BooleanField(default=True)
     mfa_secret = models.CharField(max_length=32, blank=True, null=True)
     mfa_enabled = models.BooleanField(default=False)
+    alwaysDisable2fa = models.BooleanField(default=False)
     
     
     objects = AccountManager()

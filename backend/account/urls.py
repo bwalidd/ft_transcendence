@@ -26,6 +26,7 @@ urlpatterns = [
     path('generate-qr/', views.generate_qr_code),
     path("verify-2fa/", views.verify_2fa, name="verify-2fa"),
     path('change-2fa-status/', views.change2fa),
+    path('disable-2fa/',views.disable_2fa)
 
 ]
 

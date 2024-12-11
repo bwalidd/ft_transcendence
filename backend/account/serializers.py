@@ -108,7 +108,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ("id", "login", "email", "image","avatar","isIntraUser", "friends","mfa_enabled","mfa_secret")
+        fields = ("id", "login", "email", "image","avatar","isIntraUser", "friends","mfa_enabled","mfa_secret","alwaysDisable2fa")
 
     def get_friends(self, obj):
         try:
@@ -135,7 +135,7 @@ class AccountSerializer(serializers.ModelSerializer):
 class AccountDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("id", "login", "email", "avatar","image","password")
+        fields = ("id", "login", "email", "avatar","image","password","isIntraUser","mfa_enabled","mfa_secret","alwaysDisable2fa")
 
 
 # from rest_framework import serializers

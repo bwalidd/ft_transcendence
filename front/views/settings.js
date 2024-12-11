@@ -20,6 +20,7 @@ export default class Settings extends Abstract {
     async getHtml() {
         return `
             <div class="bodyy">
+                <div class="overlay"></div>
                 <div class="settings-container">
                     <h1>User Settings</h1>
                     
@@ -59,11 +60,18 @@ export default class Settings extends Abstract {
                         <!-- Password Section -->
                         <div class="form-group">
                             <label for="password">Password</label>
-                                <input type="password" id="password" name="password" placeholder="Enter new password">                
+                            <input type="password" id="password" name="password" placeholder="Enter new password">                
                         </div>
                         <div class="form-group">
                             <label for="confirmPassword">Confirm Password</label>
-                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">                
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">                
+                        </div>
+                        
+                        <!-- 2FA Section -->
+                        <div class="form-group two-fa" id="two-fa">
+                            <label for="2fa">Two-Factor</label>
+                            <button type="button" id="disable-2fa-button">Disable</button>
+                           <label id="disabled-label">Disabled</label>
                         </div>
 
                         <!-- Save Button -->
@@ -79,13 +87,43 @@ export default class Settings extends Abstract {
 
     async initialize() {
         // console.log('Settings page initialized');
+
         window.toggleInput = this.toggleInput.bind(this);
         window.saveSettings = this.saveSettings.bind(this);
         window.removeAvatar = this.removeAvatar.bind(this);
         window.uploadAvatar = (event) => this.uploadAvatar(event);
         window.triggerUpload = this.triggerUpload.bind(this);
         await this.fetchUserData();
+        this.disable2fa();
     }
+
+    async disable2fa() {
+        document.getElementById('disable-2fa-button').addEventListener('click', async () => {
+            try {
+                const csrfToken = await this.getCsrfToken();
+                console.log('csrf--->', csrfToken);
+                const response = await fetch(`http://localhost:8001/api/auth/disable-2fa/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('2FA disabled:', data);
+                    document.getElementById('disable-2fa-button').style.display = 'none';
+                    document.getElementById('disabled-label').style.display = 'block';
+                } else {
+                    alert('Failed to disable 2FA');
+                }
+            } catch (error) {
+                console.error('Error disabling 2FA:', error);
+            }
+        });
+    }
+    
     
 
     async getCsrfToken() {
@@ -128,7 +166,16 @@ export default class Settings extends Abstract {
                 avatarPreview.style.backgroundImage = `url(http://localhost:8001${userData.avatar})`;
                 avatarPreview.style.backgroundSize = "cover";
                 avatarPreview.style.backgroundPosition = "center";
-            }    
+            }
+            if (userData.mfa_enabled) {
+                document.getElementById('disable-2fa-button').style.display = 'block';
+                document.getElementById('disabled-label').style.display = 'none';
+            }else{
+                document.getElementById('disable-2fa-button').style.display = 'none';
+                document.getElementById('disabled-label').style.display = 'block';
+                document.getElementById('two-fa').style.marginTop = '20px';
+                document.getElementById('two-fa').style.marginBottom = '20px';
+            }
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
