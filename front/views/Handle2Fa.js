@@ -57,7 +57,7 @@ export default class Handle2Fa extends Abstract {
                 const response = await fetch('http://localhost:8001/api/auth/verify-2fa/', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Authorization': `Bearer ${localStorage.getItem('tmp_access_token')}`,
                         'Content-Type': 'application/json',
                         'X-CSRFToken': csrfToken,
                     },
@@ -70,7 +70,10 @@ export default class Handle2Fa extends Abstract {
                 if (response.ok) {
                     alert('2FA verified successfully!');
                     //change 2fa status to true
-                  
+                    localStorage.setItem('access_token', localStorage.getItem('tmp_access_token'));
+                    localStorage.setItem('refresh_token', localStorage.getItem('tmp_refresh_token'));
+                    localStorage.removeItem('tmp_access_token');
+                    localStorage.removeItem('tmp_refresh_token');
                     navigate('/');
                 } else {
                     alert(data.error || 'Failed to verify 2FA.');

@@ -75,13 +75,13 @@ export default class Login extends Abstract {
                         navigate('/');
                     }else{
                         if (data.isIntraUser === false && data.mfa_enabled === false){
-                            localStorage.setItem('access_token', data.access_token);
-                            localStorage.setItem('refresh_token', data.refresh_token);
+                            localStorage.setItem('tmp_access_token', data.access_token);
+                            localStorage.setItem('tmp_refresh_token', data.refresh_token);
                             navigate('/enable2fa');
                         }
                         else if(data.isIntraUser === false && data.mfa_enabled === true){
-                            localStorage.setItem('access_token', data.access_token);
-                            localStorage.setItem('refresh_token', data.refresh_token);
+                            localStorage.setItem('tmp_access_token', data.access_token);
+                            localStorage.setItem('tmp_refresh_token', data.refresh_token);
                             navigate('/login2fa');
                         }
                     }

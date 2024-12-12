@@ -18,7 +18,8 @@ const routes = [
     { path: "/settings", view: "settings"},
 ];
 
-const shouldAuthpages = ["Home", "Notif", "Profile", "Chat", "Leaderboard","GameRemote","Settings","GameAi","LocalMatch","Tournaments"];
+const shouldAuthpages = ["Profile", "Chat", "Leaderboard","GameRemote","Settings","GameAi","LocalMatch","Tournaments"];
+const tmpAuthpages = ["Handle2Fa","Enable2Fa"];
 const shouldNotAuthpages = ["Login", "Signup", "Welcome"];
 
 const loadCSS = (url) => {
@@ -59,17 +60,25 @@ const loadView = async (path) => {
 
         // Import the new view module
         const module = await import(`../views/${viewName}.js`);
-        // if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
-        //     alert('You need to login first');
-        //     return navigate('/welcome');
-        // } else if (shouldNotAuthpages.includes(viewName) && localStorage.getItem('access_token')) {
-        //     alert('You are already logged in');
-        //     return navigate('/');
-        // }
-        // if (viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
-        //     alert('You need to start a new game first');
-        //     return navigate('/');
-        // }
+        if (shouldAuthpages.includes(viewName) && !localStorage.getItem('access_token')) {
+            alert('You need to login first');
+            return navigate('/welcome');
+        } else if (shouldNotAuthpages.includes(viewName) && localStorage.getItem('access_token')) {
+            alert('You are already logged in');
+            return navigate('/');
+        }
+        if (viewName === "GameRemote" && !localStorage.getItem('currentSessionId')) {
+            alert('You need to start a new game first');
+            return navigate('/');
+        }
+        if (tmpAuthpages.includes(viewName) && !localStorage.getItem('tmp_access_token')){
+            alert('page only in login flow');
+            if(localStorage.getItem('access_token')){
+                navigate('/');
+            }else{
+                navigate('/welcome');
+            }
+        }
 
         const View = module.default;
         if (typeof View !== 'function') {

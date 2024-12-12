@@ -170,6 +170,12 @@ export default class Home extends Abstract {
     
     initialize() {
         // Attach event listener for logout
+        if (!localStorage.getItem('access_token')) {
+            alert('You are not logged in');
+            return navigate('/welcome');
+            
+        }
+
         document.getElementById('logout-link').addEventListener('click', async (event) => {
             event.preventDefault();
             await this.logoutUser();

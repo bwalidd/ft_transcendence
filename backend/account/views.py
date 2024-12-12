@@ -304,7 +304,12 @@ def search_users(request):
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def change2fa(request):
     user = request.user
+    print('-------------------------------------')
+    print('change',user.login ,'2fa status' , user.mfa_enabled)
+    print('-------------------------------------')
     user.mfa_enabled = True
+    print('change',user.login ,'2fa status' , user.mfa_enabled)
+    print('-------------------------------------')
     user.save()
     return Response({"mfa_enabled": user.mfa_enabled})
 
