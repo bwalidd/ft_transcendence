@@ -352,8 +352,8 @@ def update_user(request):
 
 
 # Replace these with your 42 API credentials
-CLIENT_ID = 'u-s4t2ud-84b6775d22286874989e5e213621ee48a405e39705ec71d0aed001e0b7691caf'
-CLIENT_SECRET = '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'
+CLIENT_ID = 'u-s4t2ud-1f0cfd27126006ab0264efcc3e6e81e4d4e26e212130321a3848cd0d580e2b74'
+CLIENT_SECRET = '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'
 REDIRECT_URI = 'http://localhost:8001/api/auth/callback/'
 
 # 42 Intra API endpoints

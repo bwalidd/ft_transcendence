@@ -14,6 +14,7 @@ export default class Tournaments extends Abstract {
         loadCSS('../styles/ttt.css');
         super(params);
         this.setTitle("Tournaments");
+		this.cssSelector = '../styles/ttt.css';
 		this.currentUser = null;
 		this.players = [];
     }
@@ -267,7 +268,17 @@ export default class Tournaments extends Abstract {
         // Remove the alert after 3 seconds
         setTimeout(() => alertBox.remove(), 3000);
     }
-    
+
+	cleanup() {
+        
+
+       
+        const cssLink = document.querySelector(`link[href="${this.cssSelector}"]`);
+        if (cssLink) {
+            cssLink.remove();
+        }
+
+    }
 }
 
 

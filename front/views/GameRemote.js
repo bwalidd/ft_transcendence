@@ -358,7 +358,7 @@ export default class GameRemote extends Abstract {
             document.getElementById(elementId).textContent = data.login;
 
             // const userAvatar = data.image || '/default-avatar.png';
-            const userAvatar = this.data.isIntraUser ? this.data.image : `http://localhost:8001${this.data.avatar}`;
+            const userAvatar = data.isIntraUser ? data.image : `http://localhost:8001${data.avatar}`;
             console.log('User avatar:', userAvatar);
 
             if (elementId === "my-username") {
